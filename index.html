@@ -22,7 +22,7 @@
             display: flex; justify-content: center;
         }
         .book-container {
-            max-width: 800px; width: 100%;
+            max-width: 850px; width: 100%;
             background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
             padding: 30px 20px;
@@ -95,17 +95,31 @@
 
 <script>
 const master = {
-    "髪設定": { 
-        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "ピクシーカット": "pixie cut", "お団子ヘア": "hair bun", "ポニーテール（片寄せ）": "side ponytail" },
-        "前髪": { "パッツン前髪": "straight bangs", "斜め分け前髪": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs", "オン眉": "short bangs" },
-        "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids", "編み込み": "woven hair" } 
+    "舞台・環境": {
+        "日常・学校": { "教室": "classroom", "図書室": "library", "放課後の廊下": "school hallway", "屋上": "rooftop", "部室": "clubroom" },
+        "室内・生活": { "自分の部屋": "bedroom", "リビング": "living room", "キッチン": "kitchen", "和室": "washitsu", "窓際": "by the window" },
+        "街・施設": { "カフェ": "cafe", "駅のホーム": "station platform", "コンビニ": "convenience store", "夜の街": "cityscape at night", "遊園地": "amusement park", "商店街": "shopping district" },
+        "自然・風景": { "海辺": "seaside", "公園": "park", "ひまわり畑": "sunflower field", "幻想的な森": "magical forest", "雪原": "snowfield", "廃墟": "ruins" }
+    },
+    "季節・時間・天気": {
+        "時間帯": { "暁(あかつき)": "dawn", "正午": "noon", "黄昏(たそがれ)": "sunset", "真夜中": "midnight", "夜明け前": "before dawn" },
+        "天候・光": { "晴天": "sunny weather", "小雨": "drizzle", "雷雨": "thunderstorm", "雪": "snowing", "霧": "foggy", "木漏れ日": "sunlight through trees" },
+        "季節の演出": { "桜舞う春": "cherry blossoms", "入道雲の夏": "cumulonimbus cloud", "紅葉の秋": "autumn leaves", "粉雪の冬": "powder snow" }
+    },
+    "演出・状況": {
+        "エフェクト": { "舞い散る花びら": "falling petals", "降り注ぐ光": "shining light", "水しぶき": "water splashes", "舞い散る羽": "falling feathers", "立ち昇る湯気": "steam" }
     },
     "身体特徴": {
         "体格": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
         "脚部・足": { "美脚": "beautiful legs", "太もも": "thick thighs", "内股": "pigeon-toed", "素足": "barefoot", "絶対領域": "absolute territory" }
     },
+    "髪設定": { 
+        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "ピクシーカット": "pixie cut", "お団子ヘア": "hair bun", "サイドポニーテール": "side ponytail" },
+        "前髪": { "パッツン前髪": "straight bangs", "斜め分け前髪": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs", "オン眉": "short bangs" },
+        "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids", "編み込み": "woven hair" } 
+    },
     "衣装(トップス)": {
-        "上半身": { "ホルターネック": "halterneck", "袖なしタートルネック": "sleeveless turtleneck", "カーディガン": "cardigan", "パーカー": "hoodie", "オフショルダー": "off-shoulder", "フリルブラウス": "frilled blouse", "タンクトップ": "tank top", "セーラー服(上)": "sailor shirt" }
+        "上半身": { "ホルターネック": "halterneck", "袖なしタートルネック": "sleeveless turtleneck", "カーディガン": "cardigan", "パーカー": "hoodie", "オフショルダー": "off-shoulder", "フリルブラウス": "frilled blouse", "タンクトップ": "tank top", "セーラー服(上)": "sailor shirt", "ワイシャツ": "white shirt" }
     },
     "衣装(ボトムス)": {
         "下半身": { "ミニスカート": "miniskirt", "ホットパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ジーンズ": "jeans", "ロングスカート": "long skirt", "ブルマ": "bloomers" }
@@ -118,27 +132,24 @@ const master = {
         "フットウェア": { "ハイヒール": "high heels", "ローファー": "loafers", "ブーツ": "boots", "スニーカー": "sneakers" }
     },
     "アクセサリー": { 
-        "装飾品": { "リボン": "ribbon", "眼鏡": "glasses", "チョーカー": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "ピアス": "piercings" } 
+        "装飾品": { "リボン": "ribbon", "眼鏡": "glasses", "チョーカー": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "ピアス": "piercings", "帽子": "hat" } 
     },
-    "構図・舞台": {
-        "世界観・背景": { "教室": "classroom", "幻想的な森": "magical forest", "サイバーパンク": "cyberpunk city", "ビーチ": "beach", "雨の街": "rainy street" },
-        "照明・雰囲気": { "逆光": "backlighting", "シネマティック": "cinematic lighting", "夕暮れ": "sunset", "月の光": "moonlight", "ソフトフォーカス": "soft focus" },
-        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up", "俯瞰視点": "bird's eye view" }
+    "構図・視点": {
+        "ポーズ": { "立ち姿": "standing", "座り": "sitting", "寝そべり": "lying", "俯き": "looking down", "振り返る": "looking back" },
+        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up", "俯瞰視点": "bird's eye view", "シネマティック": "cinematic angle" }
     }
 };
 
 const subs = {
     "指定なし": { "----": "" },
     "なし(less)": { "なし": "less" },
-    "サイズ": { 
-        "極小(スモール)": "small", "大(ビッグ)": "big", "短い(ショート)": "short", "中間(ミディアム)": "medium", "長い(ロング)": "long", "超長(ハイロング)": "high-long" 
-    },
-    "トーン": { "ダーク": "dark", "ライト": "light", "鮮やか": "vibrant", "淡い": "pale" },
+    "サイズ": { "極小(スモール)": "small", "大(ビッグ)": "big", "短い(ショート)": "short", "中間(ミディアム)": "medium", "長い(ロング)": "long", "超長(ハイロング)": "high-long" },
+    "トーン": { "ダーク": "dark", "ライト": "light", "鮮やか": "vibrant", "淡い": "pale", "ネオン": "neon", "くすんだ": "muted" },
     "カラー": { 
         "赤色(レッド)": "red", "青色(ブルー)": "blue", "金色(ゴールド)": "gold", "銀色(シルバー)": "silver", "黒色(ブラック)": "black", "白色(ホワイト)": "white", 
-        "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple" 
+        "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple", "橙色(オレンジ)": "orange", "水色(スカイブルー)": "light blue" 
     },
-    "質感": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "レース": "lace" }
+    "質感": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "レース": "lace", "デニム": "denim", "革": "leather" }
 };
 
 let stockItems = [];
