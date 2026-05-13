@@ -22,7 +22,7 @@
             display: flex; justify-content: center;
         }
         .book-container {
-            max-width: 850px; width: 100%;
+            max-width: 900px; width: 100%;
             background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
             padding: 30px 20px;
@@ -42,14 +42,14 @@
         .btn-build { background-color: #5a7d6a; color: white; }
         .btn-undo { background-color: #8e9aaf; color: white; }
         .storage-wrapper { display: grid; grid-template-columns: 1fr 100px; gap: 12px; margin: 10px 0; }
-        #stock-area { min-height: 120px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); }
-        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; min-height: 120px; }
+        #stock-area { min-height: 150px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); align-content: flex-start; }
+        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; min-height: 150px; }
         #trash-bin.drag-over { background-color: var(--trash-pink); color: var(--dust-red); transform: scale(1.05); box-shadow: 0 0 20px var(--trash-pink); }
         .trash-icon-large { font-size: 2.2rem; margin-bottom: 5px; }
-        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 10px 14px; font-size: 0.85rem; cursor: grab; user-select: none; transition: transform 0.2s, opacity 0.2s; touch-action: none; }
+        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px; font-size: 0.8rem; cursor: grab; user-select: none; transition: transform 0.2s, opacity 0.2s; touch-action: none; }
         .stock-item.dragging { opacity: 0.3; }
         .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); }
-        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 100px; font-size: 1rem; line-height: 1.4; resize: vertical; }
+        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 120px; font-size: 1rem; line-height: 1.4; resize: vertical; }
     </style>
 </head>
 <body>
@@ -57,14 +57,14 @@
 <div class="book-container">
     <h1>叡智の魔導書<br><span class="subtitle">《 アトモソフィア ・ グリモワール 》</span></h1>
 
-    <div class="section-label">主軸の刻印（基幹呪文・部位・景色）</div>
+    <div class="section-label">主軸の刻印（上から順に選んで世界を構築）</div>
     <div class="input-group">
         <select id="m1" onchange="syncM2()"></select>
         <select id="m2" onchange="syncM3()"></select>
         <select id="m3"></select>
     </div>
 
-    <div class="section-label">属性の調律（質感・詳細色彩）</div>
+    <div class="section-label">属性の調律（詳細な色・質感・サイズ）</div>
     <div class="input-group">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <select id="s1" onchange="syncS2()"></select>
@@ -74,79 +74,93 @@
     </div>
 
     <div class="btn-grid">
-        <button class="btn-add" onclick="pushStock()">パーツを刻む</button>
-        <button class="btn-build" onclick="build()">パッケージ化</button>
+        <button class="btn-add" onclick="pushStock()">刻印を一時記憶へ</button>
+        <button class="btn-build" onclick="build()">選択中の刻印をパッケージ化</button>
     </div>
 
-    <div class="section-label">一時記憶（整理・破棄）</div>
+    <div class="section-label">一時記憶庫（ドラッグで整理/破棄）</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
         <div id="trash-bin"><div class="trash-icon-large">🗑</div><div>消去</div></div>
     </div>
 
-    <div class="section-label">紡がれた呪文（詠唱・修正）</div>
-    <textarea id="final-output" placeholder="ここに呪文が紡がれる..."></textarea>
+    <div class="section-label">紡がれた呪文（詠唱台）</div>
+    <textarea id="final-output"></textarea>
     
     <div class="btn-grid">
-        <button class="btn-undo" onclick="undo()">一つ戻す</button>
-        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">写し取って浄化</button>
+        <button class="btn-undo" onclick="undo()">一つ前の状態に戻す</button>
+        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">詠唱を写し取って浄化</button>
     </div>
 </div>
 
 <script>
+const DEFAULT_PROMPT = "masterpiece, best quality, 1girl, ";
+
 const master = {
-    "基幹呪文(テンプレ)": {
-        "キャラクター": { "1人の女の子": "1girl", "2人の女の子": "2girls", "男の子": "1boy" },
-        "品質向上": { "最高品質": "best quality", "傑作": "masterpiece", "超詳細": "ultra detailed", "高解像度": "highres" },
-        "画風指定": { "イラスト風": "illustration", "アニメ風": "anime style", "写実的": "photorealistic", "水彩画風": "watercolor" }
+    "1.画風・アートスタイル": {
+        "定番スタイル": { "アニメ風": "anime style", "イラスト風": "illustration", "写実的・実写": "photorealistic", "3Dレンダー": "3d render" },
+        "芸術的表現": { "水彩画風": "watercolor", "油絵風": "oil painting", "スケッチ・線画": "sketch", "フラットデザイン": "flat design", "ピクセルアート": "pixel art" },
+        "雰囲気": { "シネマティック": "cinematic lighting", "レトロ・古風": "retro style", "サイバーパンク": "cyberpunk style", "ドリーミー": "dreamy atmosphere" }
     },
-    "髪設定": { 
-        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "お団子ヘア": "hair bun" },
-        "前髪": { "パッツン前髪": "straight bangs", "斜め分け前髪": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs" },
-        "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids" } 
+    "2.身体・顔": {
+        "体格": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
+        "視線": { "こちらを見つめる": "looking at viewer", "逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横目": "sideways glance", "遠くを見る": "looking afar", "手を見る": "looking at hands", "上目遣い": "upturned eyes" },
+        "目の形状": { "閉じ目": "closed eyes", "片目閉じ": "one eye closed", "細め目": "narrowed eyes", "ジト目": "jitome", "ツリ目": "tsurime", "タレ目": "tareme" },
+        "瞳の形状・輝き": { "スリット瞳": "slit pupils", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "発光": "glowing eyes", "キラキラ": "sparkling eyes", "オッドアイ": "heterochromia" },
+        "表情(ポジティブ)": { "笑顔": "happy", "ドヤ顔": "smug", "不敵な笑み": "smirk", "興奮": "excited", "照れ": "blush", "ぺろっ": "tongue out" },
+        "表情(ネガティブ)": { "怒り": "angry", "不機嫌": "annoyed", "ジト目(蔑み)": "disdain", "悲しみ": "sad", "泣き顔": "tears", "絶望": "despair", "困り顔": "confused" },
+        "表情(特殊)": { "驚き": "surprised", "無表情": "expressionless", "眠い": "sleepy", "溜息": "sigh", "思考中": "thinking" }
     },
-    "舞台・環境": {
-        "場所": { "教室": "classroom", "図書室": "library", "リビング": "living room", "海辺": "seaside", "幻想的な森": "magical forest", "夜の街": "cityscape at night" },
-        "季節・時間": { "桜舞う春": "cherry blossoms", "入道雲の夏": "cumulonimbus cloud", "黄昏(たそがれ)": "sunset", "真夜中": "midnight" }
+    "3.髪設定": { 
+        "前髪の形状": { "パッツン": "blunt bangs", "姫カット": "hime cut", "斜め分け": "diagonal bangs", "アシンメトリー": "asymmetrical bangs", "目隠れ": "hair over eyes", "片目隠れ": "hair over one eye", "センター分け": "parted bangs" },
+        "全体の形状": { "ショート": "short hair", "ボブカット": "bob cut", "ロングヘア": "long hair", "超ロング": "absurdly long hair", "ポニーテール": "ponytail", "ツインテール": "twin tails", "お団子": "hair bun", "三つ編み": "braid", "ドリルヘア": "drill hair", "ウェーブ": "wavy hair" },
+        "パーツ": { "アホ毛": "ahoge", "ハートアホ毛": "heart ahoge", "横髪(もみあげ)": "sidelocks", "髪のハネ": "flipped hair" }
     },
-    "身体特徴": {
-        "体格": { "小柄": "petite", "高身長": "tall girl", "肉感的": "curvy", "安産型": "wide hips" },
-        "脚部・足": { "美脚": "beautiful legs", "絶対領域": "absolute territory", "素足": "barefoot" }
+    "4.衣装(頭部・装飾)": {
+        "帽子": { "ベレー帽": "beret", "麦わら帽子": "straw hat", "魔女の帽子": "witch hat", "野球帽": "baseball cap", "ニット帽": "beanie" },
+        "髪飾り": { "リボン": "hair ribbon", "カチューシャ": "headband", "王冠": "crown", "ティアラ": "tiara", "メイドカチューシャ": "maid headdress", "ヘアピン": "hairpin" },
+        "顔周り": { "眼鏡": "glasses", "首輪(チョーカー)": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "ピアス": "piercings" }
     },
-    "衣装(上)": {
-        "トップス": { "ホルターネック": "halterneck", "袖なしタートルネック": "sleeveless turtleneck", "カーディガン": "cardigan", "パーカー": "hoodie", "オフショルダー": "off-shoulder", "セーラー服": "school uniform" }
+    "5.衣装(トップス・インナー)": {
+        "シャツ・カットソー": { "Ｔシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タンクセット": "tank top", "クロップド": "crop top", "ホルターネック": "halterneck", "袖なしタートルネック": "sleeveless turtleneck" },
+        "ニット・その他": { "セーター": "sweater", "リブセーター": "ribbed sweater", "カーディガン": "cardigan", "コルセット": "corset" }
     },
-    "衣装(下)": {
-        "ボトムス": { "ミニスカート": "miniskirt", "プリーツスカート": "pleated skirt", "ジーンズ": "jeans", "ホットパンツ": "short shorts" }
+    "6.衣装(アウター)": {
+        "上着": { "ジャケット": "jacket", "ブレザー": "blazer", "パーカー": "hoodie", "コート": "coat", "ロングコート": "long coat", "レインコート": "raincoat", "ケープ": "cape" }
     },
-    "衣装(足元・全身)": {
-        "レッグウェア": { "ニーハイソックス": "thighhighs", "パンティストッキング": "pantyhose", "ガーターベルト": "garter belt" },
-        "フルセット": { "メイド服": "maid uniform", "和服・着物": "kimono", "ドレス": "dress", "バニースーツ": "bunny suit" }
+    "7.衣装(ボトムス)": {
+        "スカート": { "ミニスカート": "miniskirt", "ロングスカート": "long skirt", "プリーツスカート": "pleated skirt", "チェックスカート": "plaid skirt" },
+        "ズボン": { "パンツ": "pants", "ジーンズ": "jeans", "ショートパンツ": "short shorts", "レギンス": "leggings" }
     },
-    "アクセサリー": { 
-        "装飾品": { "リボン": "ribbon", "眼鏡": "glasses", "チョーカー": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones" } 
+    "8.衣装(全身・脚・靴)": {
+        "セットアップ": { "和服・着物": "kimono", "メイド服": "maid uniform", "セーラー服": "japanese schoolgirl sailor uniform", "ドレス": "dress", "バニースーツ": "bunny suit", "水着": "swimsuit" },
+        "レッグウェア": { "ニーハイ": "thighhighs", "タイツ": "pantyhose", "ルーズソックス": "loose socks", "ガーターベルト": "garter belt" },
+        "フットウェア": { "ハイヒール": "high heels", "ローファー": "loafers", "ブーツ": "boots", "スニーカー": "sneakers" }
     },
-    "構図・視点": {
-        "ポーズ": { "立ち姿": "standing", "座り": "sitting", "寝そべり": "lying", "振り返る": "looking back" },
-        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up" }
+    "9.ポーズ・動作": {
+        "全身ポーズ": { "立ち": "standing", "座り": "sitting", "寝そべり": "lying", "歩き": "walking", "走り": "running", "ジャンプ": "jumping", "しゃがみ": "squatting" },
+        "腕・手の動き": { "腕を上げる": "arm up", "腕組み": "crossed arms", "ピースサイン": "peace sign", "指差し": "pointing", "ハート手": "heart hands", "頬杖": "hand on own cheek", " shushing": "shushing" },
+        "脚のポーズ": { "足組み": "crossed legs", "内股": "pigeon-toed", "立て膝": "knee up", "正座": "seiza" },
+        "特殊ポーズ": { "猫ポーズ": "cat pose", "お嬢様ポーズ": "ojou-sama pose", "振り返る": "looking back" }
+    },
+    "10.背景・世界観": {
+        "景色(屋外)": { "海辺": "beach", "ひまわり畑": "sunflower field", "公園": "park", "夜の街": "cityscape", "廃墟": "ruins", "幻想的な森": "magical forest" },
+        "景色(屋内)": { "教室": "classroom", "図書室": "library", "自分の部屋": "bedroom", "カフェ": "cafe", "駅": "train station" },
+        "イラスト背景": { "白背景": "white background", "グラデーション": "gradient background", "水彩背景": "watercolor background", "ドット柄": "polka dot background" },
+        "光・演出": { "逆光": "back lighting", "木漏れ日": "sunlight through trees", "ボケ味": "bokeh", "霧": "foggy", "舞い散る花びら": "falling petals" }
     }
 };
 
 const subs = {
     "指定なし": { "----": "" },
-    "なし(less)": { "なし": "less" },
-    "カラー(ノーマル)": { 
-        "赤色(レッド)": "red", "青色(ブルー)": "blue", "金色(ゴールド)": "gold", "銀色(シルバー)": "silver", "黒色(ブラック)": "black", "白色(ホワイト)": "white", "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple" 
-    },
-    "カラー(明るい・淡い)": { 
-        "明るい赤": "light red", "明るい青": "light blue", "淡い桃色": "pale pink", "明るい緑": "light green", "パステルカラー": "pastel color" 
-    },
-    "カラー(暗い・深い)": { 
-        "暗い赤(ワイン)": "dark red", "濃紺(ネイビー)": "dark blue", "暗い緑": "dark green", "深い紫色": "deep purple", "焦げ茶": "dark brown" 
-    },
-    "トーン・演出": { "鮮やか": "vibrant", "ネオン": "neon", "くすんだ": "muted", "シネマティック": "cinematic", "逆光": "backlighting" },
-    "質感・マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "レース": "lace", "デニム": "denim", "革": "leather" },
-    "サイズ": { "極小(スモール)": "small", "大(ビッグ)": "big", "短い(ショート)": "short", "長い(ロング)": "long", "超長(ハイロング)": "high-long" }
+    "なし(less系)": { "なし": "less" },
+    "カラー(通常)": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white", "金": "gold", "銀": "silver", "茶": "brown" },
+    "カラー(明るい)": { "明るい赤": "light red", "明るい青": "light blue", "パステルカラー": "pastel color", "淡い桃": "pale pink" },
+    "カラー(暗い)": { "暗い赤": "dark red", "暗い青": "dark blue", "ネイビー": "navy blue", "深い緑": "deep green", "焦げ茶": "dark brown" },
+    "サイズ・長さ": { "極小(スモール)": "small", "大(ビッグ)": "big", "短い(ショート)": "short", "中間(ミディアム)": "medium", "長い(ロング)": "long", "超長(ハイロング)": "high-long" },
+    "髪の色": { "二色(2-tone)": "two-tone hair", "グラデーション": "gradient hair", "メッシュ": "streaked hair" },
+    "目の色": { "多色": "multicolored eyes", "螺旋": "spiral-only eyes" },
+    "質感": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "レース": "lace", "デニム": "denim", "革": "leather" }
 };
 
 let stockItems = [];
@@ -157,6 +171,9 @@ function init() {
     for (let k in master) m1.add(new Option(k, k));
     const s1 = document.getElementById('s1');
     for (let k in subs) s1.add(new Option(k, k));
+    
+    document.getElementById('final-output').value = DEFAULT_PROMPT;
+    
     syncM2(); syncS2(); setupDragAndDrop();
 }
 
@@ -225,7 +242,7 @@ function build() {
     });
     const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
     const currentVal = document.getElementById('final-output').value;
-    document.getElementById('final-output').value = (currentVal ? currentVal + ", " : "") + combined;
+    document.getElementById('final-output').value = (currentVal ? (currentVal.endsWith(', ') ? currentVal : currentVal + ", ") : "") + combined;
     const sIds = sels.map(el => el.dataset.id);
     stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
     drawStock();
@@ -243,9 +260,11 @@ function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("雰囲気（アトモスフィア）の定着を確認。紡がれた叡智は今、あなたの指先に宿りました。魔導書を白紙に戻します。新たな一節を書き始めましょう。");
-        output.value = "";
+        alert("雰囲気（アトモスフィア）の定着を確認。魔導書を白紙に戻し、初期詠唱を再展開します。");
+        output.value = DEFAULT_PROMPT;
         undoLog = [];
+        stockItems = [];
+        drawStock();
     });
 }
 
