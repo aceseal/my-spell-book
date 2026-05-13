@@ -10,7 +10,8 @@
             --ink-color: #2c1e14;
             --accent-gold: #b08d57;
             --dust-red: #a0522d;
-            --trash-pink: #ffafcc; /* 重なった時の発光色 */
+            --trash-pink: #ffafcc;
+            --btn-hover: #d4a373;
         }
         body {
             background-color: #3d2b1f;
@@ -19,7 +20,6 @@
             color: var(--ink-color);
             margin: 0; padding: 10px;
             display: flex; justify-content: center;
-            overflow-x: hidden;
         }
         .book-container {
             max-width: 700px; width: 100%;
@@ -30,52 +30,44 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             border-left: 10px solid #5a3e2b;
         }
-        h1 { text-align: center; border-bottom: 1px solid var(--accent-gold); padding-bottom: 10px; font-size: 1.4rem; }
+        h1 { text-align: center; border-bottom: 1px solid var(--accent-gold); padding-bottom: 10px; font-size: 1.4rem; margin: 0; }
         .subtitle { display: block; font-size: 0.9rem; letter-spacing: 0.2rem; margin-top: 5px; color: var(--accent-gold); }
         .section-label { font-weight: bold; font-size: 0.8rem; margin: 15px 0 5px 0; border-left: 4px solid var(--accent-gold); padding-left: 10px; }
         .input-group { background: rgba(0,0,0,0.03); padding: 12px; border: 1px solid rgba(176,141,87,0.3); border-radius: 4px; }
-        select, input { width: 100%; padding: 10px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; }
+        select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; box-sizing: border-box; }
         
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        button { padding: 10px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.8rem; }
+        button { padding: 12px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.85rem; transition: all 0.2s ease; }
+        
+        /* ホバー/アクティブアクション */
         .btn-add { background-color: var(--accent-gold); color: white; }
+        .btn-add:active { background-color: var(--btn-hover); transform: translateY(2px); }
+        
         .btn-build { background-color: #5a7d6a; color: white; }
+        .btn-build:active { background-color: #7a9d8a; transform: translateY(2px); }
 
-        /* ストックエリアとゴミ箱のレイアウト */
-        .storage-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 80px;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        #stock-area {
-            min-height: 100px; border: 1px dashed var(--accent-gold); 
-            padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2);
-        }
-        /* イッチ特製：赤塗り四角のゴミ箱 */
-        #trash-bin {
-            background-color: var(--dust-red);
-            border: 2px solid var(--ink-color);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; border-radius: 4px; transition: all 0.2s;
-            font-size: 0.7rem; font-weight: bold;
-        }
-        #trash-bin.drag-over {
-            background-color: var(--trash-pink);
-            color: var(--dust-red);
-            box-shadow: 0 0 15px var(--trash-pink);
-            transform: scale(1.05);
-        }
-        .trash-icon-css { font-size: 1.5rem; margin-bottom: 5px; }
+        .btn-undo { background-color: #8e9aaf; color: white; }
+        .btn-undo:active { background-color: #aeb9cf; transform: translateY(2px); }
 
-        .stock-item {
-            background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px;
-            font-size: 0.85rem; cursor: grab; user-select: none;
-        }
-        .stock-item.dragging { opacity: 0.3; transform: scale(0.9); }
+        .storage-wrapper { display: grid; grid-template-columns: 1fr 80px; gap: 10px; margin: 10px 0; }
+        #stock-area { min-height: 100px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); }
+        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; font-size: 0.7rem; }
+        #trash-bin.drag-over { background-color: var(--trash-pink); color: var(--dust-red); transform: scale(1.05); }
+
+        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px; font-size: 0.85rem; cursor: grab; user-select: none; }
+        .stock-item.dragging { opacity: 0.3; }
         .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); }
 
-        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 60px; font-size: 1rem; word-break: break-all; }
+        /* 紡がれた呪文（編集可能エリア） */
+        #final-output { 
+            background: rgba(255,255,255,0.8); 
+            padding: 15px; 
+            border: 1px double var(--accent-gold); 
+            min-height: 80px; 
+            font-size: 1rem; 
+            line-height: 1.4;
+            resize: vertical; /* 縦方向に広げられる */
+        }
     </style>
 </head>
 <body>
@@ -83,7 +75,7 @@
 <div class="book-container">
     <h1>叡智の魔導書<br><span class="subtitle">《 アトモソフィア ・ グリモワール 》</span></h1>
 
-    <div class="section-label">構成の刻印</div>
+    <div class="section-label">主軸の刻印</div>
     <div class="input-group">
         <select id="m1" onchange="syncM2()"></select>
         <select id="m2" onchange="syncM3()"></select>
@@ -104,42 +96,44 @@
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
-    <div class="section-label">一時記憶（ドラッグしてゴミ箱へ）</div>
+    <div class="section-label">一時記憶（整理・破棄）</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
-        <div id="trash-bin">
-            <div class="trash-icon-css">🗑</div>
-            <div>消去</div>
-        </div>
+        <div id="trash-bin">🗑<br>消去</div>
     </div>
 
-    <div class="section-label">紡がれた呪文</div>
-    <div id="final-output"></div>
-    <button class="btn-add" style="width:100%; margin-top:10px; background-color:#4a6fa5;" onclick="copy()">写し取る</button>
+    <div class="section-label">紡がれた呪文（詠唱・修正）</div>
+    <textarea id="final-output" placeholder="ここに呪文が紡がれる..."></textarea>
+    
+    <div class="btn-grid">
+        <button class="btn-undo" onclick="undo()">一つ戻す</button>
+        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">写し取って浄化</button>
+    </div>
 </div>
 
 <script>
 const master = {
     "髪設定": { "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob" }, "パーツ": { "アホ毛": "ahoge", "三つ編み": "braids" } },
-    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" }, "瞳": { "ハート": "heart pupils" } },
-    "衣装": { "トップス": { "セーラー": "school uniform", "ドレス": "dress" } }
+    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" }, "瞳": { "ハート": "heart-shaped pupils" } },
+    "衣装(上)": { "トップス": { "セーラー": "school uniform", "ドレス": "dress", "パーカー": "hoodie" } },
+    "衣装(下)": { "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans" } },
+    "アクセ": { "小物": { "リボン": "ribbon", "眼鏡": "glasses" } }
 };
 const subs = {
     "カラー": { "赤色": "red", "青色": "blue", "金色": "gold" },
-    "マテリアル": { "金属": "metallic", "光沢": "shiny" },
+    "マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent" },
     "ブランク": { "なし": "" }
 };
 
 let stockItems = [];
-let outputList = [];
+let undoLog = []; // アンドゥ用：直前のストック状態と出力内容を保持
 
 function init() {
     const m1 = document.getElementById('m1');
     for (let k in master) m1.add(new Option(k, k));
     const s1 = document.getElementById('s1');
     for (let k in subs) s1.add(new Option(k, k));
-    syncM2(); syncS2();
-    setupDragAndDrop();
+    syncM2(); syncS2(); setupDragAndDrop();
 }
 
 function syncM2() {
@@ -184,7 +178,6 @@ function drawStock() {
         d.textContent = (item.s ? item.s + " " : "") + item.m;
         d.onclick = () => d.classList.toggle('selected');
         area.appendChild(d);
-
         d.addEventListener('dragstart', (e) => {
             d.classList.add('dragging');
             e.dataTransfer.setData('text/plain', item.id);
@@ -193,11 +186,56 @@ function drawStock() {
     });
 }
 
+function build() {
+    const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
+    if (sels.length === 0) return;
+    
+    // 現在の歴史を保存（アンドゥ用）
+    undoLog.push({
+        stock: JSON.parse(JSON.stringify(stockItems)),
+        output: document.getElementById('final-output').value
+    });
+
+    let words = []; let weight = "1.0";
+    sels.forEach(el => {
+        const it = stockItems.find(item => item.id == el.dataset.id);
+        weight = it.weight;
+        if (it.s) words.push(it.s);
+        words.push(it.m);
+    });
+    
+    const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
+    const currentVal = document.getElementById('final-output').value;
+    document.getElementById('final-output').value = (currentVal ? currentVal + ", " : "") + combined;
+    
+    const sIds = sels.map(el => el.dataset.id);
+    stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
+    drawStock();
+}
+
+function undo() {
+    if (undoLog.length === 0) return;
+    const lastState = undoLog.pop();
+    stockItems = lastState.stock;
+    document.getElementById('final-output').value = lastState.output;
+    drawStock();
+}
+
+function copyAndClear() {
+    const output = document.getElementById('final-output');
+    if (!output.value) return;
+    
+    navigator.clipboard.writeText(output.value).then(() => {
+        alert("叡智を写し取ったで！魔導書を浄化（クリア）するわ。");
+        output.value = "";
+        undoLog = [];
+    });
+}
+
 function setupDragAndDrop() {
     const area = document.getElementById('stock-area');
     const bin = document.getElementById('trash-bin');
 
-    // 並び替えロジック
     area.addEventListener('dragover', e => {
         e.preventDefault();
         const dragging = document.querySelector('.dragging');
@@ -216,16 +254,8 @@ function setupDragAndDrop() {
         stockItems = Array.from(area.querySelectorAll('.stock-item')).map(el => stockItems.find(it => it.id == el.dataset.id));
     });
 
-    // ゴミ箱ロジック
-    bin.addEventListener('dragover', e => {
-        e.preventDefault();
-        bin.classList.add('drag-over');
-    });
-
-    bin.addEventListener('dragleave', () => {
-        bin.classList.remove('drag-over');
-    });
-
+    bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
+    bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
     bin.addEventListener('drop', e => {
         e.preventDefault();
         bin.classList.remove('drag-over');
@@ -233,29 +263,6 @@ function setupDragAndDrop() {
         stockItems = stockItems.filter(it => it.id != id);
         drawStock();
     });
-}
-
-function build() {
-    const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
-    if (sels.length === 0) return;
-    let words = []; let weight = "1.0";
-    sels.forEach(el => {
-        const it = stockItems.find(item => item.id == el.dataset.id);
-        weight = it.weight;
-        if (it.s) words.push(it.s);
-        words.push(it.m);
-    });
-    const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
-    outputList.push(combined);
-    document.getElementById('final-output').textContent = outputList.join(", ");
-    const sIds = sels.map(el => el.dataset.id);
-    stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
-    drawStock();
-}
-
-function copy() {
-    navigator.clipboard.writeText(document.getElementById('final-output').textContent);
-    alert("叡智を写し取ったで！");
 }
 
 init();
