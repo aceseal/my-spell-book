@@ -22,7 +22,7 @@
             display: flex; justify-content: center;
         }
         .book-container {
-            max-width: 700px; width: 100%;
+            max-width: 750px; width: 100%;
             background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
             padding: 30px 20px;
@@ -57,14 +57,14 @@
 <div class="book-container">
     <h1>叡智の魔導書<br><span class="subtitle">《 アトモソフィア ・ グリモワール 》</span></h1>
 
-    <div class="section-label">主軸の刻印（部位・構図）</div>
+    <div class="section-label">主軸の刻印</div>
     <div class="input-group">
         <select id="m1" onchange="syncM2()"></select>
         <select id="m2" onchange="syncM3()"></select>
         <select id="m3"></select>
     </div>
 
-    <div class="section-label">属性の調律（質感・色彩）</div>
+    <div class="section-label">属性の調律</div>
     <div class="input-group">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <select id="s1" onchange="syncS2()"></select>
@@ -78,13 +78,13 @@
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
-    <div class="section-label">一時記憶（ドラッグで整理/破棄）</div>
+    <div class="section-label">一時記憶</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
         <div id="trash-bin"><div class="trash-icon-large">🗑</div><div>消去</div></div>
     </div>
 
-    <div class="section-label">紡がれた呪文（詠唱・修正）</div>
+    <div class="section-label">紡がれた呪文</div>
     <textarea id="final-output" placeholder="ここに呪文が紡がれる..."></textarea>
     
     <div class="btn-grid">
@@ -96,42 +96,46 @@
 <script>
 const master = {
     "髪設定": { 
-        "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob", "ロング": "long hair", "姫カット": "hime cut", "お団子": "hair bun", "乱れ髪": "messy hair" },
-        "前髪(bangs)": { "パッツン": "straight bangs", "斜め分け": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs", "オン眉": "short bangs" },
+        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "ピクシーカット": "pixie cut", "お団子ヘア": "hair bun" },
+        "前髪": { "パッツン前髪": "straight bangs", "斜め分け前髪": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs", "オン眉": "short bangs" },
         "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids", "編み込み": "woven hair" } 
     },
     "身体特徴": {
-        "体格・背丈": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
-        "脚・足": { "美脚": "beautiful legs", "太もも": "thick thighs", "内股": "pigeon-toed", "素足": "barefoot", "絶対領域": "absolute territory" }
+        "体格": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
+        "脚部・足": { "美脚": "beautiful legs", "太もも": "thick thighs", "内股": "pigeon-toed", "素足": "barefoot", "絶対領域": "absolute territory" }
     },
-    "構図・舞台": {
-        "ポーズ": { "立ち姿": "standing", "座り": "sitting", "寝そべり": "lying", "しゃがみ": "squatting", "歩き": "walking" },
-        "レイアウト": { "全身": "full body", "上半身": "upper body", "クローズアップ": "close-up", "背後から": "from behind", "横顔": "profile" },
-        "パース": { "ローアングル": "low angle", "ハイアングル": "high angle", "魚眼": "fisheye", "俯瞰": "bird's eye view" }
+    "衣装(全身)": {
+        "フルセット": { "セーラー服": "school uniform", "イブニングドレス": "evening dress", "和服・着物": "kimono", "メイド服": "maid uniform", "バニースーツ": "bunny suit", "水着": "swimsuit" }
     },
-    "顔・瞳": { 
-        "表情": { "ジト目": "jitome", "ドヤ顔": "smug", "照れ": "blushing", "驚き": "surprised", "微笑み": "smile", "無表情": "expressionless", "泣き顔": "crying" },
-        "瞳の形": { "ハート": "heart-shaped pupils", "星": "star-shaped pupils", "十字": "cross-shaped pupils", "発光": "glowing eyes", "オッドアイ": "heterochromia" } 
+    "衣装(上下一体)": {
+        "トップス": { "パーカー": "hoodie", "オフショルダー": "off-shoulder", "フリルブラウス": "frilled blouse", "タンクトップ": "tank top", "袖なし": "sleeveless" },
+        "ボトムス": { "ミニスカート": "miniskirt", "ホットパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ジーンズ": "jeans", "ロングスカート": "long skirt" }
     },
-    "衣装": { 
-        "トップス": { "セーラー服": "school uniform", "ドレス": "dress", "パーカー": "hoodie", "着物": "kimono", "オフショル": "off-shoulder", "ブラウス": "blouse", "袖なし": "sleeveless" },
-        "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans", "ショートパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ガーター": "garter straps" } 
+    "衣装(足元)": {
+        "レッグウェア": { "ニーハイソックス": "thighhighs", "パンティストッキング": "pantyhose", "ガーターベルト": "garter belt", "サイハイソックス": "high socks", "網タイツ": "fishnets" },
+        "フットウェア": { "ハイヒール": "high heels", "ローファー": "loafers", "ブーツ": "boots", "スニーカー": "sneakers" }
     },
     "アクセサリー": { 
-        "小物": { "リボン": "ribbon", "眼鏡": "glasses", "首輪": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "帽子": "hat", "ピアス": "piercings" } 
+        "装飾品": { "リボン": "ribbon", "眼鏡": "glasses", "チョーカー": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "ピアス": "piercings" } 
+    },
+    "構図・視点": {
+        "ポーズ": { "立ち姿": "standing", "座り": "sitting", "寝そべり": "lying", "俯き": "looking down" },
+        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up" }
     }
 };
 
 const subs = {
     "指定なし": { "----": "" },
-    "なし(less系)": { "なし": "less" },
-    "トーン": { "ダーク": "dark", "ライト": "light", "ディープ": "deep", "淡い": "pale", "鮮やか": "vibrant", "くすんだ": "muted", "ネオン": "neon" },
+    "なし(less)": { "なし": "less" },
+    "サイズ": { 
+        "極小(スモール)": "small", "大(ビッグ)": "big", "短い(ショート)": "short", "中間(ミディアム)": "medium", "長い(ロング)": "long", "超長(ハイロング)": "high-long" 
+    },
+    "トーン": { "ダーク": "dark", "ライト": "light", "鮮やか": "vibrant", "淡い": "pale" },
     "カラー": { 
         "赤色(レッド)": "red", "青色(ブルー)": "blue", "金色(ゴールド)": "gold", "銀色(シルバー)": "silver", "黒色(ブラック)": "black", "白色(ホワイト)": "white", 
-        "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple", "橙色(オレンジ)": "orange", "水色(スカイブルー)": "light blue", "茶色(ブラウン)": "brown" 
+        "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple" 
     },
-    "マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "デニム": "denim", "革": "leather", "レース": "lace" },
-    "サイズ": { "超ロング": "very long", "ショート": "short", "マイクロ": "micro", "巨大": "huge" }
+    "質感": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "レース": "lace" }
 };
 
 let stockItems = [];
