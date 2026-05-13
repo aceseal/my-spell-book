@@ -98,13 +98,13 @@ const DEFAULT_PROMPT = "masterpiece, best quality, 1girl, ";
 
 const master = {
     "1.画風・アートスタイル": {
-        "定番スタイル": { "アニメ風": "anime style", "イラスト風": "illustration","フラットカラー": "flat color", "写実的": "photorealistic", "3Dレンダー": "3d render" },
-        "芸術的": { "水彩画": "watercolor", "油絵": "oil painting", "線画": "sketch", "ピクセルアート": "pixel art" },
+        "定番スタイル": { "アニメ風": "anime style", "イラスト風": "illustration", "写実的": "photorealistic", "3Dレンダー": "3d render" },
+        "芸術的": { "水彩画": "watercolor", "油絵": "oil painting", "線画": "sketch", "フラットデザイン": "flat design", "フラットカラー": "flat color", "ピクセルアート": "pixel art" },
         "雰囲気": { "シネマティック": "cinematic lighting", "レトロ": "retro style", "サイバーパンク": "cyberpunk style" }
     },
     "2.身体・顔": {
         "体格": { "小柄": "petite", "高身長": "tall girl", "肉感的": "curvy", "安産型": "wide hips" },
-        "視線": { "こちらを見る": "looking at viewer", "視線を逸らす": "looking away", "見上げる": "looking up", "上目遣い": "upturned eyes" },
+        "視線": { "こちらを見つめる": "looking at viewer", "視線を逸らす": "looking away", "見上げる": "looking up", "上目遣い": "upturned eyes" },
         "表情": { "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "驚き": "surprised", "無表情": "expressionless" }
     },
     "3.髪設定": { 
@@ -130,7 +130,7 @@ const subs = {
     "指定なし": { "----": "----" },
     "否定形→なし(less)": { "なし": "less" },
     "カラー(通常)": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white" },
-    "カラー(明るい)": { "明るい赤": "light red", "明るい青": "light blue", "淡い桃": "pale pink" },
+    "カラー(明るい)": { "明るい赤": "light red", "明るい青": "light blue", "パステルカラー": "pastel color", "淡い桃": "pale pink" },
     "カラー(暗い)": { "暗い赤": "dark red", "暗い青": "dark blue", "焦げ茶": "dark brown" },
     "サイズ・質感": { "短い": "short", "長い": "long", "金属": "metallic", "光沢": "shiny", "濡れ": "wet" }
 };
@@ -175,7 +175,7 @@ function pushStock() {
     const s = document.getElementById('s2').value;
     const w = document.getElementById('weight').value;
     
-    // サブ属性が「----」の場合は空文字として扱う
+    // 検品：サブ属性が「----」の場合は空文字にする（ぬるぽ回避）
     const finalSub = (s === "----") ? "" : s;
     stockItems.push({ m, s: finalSub, w, id: Date.now() });
     drawStock();
@@ -190,14 +190,14 @@ function drawStock() {
         d.draggable = true;
         d.dataset.id = item.id;
         
-        // 表示ラベルの作成：サブが無ければメインのみ
+        // IF分岐：ラベル表示の調律
         let labelText = "";
         if (!item.s) {
-            labelText = item.m;
+            labelText = item.m; // サブが空ならメインのみ
         } else if (item.s === "less") {
-            labelText = item.m + " " + item.s;
+            labelText = item.m + " " + item.s; // 否定形
         } else {
-            labelText = item.s + " " + item.m;
+            labelText = item.s + " " + item.m; // 通常結合
         }
         
         d.textContent = labelText;
@@ -220,6 +220,8 @@ function build() {
     sels.forEach(el => {
         const it = stockItems.find(item => item.id == el.dataset.id);
         let word = "";
+        
+        // IF分岐：パッケージ化の調律
         if (!it.s) {
             word = it.m;
         } else if (it.s === "less") {
@@ -228,7 +230,7 @@ function build() {
             word = it.s + " " + it.m;
         }
         
-        // 重みの反映
+        // 重みの反映（エクセルのIF関数的な処理）
         if (it.w !== "1.0" && it.w !== "1") {
             word = `(${word}:${it.w})`;
         }
@@ -256,7 +258,7 @@ function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("詠唱完了。魔導書を浄化しました。");
+        alert("写し取り完了。初期詠唱を再展開します。");
         output.value = DEFAULT_PROMPT;
         stockItems = [];
         undoLog = [];
@@ -268,10 +270,6 @@ function setupDragAndDrop() {
     const area = document.getElementById('stock-area');
     const bin = document.getElementById('trash-bin');
     area.addEventListener('dragover', e => e.preventDefault());
-    area.addEventListener('drop', e => {
-        const id = e.dataTransfer.getData('text/plain');
-        // 並び替えロジックは簡略化
-    });
     bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
     bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
     bin.addEventListener('drop', e => {
