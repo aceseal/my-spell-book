@@ -35,49 +35,21 @@
         .section-label { font-weight: bold; font-size: 0.8rem; margin: 15px 0 5px 0; border-left: 4px solid var(--accent-gold); padding-left: 10px; }
         .input-group { background: rgba(0,0,0,0.03); padding: 12px; border: 1px solid rgba(176,141,87,0.3); border-radius: 4px; }
         select, input, textarea { width: 100%; padding: 12px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; box-sizing: border-box; }
-        
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         button { padding: 12px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.85rem; transition: all 0.2s ease; }
         .btn-add { background-color: var(--accent-gold); color: white; }
         .btn-add:active { background-color: var(--btn-hover); transform: translateY(2px); }
         .btn-build { background-color: #5a7d6a; color: white; }
         .btn-undo { background-color: #8e9aaf; color: white; }
-
-        /* ストックエリアとゴミ箱（拡大版） */
-        .storage-wrapper { 
-            display: grid; 
-            grid-template-columns: 1fr 100px; /* ゴミ箱の幅を100pxに拡大 */
-            gap: 12px; 
-            margin: 10px 0; 
-        }
-        #stock-area { 
-            min-height: 120px; border: 1px dashed var(--accent-gold); 
-            padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); 
-        }
-        #trash-bin { 
-            background-color: var(--dust-red); 
-            border: 2px solid var(--ink-color); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            color: white; border-radius: 4px; transition: all 0.2s; 
-            min-height: 120px; /* 高さをストックエリアと合わせる */
-        }
-        #trash-bin.drag-over { 
-            background-color: var(--trash-pink); 
-            color: var(--dust-red); 
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--trash-pink);
-        }
-        .trash-icon-large { font-size: 2.2rem; margin-bottom: 5px; } /* アイコンをデカく！ */
-        .trash-label { font-size: 0.8rem; font-weight: bold; }
-
-        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 10px 14px; font-size: 0.85rem; cursor: grab; user-select: none; }
+        .storage-wrapper { display: grid; grid-template-columns: 1fr 100px; gap: 12px; margin: 10px 0; }
+        #stock-area { min-height: 120px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); }
+        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; min-height: 120px; }
+        #trash-bin.drag-over { background-color: var(--trash-pink); color: var(--dust-red); transform: scale(1.05); box-shadow: 0 0 20px var(--trash-pink); }
+        .trash-icon-large { font-size: 2.2rem; margin-bottom: 5px; }
+        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 10px 14px; font-size: 0.85rem; cursor: grab; user-select: none; transition: transform 0.2s, opacity 0.2s; touch-action: none; }
         .stock-item.dragging { opacity: 0.3; }
         .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); }
-
-        #final-output { 
-            background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); 
-            min-height: 100px; font-size: 1rem; line-height: 1.4; resize: vertical; 
-        }
+        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 100px; font-size: 1rem; line-height: 1.4; resize: vertical; }
     </style>
 </head>
 <body>
@@ -106,13 +78,10 @@
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
-    <div class="section-label">一時記憶（ドラッグで整理/破棄）</div>
+    <div class="section-label">一時記憶（整理・破棄）</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
-        <div id="trash-bin">
-            <div class="trash-icon-large">🗑</div>
-            <div class="trash-label">消去</div>
-        </div>
+        <div id="trash-bin"><div class="trash-icon-large">🗑</div><div>消去</div></div>
     </div>
 
     <div class="section-label">紡がれた呪文（詠唱・修正）</div>
@@ -125,17 +94,42 @@
 </div>
 
 <script>
-// カテゴリデータ（ボトムス独立済み）
 const master = {
-    "髪設定": { "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob" }, "パーツ": { "アホ毛": "ahoge" } },
-    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" } },
-    "衣装(上)": { "トップス": { "セーラー": "school uniform", "ドレス": "dress" } },
-    "衣装(下)": { "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans" } }
+    "身体特徴": {
+        "体格・背丈": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
+        "腕・手": { "華奢な腕": "slender arms", "手袋": "gloves", "指抜きグローブ": "fingerless gloves", "機械の腕": "mechanical arms" },
+        "脚・足": { "美脚": "beautiful legs", "太もも": "thick thighs", "内股": "pigeon-toed", "素足": "barefoot", "絶対領域": "absolute territory" }
+    },
+    "髪設定": { 
+        "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob", "ロング": "long hair", "姫カット": "hime cut", "お団子": "hair bun", "乱れ髪": "messy hair" },
+        "パーツ": { "アホ毛": "ahoge", "サイドロック": "sidelocks", "三つ編み": "braids", "前髪パッツン": "straight bangs", "編み込み": "woven hair" } 
+    },
+    "顔・瞳": { 
+        "表情": { "ジト目": "jitome", "ドヤ顔": "smug", "照れ": "blushing", "驚き": "surprised", "微笑み": "smile", "無表情": "expressionless", "泣き顔": "crying" },
+        "瞳の形": { "ハート": "heart-shaped pupils", "星": "star-shaped pupils", "十字": "cross-shaped pupils", "発光": "glowing eyes", "オッドアイ": "heterochromia" } 
+    },
+    "衣装(上)": { 
+        "トップス": { "セーラー服": "school uniform", "ドレス": "dress", "パーカー": "hoodie", "着物": "kimono", "オフショル": "off-shoulder", "ブラウス": "blouse", "タンクトップ": "tank top" } 
+    },
+    "衣装(下)": { 
+        "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans", "ショートパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ガーター": "garter straps" } 
+    },
+    "アクセ": { 
+        "小物": { "リボン": "ribbon", "眼鏡": "glasses", "首輪": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "帽子": "hat", "ピアス": "piercings" } 
+    }
 };
+
 const subs = {
-    "カラー": { "赤色": "red", "青色": "blue", "金色": "gold" },
-    "マテリアル": { "金属": "metallic", "光沢": "shiny" },
-    "ブランク": { "なし": "" }
+    "指定なし": { "----": "" },
+    "トーン": { 
+        "ダーク": "dark", "ライト": "light", "ディープ": "deep", "淡い": "pale", "鮮やか": "vibrant", "くすんだ": "muted", "ネオン": "neon" 
+    },
+    "カラー": { 
+        "赤色": "red", "青色": "blue", "金色": "gold", "銀色": "silver", "黒色": "black", "白色": "white", 
+        "桃色": "pink", "緑色": "green", "紫色": "purple", "橙色": "orange", "水色": "light blue", "茶色": "brown" 
+    },
+    "マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "デニム": "denim", "革": "leather", "レース": "lace" },
+    "サイズ": { "超ロング": "very long", "ショート": "short", "マイクロ": "micro", "巨大": "huge" }
 };
 
 let stockItems = [];
@@ -194,8 +188,9 @@ function drawStock() {
         d.addEventListener('dragstart', (e) => {
             d.classList.add('dragging');
             e.dataTransfer.setData('text/plain', item.id);
+            setTimeout(() => d.style.opacity = "0.3", 0);
         });
-        d.addEventListener('dragend', () => d.classList.remove('dragging'));
+        d.addEventListener('dragend', () => { d.classList.remove('dragging'); d.style.opacity = "1"; });
     });
 }
 
@@ -228,7 +223,7 @@ function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("叡智を写し取ったで！魔導書を浄化するわ。");
+        alert("雰囲気（アトモスフィア）の定着を確認。紡がれた叡智は今、あなたの指先に宿りました。魔導書を白紙に戻します。新たな一節を書き始めましょう。");
         output.value = "";
         undoLog = [];
     });
