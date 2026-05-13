@@ -74,7 +74,7 @@
     </div>
 
     <div class="btn-grid">
-        <button class="btn-add" onclick="pushStock()">一時記憶へ</button>
+        <button class="btn-add" onclick="pushStock()">一時記憶庫へ保存</button>
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
@@ -88,8 +88,8 @@
     <textarea id="final-output"></textarea>
     
     <div class="btn-grid">
-        <button class="btn-undo" onclick="undo()">一つ戻す</button>
-        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">コピー ＆ 浄化</button>
+        <button class="btn-undo" onclick="undo()">一つ前の状態に戻す</button>
+        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">詠唱コピー ＆ 浄化</button>
     </div>
 </div>
 
@@ -97,51 +97,47 @@
 const DEFAULT_PROMPT = "masterpiece, best quality, 1girl, ";
 
 const master = {
-    "1.画風・アートスタイル": {
-        "定番スタイル": { "アニメ風": "anime style", "イラスト風": "illustration", "写実的": "photorealistic", "3Dレンダー": "3d render" },
-        "芸術的": { "水彩画": "watercolor", "油絵": "oil painting", "線画": "sketch", "フラットデザイン": "flat design", "フラットカラー": "flat color", "ピクセルアート": "pixel art" },
-        "雰囲気": { "シネマティック": "cinematic lighting", "レトロ": "retro style", "サイバーパンク": "cyberpunk style" }
+    "1.画風・アングル": {
+        "画角": { "全身": "full body", "ポートレート": "portrait", "上半身": "upper body", "下半身": "lower body", "膝上(カウボーイ)": "cowboy shot", "足は画面外": "feet out of frame", "接写": "close-up", "横顔": "profile", "ワイドショット": "wide shot" },
+        "アングル": { "正面": "straight-on", "俯瞰": "from above", "アオリ": "from below", "後ろから": "from behind", "横から": "from side", "斜め(ダッチ)": "dutch angle", "逆さま": "upside-down" },
+        "スタイル": { "アニメ風": "anime style", "イラスト風": "illustration", "写実的": "photorealistic", "3D": "3d render", "フラット": "flat design" }
     },
     "2.身体・顔": {
-        "体格": { "小柄": "petite", "高身長": "tall girl", "肉感的": "curvy", "安産型": "wide hips", "スレンダー": "slender", "筋肉質": "muscular" },
-        "視線": { "こちらを見る": "looking at viewer", "視線を逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横目": "looking to the side", "遠くを見る": "looking afar", "手元を見る": "looking at hands", "上目遣い": "upturned eyes", "右を見る": "looking to the right", "左を見る": "looking to the left" },
-        "目の形状": { "閉じ目": "closed eyes", "片目閉じ": "one eye closed", "細め目": "narrowed eyes", "ジト目": "jitome", "ツリ目": "tsurime", "タレ目": "tareme", "半開き": "half-closed eyes", "見開いた目": "wide-eyed" },
-        "瞳の形状": { "スリット瞳": "slit pupils", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "リング目": "ringed eyes", "虚ろな目": "empty eyes", "発光": "glowing eyes" },
-        "表情": { "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "驚き": "surprised", "無表情": "expressionless", "泣き顔": "tears", "怒り": "angry", "不機嫌": "annoyed", "困り顔": "confused" }
+        "視線": { "こちらを見る": "looking at viewer", "逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横目": "looking to the side", "遠く": "looking afar", "手元": "looking at hands", "上目遣い": "upturned eyes", "右を見る": "looking to the right", "左を見る": "looking to the left" },
+        "形状": { "閉じ目": "closed eyes", "細め": "narrowed eyes", "ジト目": "jitome", "ツリ目": "tsurime", "タレ目": "tareme", "半開き": "half-closed eyes", "片目閉じ": "one eye closed" },
+        "瞳・表情": { "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "驚き": "surprised", "無表情": "expressionless" }
     },
     "3.髪設定": { 
-        "前髪": { "パッツン": "blunt bangs", "姫カット": "hime cut", "斜め分け": "diagonal bangs", "センター分け": "parted bangs", "目隠れ": "hair over eyes", "片目隠れ": "hair over one eye" },
-        "全体": { "ショート": "short hair", "ボブ": "bob cut", "ロング": "long hair", "超ロング": "absurdly long hair", "ポニーテール": "ponytail", "ツインテール": "twin tails", "三つ編み": "braid", "ドリルヘア": "drill hair" },
-        "パーツ": { "アホ毛": "ahoge", "サイドロック": "sidelocks", "髪のハネ": "flipped hair" }
+        "前髪": { "ぱっつん": "blunt bangs", "姫カット": "hime cut", "斜めカット": "diagonal bangs", "アーチ状": "arched bangs", "アシンメトリー": "asymmetrical bangs", "交差": "crossed bangs", "はねた前髪": "flipped bangs", "センター分け": "parted bangs", "流した前髪": "swept bangs", "ピン留め": "bangs pinned back", "後ろへ流す": "hair slicked back" },
+        "全体": { "ショート": "short hair", "ピクシーカット": "pixie cut", "ボブ": "bob cut", "セミロング": "medium hair", "ロング": "long hair", "超ロング": "absurdly long hair", "ストレート": "straight hair", "ウェーブ": "wavy hair", "サイドポニー": "side ponytail", "ポニーテール": "ponytail", "ツインテール": "twin tails", "ローツイン": "low twin tails", "ツーサイドアップ": "two side up", "ドリルヘア": "drill hair" },
+        "パーツ": { "アホ毛": "ahoge", "もみあげ": "sidelocks", "三つ編み": "braid", "お団子": "bun", "サイドバン": "side bun", "ハーフアップ": "half updo", "ハーフアップブレイド": "half up braid", "レイヤード": "layered hair" }
     },
-    "4.衣装(上)": {
-        "インナー": { "Ｔシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タートルネック": "sleeveless turtleneck", "タンクセット": "tank top", "オフショル": "off-shoulder" },
-        "アウター": { "カーディガン": "cardigan", "ジャケット": "jacket", "ブレザー": "blazer", "パーカー": "hoodie", "コート": "coat" }
-    },
-    "5.衣装(下・全身)": {
+    "4.衣装(統合)": {
+        "トップス": { "Ｔシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タートルネック": "sleeveless turtleneck", "ジャケット": "jacket", "パーカー": "hoodie" },
         "ボトムス": { "ミニスカート": "miniskirt", "ロングスカート": "long skirt", "プリーツスカート": "pleated skirt", "ショートパンツ": "short shorts", "ジーンズ": "jeans" },
-        "全身": { "和服": "kimono", "メイド服": "maid uniform", "セーラー服": "japanese schoolgirl sailor uniform", "ドレス": "dress", "水着": "swimsuit" }
+        "全身・セット": { "和服": "kimono", "メイド服": "maid uniform", "セーラー服": "sailor uniform", "ドレス": "dress", "水着": "swimsuit", "ブレザー": "blazer" }
     },
-    "6.ポーズ・動作": {
-        "全身": { "立ち姿": "standing", "座り": "sitting", "歩き": "walking", "走り": "running", "寝そべり": "lying", "しゃがみ": "squatting", "膝立ち": "kneeling" },
-        "部分動作": { "ピースサイン": "peace sign", "ハート手": "heart hands", "振り返る": "looking back", "指差し": "pointing", " shushing": "shushing", "頬杖": "hand on own cheek" },
-        "特殊": { "猫ポーズ": "cat pose", "お嬢様ポーズ": "ojou-sama pose", "幽霊ポーズ": "ghost pose" }
+    "5.ポーズ・動作": {
+        "全身": { "立ち姿": "standing", "座り": "sitting", "歩き": "walking", "走り": "running", "寝そべり": "lying", "膝立ち": "kneeling" },
+        "部分": { "ピース": "peace sign", "ハート手": "heart hands", "振り返る": "looking back", "指差し": "pointing", "頬杖": "hand on own cheek" }
     },
-    "7.背景(場所)": {
-        "屋外": { "海辺": "beach", "ひまわり畑": "sunflower field", "夜の街": "cityscape", "幻想的な森": "magical forest", "公園": "park", "廃墟": "ruins" },
-        "屋内": { "教室": "classroom", "図書室": "library", "自分の部屋": "bedroom", "カフェ": "cafe", "駅ホーム": "station platform" }
+    "6.背景(空間)": {
+        "景色": { "海辺": "beach", "夜の街": "cityscape", "幻想的な森": "magical forest", "教室": "classroom", "図書室": "library", "廃墟": "ruins" },
+        "図形・単色": { "白背景": "white background", "単色背景": "simple background", "ドット柄": "polka dot background", "格子柄": "checkered background", "幾何学模様": "geometric background" }
     },
-    "8.背景(図形・演出)": {
-        "シンプル": { "白背景": "white background", "単色背景": "simple background", "ドット柄": "polka dot background", "格子柄": "checkered background", "幾何学模様": "geometric background" },
-        "演出": { "逆光": "backlighting", "木漏れ日": "sunlight through trees", "ボケ味": "bokeh", "舞い散る花びら": "falling petals", "霧": "foggy" }
+    "7.演出・光": {
+        "光": { "逆光": "backlighting", "正面光": "front lighting", "サイド光": "side lighting", "シネマティック": "cinematic lighting", "ネオン光": "neon lights" },
+        "効果": { "木漏れ日": "sunlight through trees", "ボケ味": "bokeh", "花びら": "falling petals", "霧": "foggy", "フレア": "lens flare" }
     }
 };
 
 const subs = {
     "指定なし": { "----": "----" },
     "否定形→なし(less)": { "なし": "less" },
-    "カラー(通常)": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white" },
-    "サイズ・質感": { "短い": "short", "長い": "long", "金属": "metallic", "光沢": "shiny", "濡れ": "wet" }
+    "大きさ・長さ": { "とても短い": "very short", "短い": "short", "長い": "long", "とても長い": "very long", "大きい": "large", "とても大きい": "very large", "小さい": "small", "とても小さい": "very small" },
+    "質感・素材": { "レザー": "leather", "シルク": "silk", "リネン": "linen", "ビニール": "vinyl", "ゴム": "rubber", "リブ編み": "ribbed knit", "レース": "lace", "金属": "metallic", "光沢": "shiny", "濡れ": "wet" },
+    "サイズ": { "厚い": "thick", "薄い": "thin" },
+    "カラー": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white" }
 };
 
 let stockItems = [];
@@ -239,7 +235,7 @@ function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("詠唱コピー完了。浄化します。");
+        alert("魔導書の写しを作成しました。初期化します。");
         output.value = DEFAULT_PROMPT;
         stockItems = [];
         drawStock();
