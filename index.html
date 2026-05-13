@@ -3,112 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Arcane Console</title>
-    <link rel="manifest" href="manifest.json">
+    <title>最強プロンプト・ジェネレーター</title>
     <style>
-        :root {
-            --bg-color: #1a1a2e;
-            --card-bg: #16213e;
-            --accent-color: #4ecca3;
-            --text-color: #e94560;
-            --sub-text: #ffffff;
-        }
-
-        body { background-color: var(--bg-color); color: var(--sub-text); font-family: sans-serif; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: var(--accent-color); text-align: center; margin-bottom: 20px; }
-
-        /* --- 入力行のデザイン --- */
-        .prompt-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-        select { flex: 2; padding: 10px; border-radius: 8px; background: #0f3460; color: white; border: none; }
-        input[type="text"] { flex: 1; padding: 10px; border-radius: 8px; background: #0f3460; color: white; border: 1px solid #4ecca3; text-align: center; }
-
-        /* --- ボタン類 --- */
-        .btn-add { background: #4ecca3; color: #1a1a2e; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; margin: 10px auto; display: block; }
-        .btn-generate { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(45deg, #4ecca3, #45b7d1); color: #1a1a2e; font-weight: bold; margin-top: 10px; }
+        /* ここにスマホ対応の修正を入れたで！ */
+        :root { --bg: #f0f2f5; --card: #ffffff; --primary: #4a90e2; --text: #333; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.2rem; margin-bottom: 20px; color: var(--primary); }
+        .group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85rem; }
         
-        #output { background: rgba(15, 52, 96, 0.8); padding: 15px; border-radius: 10px; border: 1px dashed var(--accent-color); min-height: 60px; margin: 20px 0; word-break: break-all; color: #a2d2ff; font-size: 0.9rem; }
-        .btn-copy { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--accent-color); background: transparent; color: var(--accent-color); }
+        /* 入力エリア：PCでは横並び、スマホでは縦並び */
+        .input-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        select { flex: 1; min-width: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; }
+        .weight-input { width: 60px; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+
+        /* スマホ向けの魔法（メディアクエリ） */
+        @media (max-width: 480px) {
+            .input-row { flex-direction: column; }
+            .weight-input { width: 100%; box-sizing: border-box; }
+            select { width: 100%; }
+        }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        button { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-add { background: var(--primary); color: white; }
+        .btn-copy { background: #2ecc71; color: white; }
+        .btn-reset { background: #e74c3c; color: white; grid-column: span 2; }
+        button:active { opacity: 0.7; transform: scale(0.98); }
+
+        #result-area { 
+            margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; 
+            border: 1px dashed var(--primary); min-height: 60px; word-break: break-all; 
+            font-size: 0.9rem; line-height: 1.4; color: #555;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h2>Arcane Console v2</h2>
-            
-            <!-- 呪文パーツを追加していくエリア -->
-            <div id="prompt-list">
-                <!-- 初期パーツ（例として画風） -->
-                <div class="prompt-row">
-                    <select class="p-word">
-                        <option value="">-- カテゴリ選択 --</option>
-                        <optgroup label="画風">
-                            <option value="modern anime style">現代アニメ</option>
-                            <option value="vibrant soft pastel colors">透明感パステル</option>
-                        </optgroup>
-                        <optgroup label="髪型">
-                            <option value="messy hair">無造作ヘア</option>
-                            <option value="ponytail">ポニーテール</option>
-                            <option value="twintails">ツインテール</option>
-                        </optgroup>
-                        <optgroup label="瞳">
-                            <option value="blue eyes">青い瞳</option>
-                            <option value="red eyes">赤い瞳</option>
-                            <option value="sparkling eyes">輝く瞳</option>
-                        </optgroup>
-                    </select>
-                    <input type="text" class="p-weight" placeholder="1.2" value="1.2">
-                </div>
-            </div>
 
-            <button class="btn-add" onclick="addRow()">＋</button>
-            <button class="btn-generate" onclick="generate()">呪文を紡ぐ</button>
-            
-            <div id="output">呪文を紡いでください...</div>
-            
-            <button class="btn-copy" onclick="copyText()">コピーして詠唱</button>
+<div class="container">
+    <h1>🪄 魔導書コンソール</h1>
+
+    <div class="group">
+        <label>カテゴリ</label>
+        <select id="category-select" onchange="updateSubCategory()"></select>
+    </div>
+
+    <div class="group">
+        <label>内容</label>
+        <div class="input-row">
+            <select id="spell-select"></select>
+            <input type="number" id="weight" class="weight-input" step="0.1" value="1.0" min="0.1" max="2.0">
         </div>
     </div>
 
-    <script>
-        // 新しい行を追加する関数
-        function addRow() {
-            const list = document.getElementById('prompt-list');
-            const newRow = list.firstElementChild.cloneNode(true);
-            // 値をリセット
-            newRow.querySelector('.p-word').value = "";
-            newRow.querySelector('.p-weight').value = "1.2";
-            list.appendChild(newRow);
+    <div class="controls">
+        <button class="btn-add" onclick="addSpell()">追加</button>
+        <button class="btn-copy" onclick="copyPrompt()">コピー</button>
+        <button class="btn-reset" onclick="resetPrompt()">リセット</button>
+    </div>
+
+    <div id="result-area"></div>
+</div>
+
+<script>
+    /* イッチが一生懸命選んだ最強のデータベース（日本語化＆整理済み） */
+    const spellData = {
+        "前髪の形状": {
+            "ぱっつん": "blunt bangs", "姫カット": "hime cut", "斜め前髪": "diagonal bangs", "アーチ前髪": "arched bangs",
+            "アシンメトリー": "asymmetrical bangs", "交差": "crossed bangs", "ハネ前髪": "flipped bangs", "長い前髪": "long bangs",
+            "短い前髪": "short bangs", "チョッピー": "choppy bangs", "分け目あり": "parted bangs", "センター分け": "center flap bangs",
+            "横流し": "swept bangs", "ピン留め": "bangs pinned back", "オールバック": "hair slicked back", "引っ詰め": "hair pulled back",
+            "目にかかる": "hair over eyes", "片目隠れ": "hair over one eye", "両目隠れ": "hair over both eyes"
+        },
+        "髪の形状": {
+            "ショート": "short hair", "ベリーショート": "very short hair", "ピクシー": "pixie cut", "ボブ": "bob cut",
+            "ミディアム": "medium hair", "ロング": "long hair", "超ロング": "very long hair", "ポニテ": "ponytail",
+            "ツインテ": "twin tails", "お団子": "hair bun", "三つ編み": "braid", "フィッシュテール": "french braid",
+            "ハーフアップ": "half updo", "ストレート": "straight hair", "ウェーブ": "wavy hair", "ドリル": "drill hair",
+            "縦ロール": "ringlets", "アホ毛": "ahoge", "触角": "antenna hair", "サイドロック": "sidelocks", "レイヤー": "layered hair"
+        },
+        "髪の色": {
+            "赤": "red hair", "茶": "brown hair", "金": "blonde hair", "黒": "black hair", "銀": "silver hair", "白": "white hair",
+            "青": "blue hair", "水色": "aqua hair", "緑": "green hair", "紫": "purple hair", "ピンク": "pink hair",
+            "オレンジ": "orange hair", "チャコール": "charcoal hair", "アッシュ": "ash gray hair", "グラデーション": "gradient hair", "ツートン": "two-tone hair"
+        },
+        "視線・瞳": {
+            "こっち見てる": "looking at viewer", "逸らす": "looking away", "上目遣い": "upturned eyes", "見上げる": "looking up", "見下ろす": "looking down",
+            "赤目": "red eyes", "青目": "blue eyes", "緑目": "green eyes", "金目": "yellow eyes", "オッドアイ": "heterochromia",
+            "縦瞳孔": "slit pupils", "輪っか瞳": "ringed eyes", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils",
+            "虚無の目": "empty eyes", "発光": "glowing eyes", "キラキラ": "sparkling eyes"
+        },
+        "表情": {
+            "笑顔": "happy", "ドヤ顔": "smug", "ニヤリ": "smirk", "邪悪な笑み": "evil grin", "興奮": "excited",
+            "怒り": "angry", "不機嫌": "annoyed", "ジト目": "jitome", "悲しい": "sad", "絶望": "despair",
+            "驚き": "surprised", "パニック": "panicking", "照れ": "blush", "困惑": "confused", "無表情": "expressionless",
+            "眠い": "sleepy", "舌出し": "tongue out", "真剣": "serious"
+        },
+        "ポーズ": {
+            "立ち": "standing", "座り": "sitting", "寝そべり": "lying", "膝立ち": "kneeling", "正座": "seiza", "歩き": "walking",
+            "走り": "running", "ジャンプ": "jumping", "ストレッチ": "stretching", "お辞儀": "bowing", "前かがみ": "leaning forward",
+            "腕組み": "crossed arms", "手を振る": "waving", "ピース": "peace sign", "ハート手": "heart hands", "髪をいじる": "playing with own hair",
+            "頬杖": "hand on own cheek", "腰に手": "hand on own hip", "ポケットに手": "hand in pocket"
+        },
+        "構図・視点": {
+            "全身": "full body", "ポートレート": "portrait", "上半身": "upper body", "膝上": "cowboy shot", "アップ": "close-up",
+            "横顔": "profile", "俯瞰": "from above", "煽り": "from below", "後ろから": "from behind", "斜め角度": "dutch angle",
+            "魚眼": "fisheye", "パース強調": "perspective"
+        },
+        "衣装": {
+            "Tシャツ": "t-shirt", "シャツ": "dress shirt", "セーター": "sweater", "パーカー": "hoodie", "制服": "school uniform",
+            "ドレス": "dress", "スーツ": "business suit", "着物": "kimono", "ミニスカ": "miniskirt", "ロングスカ": "long skirt",
+            "ジーンズ": "jeans", "コート": "coat", "ブレザー": "blazer", "水着": "swimsuit", "メイド服": "maid outfit"
+        },
+        "背景": {
+            "教室": "classroom", "街中": "street", "海辺": "beach", "森": "forest", "夜景": "night city",
+            "空": "sky", "室内": "indoor", "廃墟": "ruins", "ファンタジー": "fantasy background", "白背景": "white background"
         }
+    };
 
-        function generate() {
-            const words = document.querySelectorAll('.p-word');
-            const weights = document.querySelectorAll('.p-weight');
-            let result = "(Masterpiece, top quality:1.2), 1girl";
+    let selectedPrompts = [];
+    const catSelect = document.getElementById('category-select');
 
-            words.forEach((word, index) => {
-                const val = word.value;
-                const weight = weights[index].value || "1.0";
-                if(val) {
-                    result += `, (${val}:${weight})`;
-                }
-            });
+    for (let cat in spellData) {
+        let newOpt = document.createElement('option');
+        newOpt.value = cat;
+        newOpt.textContent = cat;
+        catSelect.appendChild(newOpt);
+    }
 
-            document.getElementById('output').innerText = result;
+    function updateSubCategory() {
+        const cat = catSelect.value;
+        const spellSelect = document.getElementById('spell-select');
+        spellSelect.innerHTML = '';
+        for (let name in spellData[cat]) {
+            let opt = document.createElement('option');
+            opt.value = spellData[cat][name];
+            opt.textContent = name;
+            spellSelect.appendChild(opt);
         }
+    }
 
-        function copyText() {
-            const text = document.getElementById('output').innerText;
-            navigator.clipboard.writeText(text);
-            alert("魔導書に記録したで！");
-        }
-    </script>
+    function addSpell() {
+        const val = document.getElementById('spell-select').value;
+        const weight = document.getElementById('weight').value;
+        const formatted = weight === "1.0" ? val : `(${val}:${weight})`;
+        selectedPrompts.push(formatted);
+        updateResult();
+    }
+
+    function updateResult() {
+        document.getElementById('result-area').textContent = selectedPrompts.join(', ');
+    }
+
+    function copyPrompt() {
+        const text = document.getElementById('result-area').textContent;
+        if(!text) return;
+        navigator.clipboard.writeText(text).then(() => alert('コピーしたで！'));
+    }
+
+    function resetPrompt() {
+        selectedPrompts = [];
+        updateResult();
+    }
+
+    updateSubCategory();
+</script>
+
 </body>
 </html>
