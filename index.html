@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Spell Book</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+        #output { background: #eef; padding: 15px; border-radius: 5px; word-break: break-all; min-height: 50px; border: 1px dashed #99a; }
+        button { background: #4a90e2; color: white; font-weight: bold; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>🧙‍♂️ 呪文コンソール</h3>
+        <label>画風</label>
+        <select id="style">
+            <option value="(modern anime style:1.2)">現代アニメ</option>
+            <option value="(vibrant soft pastel colors:1.5)">透明感パステル</option>
+        </select>
+
+        <label>線の細さ</label>
+        <select id="line">
+            <option value="(extremely delicate and thin lineart:1.5)">極細線</option>
+            <option value="(clean lineart:1.2)">標準線</option>
+        </select>
+
+        <button onclick="generate()">呪文を生成</button>
+        <div id="output">ここに呪文が出るで</div>
+        <button onclick="copyText()" style="background: #50c350;">コピーして詠唱！</button>
+    </div>
+
+    <script>
+        function generate() {
+            const style = document.getElementById('style').value;
+            const line = document.getElementById('line').value;
+            const base = "(Masterpiece, top quality, official art:1.2), 1girl, reading a book, indoor";
+            const prompt = `${base}, ${style}, ${line}, (high-transparency colors:1.4)`;
+            document.getElementById('output').innerText = prompt;
+        }
+
+        function copyText() {
+            const text = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(text);
+            alert("コピーしたで！");
+        }
+
+        // PWA用のサービスワーカー登録
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
