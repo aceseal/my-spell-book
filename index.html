@@ -102,14 +102,14 @@ const master = {
     },
     "髪設定": { 
         "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob", "ロング": "long hair", "姫カット": "hime cut", "お団子": "hair bun", "乱れ髪": "messy hair" },
-        "パーツ": { "アホ毛": "ahoge", "サイドロック": "sidelocks", "三つ編み": "braids", "前髪パッツン": "straight bangs", "編み込み": "woven hair" } 
+        "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids", "前髪パッツン": "straight bangs", "編み込み": "woven hair" } 
     },
     "顔・瞳": { 
         "表情": { "ジト目": "jitome", "ドヤ顔": "smug", "照れ": "blushing", "驚き": "surprised", "微笑み": "smile", "無表情": "expressionless", "泣き顔": "crying" },
         "瞳の形": { "ハート": "heart-shaped pupils", "星": "star-shaped pupils", "十字": "cross-shaped pupils", "発光": "glowing eyes", "オッドアイ": "heterochromia" } 
     },
     "衣装(上)": { 
-        "トップス": { "セーラー服": "school uniform", "ドレス": "dress", "パーカー": "hoodie", "着物": "kimono", "オフショル": "off-shoulder", "ブラウス": "blouse", "タンクトップ": "tank top" } 
+        "トップス": { "セーラー服": "school uniform", "ドレス": "dress", "パーカー": "hoodie", "着物": "kimono", "オフショル": "off-shoulder", "ブラウス": "blouse", "袖なし": "sleeveless" } 
     },
     "衣装(下)": { 
         "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans", "ショートパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ガーター": "garter straps" } 
@@ -121,12 +121,13 @@ const master = {
 
 const subs = {
     "指定なし": { "----": "" },
+    "なし(less系)": { "なし": "less" },
     "トーン": { 
         "ダーク": "dark", "ライト": "light", "ディープ": "deep", "淡い": "pale", "鮮やか": "vibrant", "くすんだ": "muted", "ネオン": "neon" 
     },
     "カラー": { 
-        "赤色": "red", "青色": "blue", "金色": "gold", "銀色": "silver", "黒色": "black", "白色": "white", 
-        "桃色": "pink", "緑色": "green", "紫色": "purple", "橙色": "orange", "水色": "light blue", "茶色": "brown" 
+        "赤色(レッド)": "red", "青色(ブルー)": "blue", "金色(ゴールド)": "gold", "銀色(シルバー)": "silver", "黒色(ブラック)": "black", "白色(ホワイト)": "white", 
+        "桃色(ピンク)": "pink", "緑色(グリーン)": "green", "紫色(パープル)": "purple", "橙色(オレンジ)": "orange", "水色(スカイブルー)": "light blue", "茶色(ブラウン)": "brown" 
     },
     "マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent", "濡れ": "wet", "デニム": "denim", "革": "leather", "レース": "lace" },
     "サイズ": { "超ロング": "very long", "ショート": "short", "マイクロ": "micro", "巨大": "huge" }
@@ -182,7 +183,11 @@ function drawStock() {
         d.className = "stock-item";
         d.draggable = true;
         d.dataset.id = item.id;
-        d.textContent = (item.s ? item.s + " " : "") + item.m;
+        
+        // "less" の場合は語順を逆に (例: sleeves less)
+        const labelText = item.s === "less" ? (item.m + " " + item.s) : ((item.s ? item.s + " " : "") + item.m);
+        d.textContent = labelText;
+        
         d.onclick = () => d.classList.toggle('selected');
         area.appendChild(d);
         d.addEventListener('dragstart', (e) => {
@@ -201,7 +206,10 @@ function build() {
     let words = []; let weight = "1.0";
     sels.forEach(el => {
         const it = stockItems.find(item => item.id == el.dataset.id);
-        weight = it.weight; if (it.s) words.push(it.s); words.push(it.m);
+        weight = it.weight; 
+        // 呪文構築時も less の語順を考慮
+        const word = it.s === "less" ? (it.m + " " + it.s) : ((it.s ? it.s + " " : "") + it.m);
+        words.push(word);
     });
     const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
     const currentVal = document.getElementById('final-output').value;
