@@ -3,54 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Spell Book</title>
+    <title>Dynamic Arcane Console</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; }
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
-        #output { background: #eef; padding: 15px; border-radius: 5px; word-break: break-all; min-height: 50px; border: 1px dashed #99a; }
-        button { background: #4a90e2; color: white; font-weight: bold; border: none; cursor: pointer; }
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --accent-color: #4ecca3;
+            --text-color: #e94560;
+            --sub-text: #ffffff;
+        }
+
+        body { background-color: var(--bg-color); color: var(--sub-text); font-family: sans-serif; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: var(--accent-color); text-align: center; margin-bottom: 20px; }
+
+        /* --- 入力行のデザイン --- */
+        .prompt-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        select { flex: 2; padding: 10px; border-radius: 8px; background: #0f3460; color: white; border: none; }
+        input[type="text"] { flex: 1; padding: 10px; border-radius: 8px; background: #0f3460; color: white; border: 1px solid #4ecca3; text-align: center; }
+
+        /* --- ボタン類 --- */
+        .btn-add { background: #4ecca3; color: #1a1a2e; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; margin: 10px auto; display: block; }
+        .btn-generate { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(45deg, #4ecca3, #45b7d1); color: #1a1a2e; font-weight: bold; margin-top: 10px; }
+        
+        #output { background: rgba(15, 52, 96, 0.8); padding: 15px; border-radius: 10px; border: 1px dashed var(--accent-color); min-height: 60px; margin: 20px 0; word-break: break-all; color: #a2d2ff; font-size: 0.9rem; }
+        .btn-copy { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--accent-color); background: transparent; color: var(--accent-color); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h3>🧙‍♂️ 呪文コンソール</h3>
-        <label>画風</label>
-        <select id="style">
-            <option value="(modern anime style:1.2)">現代アニメ</option>
-            <option value="(vibrant soft pastel colors:1.5)">透明感パステル</option>
-        </select>
+    <div class="container">
+        <div class="card">
+            <h2>Arcane Console v2</h2>
+            
+            <!-- 呪文パーツを追加していくエリア -->
+            <div id="prompt-list">
+                <!-- 初期パーツ（例として画風） -->
+                <div class="prompt-row">
+                    <select class="p-word">
+                        <option value="">-- カテゴリ選択 --</option>
+                        <optgroup label="画風">
+                            <option value="modern anime style">現代アニメ</option>
+                            <option value="vibrant soft pastel colors">透明感パステル</option>
+                        </optgroup>
+                        <optgroup label="髪型">
+                            <option value="messy hair">無造作ヘア</option>
+                            <option value="ponytail">ポニーテール</option>
+                            <option value="twintails">ツインテール</option>
+                        </optgroup>
+                        <optgroup label="瞳">
+                            <option value="blue eyes">青い瞳</option>
+                            <option value="red eyes">赤い瞳</option>
+                            <option value="sparkling eyes">輝く瞳</option>
+                        </optgroup>
+                    </select>
+                    <input type="text" class="p-weight" placeholder="1.2" value="1.2">
+                </div>
+            </div>
 
-        <label>線の細さ</label>
-        <select id="line">
-            <option value="(extremely delicate and thin lineart:1.5)">極細線</option>
-            <option value="(clean lineart:1.2)">標準線</option>
-        </select>
-
-        <button onclick="generate()">呪文を生成</button>
-        <div id="output">ここに呪文が出るで</div>
-        <button onclick="copyText()" style="background: #50c350;">コピーして詠唱！</button>
+            <button class="btn-add" onclick="addRow()">＋</button>
+            <button class="btn-generate" onclick="generate()">呪文を紡ぐ</button>
+            
+            <div id="output">呪文を紡いでください...</div>
+            
+            <button class="btn-copy" onclick="copyText()">コピーして詠唱</button>
+        </div>
     </div>
 
     <script>
+        // 新しい行を追加する関数
+        function addRow() {
+            const list = document.getElementById('prompt-list');
+            const newRow = list.firstElementChild.cloneNode(true);
+            // 値をリセット
+            newRow.querySelector('.p-word').value = "";
+            newRow.querySelector('.p-weight').value = "1.2";
+            list.appendChild(newRow);
+        }
+
         function generate() {
-            const style = document.getElementById('style').value;
-            const line = document.getElementById('line').value;
-            const base = "(Masterpiece, top quality, official art:1.2), 1girl, reading a book, indoor";
-            const prompt = `${base}, ${style}, ${line}, (high-transparency colors:1.4)`;
-            document.getElementById('output').innerText = prompt;
+            const words = document.querySelectorAll('.p-word');
+            const weights = document.querySelectorAll('.p-weight');
+            let result = "(Masterpiece, top quality:1.2), 1girl";
+
+            words.forEach((word, index) => {
+                const val = word.value;
+                const weight = weights[index].value || "1.0";
+                if(val) {
+                    result += `, (${val}:${weight})`;
+                }
+            });
+
+            document.getElementById('output').innerText = result;
         }
 
         function copyText() {
             const text = document.getElementById('output').innerText;
             navigator.clipboard.writeText(text);
-            alert("コピーしたで！");
-        }
-
-        // PWA用のサービスワーカー登録
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            alert("魔導書に記録したで！");
         }
     </script>
 </body>
