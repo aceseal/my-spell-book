@@ -74,14 +74,14 @@
     </div>
 
     <div class="btn-grid">
-        <button class="btn-add" onclick="pushStock()">一時記憶庫へ送る</button>
+        <button class="btn-add" onclick="pushStock()">一時記憶へ</button>
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
     <div class="section-label">一時記憶庫</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
-        <div id="trash-bin"><div class="trash-icon-large">🗑</div><div>消去</div></div>
+        <div id="trash-bin"><div class="trash-icon-large">🗑</div><div>抹消</div></div>
     </div>
 
     <div class="section-label">紡がれた呪文（詠唱台）</div>
@@ -89,7 +89,7 @@
     
     <div class="btn-grid">
         <button class="btn-undo" onclick="undo()">一つ戻す</button>
-        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">写し取って浄化</button>
+        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">コピー ＆ 浄化</button>
     </div>
 </div>
 
@@ -103,26 +103,37 @@ const master = {
         "雰囲気": { "シネマティック": "cinematic lighting", "レトロ": "retro style", "サイバーパンク": "cyberpunk style" }
     },
     "2.身体・顔": {
-        "体格": { "小柄": "petite", "高身長": "tall girl", "肉感的": "curvy", "安産型": "wide hips" },
-        "視線": { "こちらを見つめる": "looking at viewer", "視線を逸らす": "looking away", "見上げる": "looking up", "上目遣い": "upturned eyes" },
-        "表情": { "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "驚き": "surprised", "無表情": "expressionless" }
+        "体格": { "小柄": "petite", "高身長": "tall girl", "肉感的": "curvy", "安産型": "wide hips", "スレンダー": "slender", "筋肉質": "muscular" },
+        "視線": { "こちらを見る": "looking at viewer", "視線を逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横目": "looking to the side", "遠くを見る": "looking afar", "手元を見る": "looking at hands", "上目遣い": "upturned eyes", "右を見る": "looking to the right", "左を見る": "looking to the left" },
+        "目の形状": { "閉じ目": "closed eyes", "片目閉じ": "one eye closed", "細め目": "narrowed eyes", "ジト目": "jitome", "ツリ目": "tsurime", "タレ目": "tareme", "半開き": "half-closed eyes", "見開いた目": "wide-eyed" },
+        "瞳の形状": { "スリット瞳": "slit pupils", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "リング目": "ringed eyes", "虚ろな目": "empty eyes", "発光": "glowing eyes" },
+        "表情": { "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "驚き": "surprised", "無表情": "expressionless", "泣き顔": "tears", "怒り": "angry", "不機嫌": "annoyed", "困り顔": "confused" }
     },
     "3.髪設定": { 
-        "前髪": { "パッツン": "blunt bangs", "姫カット": "hime cut", "斜め分け": "diagonal bangs", "センター分け": "parted bangs" },
-        "全体": { "ショート": "short hair", "ボブ": "bob cut", "ロング": "long hair", "ポニーテール": "ponytail", "ツインテール": "twin tails" },
-        "パーツ": { "アホ毛": "ahoge", "横髪": "sidelocks" }
+        "前髪": { "パッツン": "blunt bangs", "姫カット": "hime cut", "斜め分け": "diagonal bangs", "センター分け": "parted bangs", "目隠れ": "hair over eyes", "片目隠れ": "hair over one eye" },
+        "全体": { "ショート": "short hair", "ボブ": "bob cut", "ロング": "long hair", "超ロング": "absurdly long hair", "ポニーテール": "ponytail", "ツインテール": "twin tails", "三つ編み": "braid", "ドリルヘア": "drill hair" },
+        "パーツ": { "アホ毛": "ahoge", "サイドロック": "sidelocks", "髪のハネ": "flipped hair" }
     },
     "4.衣装(上)": {
-        "インナー": { "Ｔシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タートルネック": "sleeveless turtleneck", "オフショル": "off-shoulder" },
-        "アウター": { "カーディガン": "cardigan", "ジャケット": "jacket", "ブレザー": "blazer", "パーカー": "hoodie" }
+        "インナー": { "Ｔシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タートルネック": "sleeveless turtleneck", "タンクセット": "tank top", "オフショル": "off-shoulder" },
+        "アウター": { "カーディガン": "cardigan", "ジャケット": "jacket", "ブレザー": "blazer", "パーカー": "hoodie", "コート": "coat" }
     },
     "5.衣装(下・全身)": {
-        "ボトムス": { "ミニスカート": "miniskirt", "プリーツスカート": "pleated skirt", "ホットパンツ": "short shorts", "ジーンズ": "jeans" },
-        "全身": { "和服": "kimono", "メイド服": "maid uniform", "セーラー服": "japanese schoolgirl sailor uniform", "ドレス": "dress" }
+        "ボトムス": { "ミニスカート": "miniskirt", "ロングスカート": "long skirt", "プリーツスカート": "pleated skirt", "ショートパンツ": "short shorts", "ジーンズ": "jeans" },
+        "全身": { "和服": "kimono", "メイド服": "maid uniform", "セーラー服": "japanese schoolgirl sailor uniform", "ドレス": "dress", "水着": "swimsuit" }
     },
-    "6.ポーズ・背景": {
-        "ポーズ": { "立ち": "standing", "座り": "sitting", "歩き": "walking", "ピース": "peace sign", "ハート手": "heart hands" },
-        "背景": { "教室": "classroom", "海辺": "beach", "夜の街": "cityscape", "幻想的な森": "magical forest" }
+    "6.ポーズ・動作": {
+        "全身": { "立ち姿": "standing", "座り": "sitting", "歩き": "walking", "走り": "running", "寝そべり": "lying", "しゃがみ": "squatting", "膝立ち": "kneeling" },
+        "部分動作": { "ピースサイン": "peace sign", "ハート手": "heart hands", "振り返る": "looking back", "指差し": "pointing", " shushing": "shushing", "頬杖": "hand on own cheek" },
+        "特殊": { "猫ポーズ": "cat pose", "お嬢様ポーズ": "ojou-sama pose", "幽霊ポーズ": "ghost pose" }
+    },
+    "7.背景(場所)": {
+        "屋外": { "海辺": "beach", "ひまわり畑": "sunflower field", "夜の街": "cityscape", "幻想的な森": "magical forest", "公園": "park", "廃墟": "ruins" },
+        "屋内": { "教室": "classroom", "図書室": "library", "自分の部屋": "bedroom", "カフェ": "cafe", "駅ホーム": "station platform" }
+    },
+    "8.背景(図形・演出)": {
+        "シンプル": { "白背景": "white background", "単色背景": "simple background", "ドット柄": "polka dot background", "格子柄": "checkered background", "幾何学模様": "geometric background" },
+        "演出": { "逆光": "backlighting", "木漏れ日": "sunlight through trees", "ボケ味": "bokeh", "舞い散る花びら": "falling petals", "霧": "foggy" }
     }
 };
 
@@ -130,8 +141,6 @@ const subs = {
     "指定なし": { "----": "----" },
     "否定形→なし(less)": { "なし": "less" },
     "カラー(通常)": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white" },
-    "カラー(明るい)": { "明るい赤": "light red", "明るい青": "light blue", "パステルカラー": "pastel color", "淡い桃": "pale pink" },
-    "カラー(暗い)": { "暗い赤": "dark red", "暗い青": "dark blue", "焦げ茶": "dark brown" },
     "サイズ・質感": { "短い": "short", "長い": "long", "金属": "metallic", "光沢": "shiny", "濡れ": "wet" }
 };
 
@@ -174,8 +183,6 @@ function pushStock() {
     const m = document.getElementById('m3').value;
     const s = document.getElementById('s2').value;
     const w = document.getElementById('weight').value;
-    
-    // 検品：サブ属性が「----」の場合は空文字にする（ぬるぽ回避）
     const finalSub = (s === "----") ? "" : s;
     stockItems.push({ m, s: finalSub, w, id: Date.now() });
     drawStock();
@@ -189,17 +196,7 @@ function drawStock() {
         d.className = "stock-item";
         d.draggable = true;
         d.dataset.id = item.id;
-        
-        // IF分岐：ラベル表示の調律
-        let labelText = "";
-        if (!item.s) {
-            labelText = item.m; // サブが空ならメインのみ
-        } else if (item.s === "less") {
-            labelText = item.m + " " + item.s; // 否定形
-        } else {
-            labelText = item.s + " " + item.m; // 通常結合
-        }
-        
+        let labelText = !item.s ? item.m : (item.s === "less" ? item.m + " " + item.s : item.s + " " + item.m);
         d.textContent = labelText;
         d.onclick = () => d.classList.toggle('selected');
         area.appendChild(d);
@@ -215,32 +212,16 @@ function build() {
     const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
     if (sels.length === 0) return;
     undoLog.push({ stock: JSON.parse(JSON.stringify(stockItems)), output: document.getElementById('final-output').value });
-    
     let words = [];
     sels.forEach(el => {
         const it = stockItems.find(item => item.id == el.dataset.id);
-        let word = "";
-        
-        // IF分岐：パッケージ化の調律
-        if (!it.s) {
-            word = it.m;
-        } else if (it.s === "less") {
-            word = it.m + " " + it.s;
-        } else {
-            word = it.s + " " + it.m;
-        }
-        
-        // 重みの反映（エクセルのIF関数的な処理）
-        if (it.w !== "1.0" && it.w !== "1") {
-            word = `(${word}:${it.w})`;
-        }
+        let word = !it.s ? it.m : (it.s === "less" ? it.m + " " + it.s : it.s + " " + it.m);
+        if (it.w !== "1.0" && it.w !== "1") word = `(${word}:${it.w})`;
         words.push(word);
     });
-    
     const currentVal = document.getElementById('final-output').value;
     const glue = (currentVal.trim() === "" || currentVal.trim().endsWith(",")) ? "" : ", ";
     document.getElementById('final-output').value = currentVal + glue + words.join(", ") + ", ";
-    
     const sIds = sels.map(el => el.dataset.id);
     stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
     drawStock();
@@ -258,10 +239,9 @@ function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("写し取り完了。初期詠唱を再展開します。");
+        alert("詠唱コピー完了。浄化します。");
         output.value = DEFAULT_PROMPT;
         stockItems = [];
-        undoLog = [];
         drawStock();
     });
 }
