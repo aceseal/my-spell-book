@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>叡智の魔導書 Ver.17.2</title>
+    <title>叡智の魔導書 Ver.17.3</title>
     <style>
         :root {
             --bg-paper: #f4ecd8;
@@ -39,7 +39,6 @@
             background: var(--gold); color: white; border: none;
             width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
             font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         /* --- タブ切り替え --- */
@@ -88,16 +87,17 @@
             border-radius: 20px 20px 0 0;
         }
         .console-section { margin-bottom: 20px; }
-        .console-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; display: block; color: #5a3e2b; border-left: 3px solid var(--gold); padding-left: 8px; }
+        .console-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; display: block; color: #5a3e2b; border-left: 4px solid var(--gold); padding-left: 8px; }
         
         .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip {
-            padding: 8px 12px; background: var(--chip-bg); border: 1px solid var(--gold);
-            border-radius: 15px; font-size: 0.75rem; cursor: pointer; transition: 0.2s;
+            padding: 10px 14px; background: var(--chip-bg); border: 1px solid var(--gold);
+            border-radius: 18px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+            color: #5a3e2b;
         }
-        .chip.active { background: var(--chip-active); color: white; border-color: var(--chip-active); }
+        .chip.active { background: var(--chip-active); color: white; border-color: var(--chip-active); font-weight: bold; }
 
-        /* --- フッター：可変詠唱台 --- */
+        /* --- フッター --- */
         footer {
             background: white; border-top: 2px solid var(--gold);
             padding: 10px; flex-shrink: 0; z-index: 10;
@@ -115,12 +115,11 @@
             font-weight: bold; font-size: 0.75rem; cursor: pointer; color: white;
         }
 
-        /* --- 辞書登録モーダル --- */
+        /* --- モーダル --- */
         #dict-modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: white; border: 2px solid var(--gold); padding: 20px;
             z-index: 110; display: none; width: 90%; max-width: 350px; border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         .modal-input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--gold); border-radius: 4px; box-sizing: border-box; }
     </style>
@@ -130,8 +129,7 @@
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="日本語・英語で検索..." oninput="refreshDisplay()">
-        <!-- アイコンを鉛筆に変更 -->
-        <button class="btn-icon" onclick="openDictModal()" title="外典登録">✏️</button>
+        <button class="btn-icon" onclick="openDictModal()">✏️</button>
     </div>
 </header>
 
@@ -139,7 +137,6 @@
 
 <main id="tile-area"></main>
 
-<!-- 調整コンソール -->
 <div id="console-overlay" onclick="closeConsole()">
     <div id="console" onclick="event.stopPropagation()">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -148,22 +145,22 @@
         </div>
 
         <div class="console-section">
-            <span class="console-label">色彩：トーン (Tone)</span>
+            <span class="console-label">色彩：明るさ・鮮やかさ</span>
             <div id="group-tone" class="chip-group"></div>
         </div>
 
         <div class="console-section">
-            <span class="console-label">色彩：ベース色 (Color)</span>
+            <span class="console-label">色彩：ベースの色</span>
             <div id="group-hue" class="chip-group"></div>
         </div>
 
         <div class="console-section">
-            <span class="console-label">形態 (Length / Size)</span>
+            <span class="console-label">形態：サイズ・長さ</span>
             <div id="group-length" class="chip-group"></div>
         </div>
 
         <div class="console-section">
-            <span class="console-label">質感・細部 (Material / Detail)</span>
+            <span class="console-label">質感・こだわり詳細</span>
             <div id="group-material" class="chip-group"></div>
         </div>
 
@@ -172,11 +169,10 @@
             <input type="range" id="console-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;">
         </div>
 
-        <button onclick="commitTag()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold; font-size:1rem; margin-top:10px;">この構成で詠唱台へ</button>
+        <button onclick="commitTag()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold; font-size:1rem; margin-top:10px;">詠唱台に反映する</button>
     </div>
 </div>
 
-<!-- 辞書登録モーダル -->
 <div id="dict-modal">
     <h3 style="margin-top:0;">外典への新規登録</h3>
     <span class="console-label">所属タブ</span>
@@ -205,18 +201,17 @@
 </footer>
 
 <script>
-// --- 初期データ ---
 const baseCategories = ["演出", "顔・体", "髪", "衣装", "ポーズ", "背景", "お気に入りリスト"];
 const masterData = [
     { cat: "演出", jp: "アニメ風", en: "anime style" },
     { cat: "演出", jp: "イラスト", en: "illustration" },
-    { cat: "演出", jp: "ポートレート", en: "portrait" },
     { cat: "演出", jp: "逆光", en: "back lighting" },
     { cat: "顔・体", jp: "笑顔", en: "happy" },
     { cat: "顔・体", jp: "照れ", en: "blush" },
     { cat: "顔・体", jp: "ウインク", en: "wink" },
     { cat: "髪", jp: "ポニーテール", en: "ponytail" },
     { cat: "髪", jp: "ツインテール", en: "twintails" },
+    { cat: "髪", jp: "アホ毛", en: "ahoge" },
     { cat: "衣装", jp: "オフショルダー", en: "off-shoulder" },
     { cat: "衣装", jp: "セーラー服", en: "sailor uniform" },
     { cat: "衣装", jp: "ミニスカート", en: "miniskirt" },
@@ -226,11 +221,28 @@ const masterData = [
     { cat: "背景", jp: "青空", en: "blue sky" }
 ];
 
+// 調整用スロットを日本語化
 const slots = {
-    tone: ["vivid", "pastel", "pale", "deep", "dark", "neon", "metallic", "translucent"],
-    hue: ["red", "pink", "blue", "yellow", "green", "purple", "orange", "black", "white", "gold", "silver"],
-    length: ["short", "long", "mini", "oversized", "cropped"],
-    material: ["frilled", "shiny", "see-through", "leather", "silk", "cotton", "denim", "ribbon"]
+    tone: [
+        {jp:"ビビッド", en:"vivid"}, {jp:"パステル", en:"pastel"}, {jp:"淡い", en:"pale"}, 
+        {jp:"深い", en:"deep"}, {jp:"ダーク", en:"dark"}, {jp:"ネオン", en:"neon"}, 
+        {jp:"メタリック", en:"metallic"}, {jp:"半透明", en:"translucent"}
+    ],
+    hue: [
+        {jp:"赤", en:"red"}, {jp:"ピンク", en:"pink"}, {jp:"青", en:"blue"}, 
+        {jp:"黄色", en:"yellow"}, {jp:"緑", en:"green"}, {jp:"紫", en:"purple"}, 
+        {jp:"オレンジ", en:"orange"}, {jp:"黒", en:"black"}, {jp:"白", en:"white"}, 
+        {jp:"金", en:"gold"}, {jp:"銀", en:"silver"}
+    ],
+    length: [
+        {jp:"ショート", en:"short"}, {jp:"ロング", en:"long"}, {jp:"ミニ", en:"mini"}, 
+        {jp:"ゆったり", en:"oversized"}, {jp:"短め丈", en:"cropped"}
+    ],
+    material: [
+        {jp:"フリル", en:"frilled"}, {jp:"光沢", en:"shiny"}, {jp:"シースルー", en:"see-through"}, 
+        {jp:"レザー", en:"leather"}, {jp:"シルク", en:"silk"}, {jp:"コットン", en:"cotton"}, 
+        {jp:"デニム", en:"denim"}, {jp:"リボン", en:"ribbon"}
+    ]
 };
 
 let currentTab = "演出";
@@ -252,10 +264,11 @@ function init() {
     
     Object.keys(slots).forEach(key => {
         const container = document.getElementById(`group-${key}`);
-        slots[key].forEach(val => {
+        slots[key].forEach(obj => {
             const chip = document.createElement('div');
             chip.className = "chip";
-            chip.textContent = val;
+            chip.textContent = obj.jp; // 表示は日本語
+            chip.dataset.en = obj.en;  // 内部値は英語
             chip.onclick = () => toggleChip(chip, key);
             container.appendChild(chip);
         });
@@ -319,20 +332,18 @@ function openConsole(item) {
     document.getElementById('console-overlay').style.display = "block";
 }
 
-function closeConsole() {
-    document.getElementById('console-overlay').style.display = "none";
-}
+function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 
 function commitTag() {
-    const getActive = (id) => {
+    const getActiveEn = (id) => {
         const el = document.querySelector(`#group-${id} .chip.active`);
-        return el ? el.textContent : "";
+        return el ? el.dataset.en : "";
     };
 
-    const tone = getActive('tone');
-    const hue = getActive('hue');
-    const length = getActive('length');
-    const material = getActive('material');
+    const tone = getActiveEn('tone');
+    const hue = getActiveEn('hue');
+    const length = getActiveEn('length');
+    const material = getActiveEn('material');
     const weight = document.getElementById('console-weight').value;
 
     let parts = [tone, hue, material, length, activeItem.en].filter(v => v !== "");
@@ -358,10 +369,7 @@ function copyOutput() {
     navigator.clipboard.writeText(out.value).then(() => alert("呪文を写し取ったで！"));
 }
 
-function resetOutput() {
-    if(confirm("詠唱台を清めるか？")) document.getElementById('output-area').value = "";
-}
-
+function resetOutput() { if(confirm("詠唱台を清めるか？")) document.getElementById('output-area').value = ""; }
 function openDictModal() { document.getElementById('dict-modal').style.display = "block"; }
 function closeDictModal() { document.getElementById('dict-modal').style.display = "none"; }
 
@@ -395,7 +403,6 @@ function deleteFav(index) {
         refreshDisplay();
     }
 }
-
 init();
 </script>
 </body>
