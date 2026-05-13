@@ -22,7 +22,7 @@
             display: flex; justify-content: center;
         }
         .book-container {
-            max-width: 750px; width: 100%;
+            max-width: 800px; width: 100%;
             background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
             padding: 30px 20px;
@@ -96,7 +96,7 @@
 <script>
 const master = {
     "髪設定": { 
-        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "ピクシーカット": "pixie cut", "お団子ヘア": "hair bun" },
+        "髪型": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ショートボブ": "short bob", "ロングヘア": "long hair", "姫カット": "hime cut", "サイドアップ": "side up", "縦ロール": "drill hair", "ピクシーカット": "pixie cut", "お団子ヘア": "hair bun", "ポニーテール（片寄せ）": "side ponytail" },
         "前髪": { "パッツン前髪": "straight bangs", "斜め分け前髪": "side-swept bangs", "目隠れ": "hair over eyes", "センター分け": "center-parted bangs", "オン眉": "short bangs" },
         "パーツ": { "アホ毛": "ahoge", "横髪(もみあげ)": "sidelocks", "三つ編み": "braids", "編み込み": "woven hair" } 
     },
@@ -104,12 +104,14 @@ const master = {
         "体格": { "小柄": "petite", "高身長": "tall girl", "スレンダー": "slender", "肉感的": "curvy", "安産型": "wide hips", "筋肉質": "muscular" },
         "脚部・足": { "美脚": "beautiful legs", "太もも": "thick thighs", "内股": "pigeon-toed", "素足": "barefoot", "絶対領域": "absolute territory" }
     },
-    "衣装(全身)": {
-        "フルセット": { "セーラー服": "school uniform", "イブニングドレス": "evening dress", "和服・着物": "kimono", "メイド服": "maid uniform", "バニースーツ": "bunny suit", "水着": "swimsuit" }
+    "衣装(トップス)": {
+        "上半身": { "ホルターネック": "halterneck", "袖なしタートルネック": "sleeveless turtleneck", "カーディガン": "cardigan", "パーカー": "hoodie", "オフショルダー": "off-shoulder", "フリルブラウス": "frilled blouse", "タンクトップ": "tank top", "セーラー服(上)": "sailor shirt" }
     },
-    "衣装(上下一体)": {
-        "トップス": { "パーカー": "hoodie", "オフショルダー": "off-shoulder", "フリルブラウス": "frilled blouse", "タンクトップ": "tank top", "袖なし": "sleeveless" },
-        "ボトムス": { "ミニスカート": "miniskirt", "ホットパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ジーンズ": "jeans", "ロングスカート": "long skirt" }
+    "衣装(ボトムス)": {
+        "下半身": { "ミニスカート": "miniskirt", "ホットパンツ": "short shorts", "プリーツスカート": "pleated skirt", "ジーンズ": "jeans", "ロングスカート": "long skirt", "ブルマ": "bloomers" }
+    },
+    "衣装(全身・特殊)": {
+        "フルセット": { "イブニングドレス": "evening dress", "和服・着物": "kimono", "メイド服": "maid uniform", "バニースーツ": "bunny suit", "スクール水着": "school swimsuit", "ビキニ": "bikini" }
     },
     "衣装(足元)": {
         "レッグウェア": { "ニーハイソックス": "thighhighs", "パンティストッキング": "pantyhose", "ガーターベルト": "garter belt", "サイハイソックス": "high socks", "網タイツ": "fishnets" },
@@ -118,9 +120,10 @@ const master = {
     "アクセサリー": { 
         "装飾品": { "リボン": "ribbon", "眼鏡": "glasses", "チョーカー": "choker", "猫耳": "cat ears", "ヘッドホン": "headphones", "ピアス": "piercings" } 
     },
-    "構図・視点": {
-        "ポーズ": { "立ち姿": "standing", "座り": "sitting", "寝そべり": "lying", "俯き": "looking down" },
-        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up" }
+    "構図・舞台": {
+        "世界観・背景": { "教室": "classroom", "幻想的な森": "magical forest", "サイバーパンク": "cyberpunk city", "ビーチ": "beach", "雨の街": "rainy street" },
+        "照明・雰囲気": { "逆光": "backlighting", "シネマティック": "cinematic lighting", "夕暮れ": "sunset", "月の光": "moonlight", "ソフトフォーカス": "soft focus" },
+        "アングル": { "全身": "full body", "ローアングル": "low angle", "ハイアングル": "high angle", "クローズアップ": "close-up", "俯瞰視点": "bird's eye view" }
     }
 };
 
