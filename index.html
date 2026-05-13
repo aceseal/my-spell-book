@@ -3,275 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>叡智の魔導書《アトモソフィア・グリモワール》</title>
+    <title>叡智の魔導書 Ver.17.0α</title>
     <style>
         :root {
-            --bg-paper: #f4ecd8;
-            --ink-color: #2c1e14;
-            --accent-gold: #b08d57;
-            --dust-red: #a0522d;
-            --trash-pink: #ffafcc;
-            --btn-hover: #d4a373;
+            --bg-paper: #f8f1e7;
+            --ink: #2c1e14;
+            --gold: #b08d57;
+            --accent: #5a7d6a;
+            --fav-red: #d66d67;
         }
         body {
-            background-color: #3d2b1f;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
-            font-family: "Sawarabi Mincho", serif;
-            color: var(--ink-color);
-            margin: 0; padding: 10px;
-            display: flex; justify-content: center;
+            background-color: #2c1e14;
+            font-family: sans-serif;
+            margin: 0; padding: 0;
+            color: var(--ink);
+            display: flex; flex-direction: column; height: 100vh;
         }
-        .book-container {
-            max-width: 1000px; width: 100%;
-            background-color: var(--bg-paper);
-            background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
-            padding: 30px 20px;
-            border-radius: 3px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            border-left: 10px solid #5a3e2b;
+        /* --- ヘッダー・検索 --- */
+        header {
+            background: var(--bg-paper);
+            padding: 10px;
+            border-bottom: 2px solid var(--gold);
+            flex-shrink: 0;
         }
-        h1 { text-align: center; border-bottom: 1px solid var(--accent-gold); padding-bottom: 10px; font-size: 1.4rem; margin: 0; }
-        .subtitle { display: block; font-size: 0.9rem; letter-spacing: 0.2rem; margin-top: 5px; color: var(--accent-gold); }
-        .section-label { font-weight: bold; font-size: 0.8rem; margin: 15px 0 5px 0; border-left: 4px solid var(--accent-gold); padding-left: 10px; }
-        .input-group { background: rgba(0,0,0,0.03); padding: 12px; border: 1px solid rgba(176,141,87,0.3); border-radius: 4px; }
-        select, input, textarea { width: 100%; padding: 12px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; box-sizing: border-box; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        button { padding: 12px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.85rem; transition: all 0.2s ease; }
-        .btn-add { background-color: var(--accent-gold); color: white; }
-        .btn-add:active { background-color: var(--btn-hover); transform: translateY(2px); }
-        .btn-build { background-color: #5a7d6a; color: white; }
-        .btn-undo { background-color: #8e9aaf; color: white; }
-        .storage-wrapper { display: grid; grid-template-columns: 1fr 100px; gap: 12px; margin: 10px 0; }
-        #stock-area { min-height: 180px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); align-content: flex-start; }
-        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; min-height: 180px; }
-        #trash-bin.drag-over { background-color: var(--trash-pink); color: var(--dust-red); transform: scale(1.05); }
-        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px; font-size: 0.75rem; cursor: grab; user-select: none; transition: 0.2s; }
-        .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); border-color: var(--ink-color); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 120px; font-size: 1rem; line-height: 1.4; resize: vertical; }
+        .search-container { display: flex; gap: 8px; }
+        #search-box { flex-grow: 1; padding: 10px; border: 1px solid var(--gold); border-radius: 20px; }
+
+        /* --- タブ切り替え --- */
+        .tab-bar {
+            display: flex; overflow-x: auto;
+            background: #e9dcc0; border-bottom: 1px solid var(--gold);
+            white-space: nowrap; scrollbar-width: none;
+        }
+        .tab-btn {
+            padding: 12px 20px; border: none; background: none;
+            cursor: pointer; font-weight: bold; font-size: 0.9rem;
+        }
+        .tab-btn.active { background: var(--bg-paper); border-top: 3px solid var(--gold); }
+
+        /* --- メインコンテンツ（タイルエリア） --- */
+        main {
+            flex-grow: 1; overflow-y: auto;
+            background: var(--bg-paper); padding: 10px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px; align-content: flex-start;
+        }
+        .tile {
+            background: white; border: 1px solid #ddd; border-radius: 4px;
+            padding: 10px 5px; text-align: center; cursor: pointer;
+            font-size: 0.8rem; transition: 0.1s; display: flex; flex-direction: column;
+        }
+        .tile:active { transform: scale(0.95); background: #f0f0f0; }
+        .tile .en { font-size: 0.6rem; color: #888; margin-top: 4px; }
+
+        /* --- 調整用コンソール（ポップアップ風） --- */
+        #console {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; border: 2px solid var(--gold); padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; display: none;
+            width: 80%; max-width: 300px; border-radius: 8px;
+        }
+
+        /* --- 下部詠唱台（可変） --- */
+        footer {
+            background: white; border-top: 2px solid var(--gold);
+            padding: 10px; flex-shrink: 0; transition: height 0.3s;
+            position: relative;
+        }
+        #output-area {
+            width: 100%; height: 40px; border: 1px solid #ccc;
+            padding: 8px; box-sizing: border-box; font-family: monospace;
+            resize: none; transition: height 0.3s;
+        }
+        #output-area.expanded { height: 150px; }
+        .footer-btns { display: flex; gap: 5px; margin-top: 5px; }
+        button.footer-btn { flex: 1; padding: 8px; font-size: 0.7rem; border: none; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="book-container">
-    <h1>叡智の魔導書<br><span class="subtitle">《 アトモソフィア ・ グリモワール 》</span></h1>
-
-    <div class="section-label">素材（単語）の選択</div>
-    <div class="input-group">
-        <select id="m1" onchange="syncM2()"></select>
-        <select id="m2" onchange="syncM3()"></select>
-        <select id="m3"></select>
+<header>
+    <div class="search-container">
+        <input type="text" id="search-box" placeholder="日本語で検索（例: かみ）" oninput="filterTiles()">
+        <button onclick="toggleDict()" style="border-radius:20px; border:1px solid var(--gold); padding:0 15px;">＋</button>
     </div>
-    <button class="btn-add" style="width:100%; margin-top:8px;" onclick="pushStock()">素材を一時記憶へ送る</button>
+</header>
 
-    <div class="section-label">一時記憶庫（素材置き場）</div>
-    <div class="storage-wrapper">
-        <div id="stock-area"></div>
-        <div id="trash-bin"><div style="font-size:2rem">🗑</div><div>抹消</div></div>
-    </div>
+<div class="tab-bar" id="tab-bar"></div>
 
-    <div class="section-label">属性と強調の調律（パッケージ設定）</div>
-    <div class="input-group">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <select id="s1" onchange="syncS2()"></select>
-            <select id="s2"></select>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-            <span style="font-size:0.8rem; flex-shrink:0;">強調（Weight）:</span>
-            <input type="number" id="weight" step="0.1" value="1.0">
-        </div>
-    </div>
+<main id="tile-area"></main>
 
-    <div class="btn-grid" style="grid-template-columns: 1fr;">
-        <button class="btn-build" onclick="build()">選択中の素材をパッケージ化して詠唱台へ</button>
-    </div>
-
-    <div class="section-label">紡がれた呪文（詠唱台）</div>
-    <textarea id="final-output"></textarea>
-    
-    <div class="btn-grid">
-        <button class="btn-undo" onclick="undo()">一つ前の詠唱に戻す</button>
-        <button class="btn-add" style="background-color:#4a6fa5;" onclick="copyAndClear()">コピー ＆ 浄化</button>
-    </div>
+<!-- 調整コンソール -->
+<div id="console">
+    <h3 id="console-title" style="margin-top:0; font-size:1rem;"></h3>
+    <label style="font-size:0.8rem;">色/質感:</label>
+    <select id="console-sub" style="width:100%; margin: 5px 0 10px;"></select>
+    <label style="font-size:0.8rem;">強調:</label>
+    <input type="number" id="console-weight" step="0.1" value="1.0" style="width:100%; margin: 5px 0 10px;">
+    <button onclick="commitTag()" style="width:100%; padding:10px; background:var(--accent); color:white; border:none; border-radius:4px;">確定</button>
+    <button onclick="closeConsole()" style="width:100%; margin-top:5px; background:none; border:none; color:gray;">キャンセル</button>
 </div>
 
+<footer>
+    <textarea id="output-area" readonly onclick="expandOutput()"></textarea>
+    <div class="footer-btns">
+        <button class="footer-btn" style="background:#4a6fa5; color:white;" onclick="copyOutput()">コピー</button>
+        <button class="footer-btn" style="background:#8e9aaf; color:white;" onclick="resetOutput()">クリア</button>
+        <button class="footer-btn" style="background:var(--fav-red); color:white;" onclick="openFavList()">お気に入りリスト</button>
+    </div>
+</footer>
+
 <script>
-const DEFAULT_PROMPT = "masterpiece, best quality, 1girl, ";
+// --- プロトタイプ用データ ---
+const categories = ["演出", "顔・体", "髪", "衣装", "ポーズ", "背景"];
+const masterData = [
+    { cat: "髪", jp: "ポニーテール", en: "ponytail" },
+    { cat: "髪", jp: "ツインテール", en: "twintails" },
+    { cat: "髪", jp: "アホ毛", en: "ahoge" },
+    { cat: "顔・体", jp: "笑顔", en: "happy" },
+    { cat: "顔・体", jp: "ウインク", en: "wink" },
+    { cat: "衣装", jp: "セーラー服", en: "sailor uniform" },
+    { cat: "衣装", jp: "ドレス", en: "dress" },
+    { cat: "演出", jp: "逆光", en: "back lighting" }
+];
+const subOptions = ["指定なし", "赤", "青", "黒", "白", "長い", "短い", "光沢"];
 
-// データ構造はVer.15.0を継承
-const master = {
-    "1.画風・アングル": {
-        "画角": { "全身": "full body", "ポートレート": "portrait", "上半身": "upper body", "下半身": "lower body", "膝上": "cowboy shot", "足は画面外": "feet out of frame", "接写": "close-up", "横顔": "profile", "ワイド": "wide shot" },
-        "アングル": { "正面": "straight-on", "俯瞰": "from above", "アオリ": "from below", "後ろから": "from behind", "横から": "from side", "斜め": "dutch angle", "逆さま": "upside-down" },
-        "スタイル": { "アニメ風": "anime style", "イラスト": "illustration", "写実的": "photorealistic", "フラット": "flat design" }
-    },
-    "2.身体・顔": {
-        "視線": { "こちらを見る": "looking at viewer", "逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横目": "looking to the side", "流し目": "sideways glance", "目を逸らす": "averting eyes", "遠く": "looking afar", "手元": "looking at hands", "上目遣い": "upturned eyes" },
-        "表情": { "笑顔": "happy", "ドヤ顔": "smug", "照れ": "blush", "無表情": "expressionless", "驚き": "surprised", "怒り": "angry", "悲しい": "sad" },
-        "目の形": { "閉じ目": "closed eyes", "細め": "narrowed eyes", "ジト目": "jitome", "ツリ目": "tsurime", "タレ目": "tareme" },
-        "瞳の演出": { "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "発光瞳": "glowing eyes", "キラキラ": "sparkling eyes" }
-    },
-    "3.髪設定": { 
-        "前髪": { "ぱっつん": "blunt bangs", "姫カット": "hime cut", "斜め": "diagonal bangs", "センター分け": "parted bangs", "後ろへ流す": "hair slicked back" },
-        "全体": { "ショート": "short hair", "ボブ": "bob cut", "セミロング": "medium hair", "ロング": "long hair", "ストレート": "straight hair", "ウェーブ": "wavy hair", "ポニーテール": "ponytail", "ツインテール": "twin tails" },
-        "パーツ": { "アホ毛": "ahoge", "もみあげ": "sidelocks", "三つ編み": "braid", "お団子": "bun", "ハーフアップ": "half updo" }
-    },
-    "4.衣装(上)": {
-        "トップス": { "Tシャツ": "t-shirt", "ワイシャツ": "dress shirt", "タンク": "tank top", "クロップド": "crop top", "セーター": "sweater", "カーディガン": "cardigan", "コルセット": "corset" }
-    },
-    "5.衣装(下・他)": {
-        "ボトムス": { "ジーンズ": "jeans", "レギンス": "leggings", "ショーツ": "shorts", "ミニスカート": "miniskirt", "ロングスカート": "long skirt", "プリーツスカート": "pleated skirt" },
-        "全身・外": { "ドレス": "dress", "セーラー服": "sailor uniform", "和服": "kimono", "浴衣": "yukata", "ブレザー": "blazer", "パーカー": "hoodie", "コート": "coat" },
-        "足元": { "ブーツ": "boots", "パンプス": "pumps", "ハイヒール": "high heels", "スニーカー": "sneakers", "ニーハイ": "kneehighs", "ソックス": "socks" }
-    },
-    "6.ポーズ": {
-        "全身": { "立ち": "standing", "座り": "sitting", "歩き": "walking", "寝そべり": "lying", "膝立ち": "kneeling", "足組み": "crossed legs" },
-        "手・腕": { "ピース": "peace sign", "ハート手": "heart hands", "頬杖": "hand on own cheek", "腰に手": "hand on own hip", "ポケットに手": "hand in pocket" }
-    },
-    "8.背景・演出": {
-        "場所": { "海": "ocean", "夜景": "cityscape", "森": "forest", "教室": "classroom", "カフェ": "cafe", "廃墟": "ruins", "白背景": "white background" },
-        "演出": { "ボケ": "bokeh", "逆光": "back lighting", "順光": "front lighting", "霧": "foggy", "フレア": "lens flare" }
-    }
-};
-
-const subs = {
-    "指定なし": { "----": "----" },
-    "否定形": { "なし": "less" },
-    "大きさ・長さ・厚さ": { "とても長い": "very long", "長い": "long", "短い": "short", "とても短い": "very short", "とても大きい": "very large", "大きい": "large", "小さい": "small", "とても小さい": "very small", "厚い": "thick", "薄い": "thin" },
-    "質感・素材": { "レザー": "leather", "シルク": "silk", "リネン": "linen", "ビニール": "vinyl", "ゴム": "rubber", "リブ編み": "ribbed knit", "レース": "lace", "金属": "metallic", "光沢": "shiny", "濡れ": "wet" },
-    "カラー(通常)": { "赤": "red", "青": "blue", "黄": "yellow", "緑": "green", "桃": "pink", "黒": "black", "白": "white", "橙": "orange", "紫": "purple", "茶": "brown" },
-    "カラー(暗い)": { "暗赤": "dark red", "紺": "navy blue", "深緑": "dark green", "焦げ茶": "dark brown", "マルーン": "maroon" },
-    "カラー(明るい)": { "明赤": "light red", "空色": "sky blue", "ライム": "light green", "パステルピンク": "light pink", "パステルカラー": "pastel color" }
-};
-
-let stockItems = [];
-let undoLog = [];
+let currentTab = "髪";
+let activeTag = null;
 
 function init() {
-    const m1 = document.getElementById('m1');
-    for (let k in master) m1.add(new Option(k, k));
-    const s1 = document.getElementById('s1');
-    for (let k in subs) s1.add(new Option(k, k));
-    document.getElementById('final-output').value = DEFAULT_PROMPT;
-    syncM2(); syncS2(); setupDragAndDrop();
+    const tabBar = document.getElementById('tab-bar');
+    categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${cat === currentTab ? 'active' : ''}`;
+        btn.textContent = cat;
+        btn.onclick = () => switchTab(cat);
+        tabBar.appendChild(btn);
+    });
+    
+    const subSel = document.getElementById('console-sub');
+    subOptions.forEach(opt => subSel.add(new Option(opt, opt === "指定なし" ? "" : opt)));
+    
+    renderTiles();
 }
 
-function syncM2() {
-    const v1 = document.getElementById('m1').value;
-    const m2 = document.getElementById('m2');
-    m2.innerHTML = "";
-    for (let k in master[v1]) m2.add(new Option(k, k));
-    syncM3();
+function switchTab(cat) {
+    currentTab = cat;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === cat));
+    renderTiles();
 }
 
-function syncM3() {
-    const v1 = document.getElementById('m1').value;
-    const v2 = document.getElementById('m2').value;
-    const m3 = document.getElementById('m3');
-    m3.innerHTML = "";
-    for (let k in master[v1][v2]) m3.add(new Option(k, master[v1][v2][k]));
-}
-
-function syncS2() {
-    const v1 = document.getElementById('s1').value;
-    const s2 = document.getElementById('s2');
-    s2.innerHTML = "";
-    for (let k in subs[v1]) s2.add(new Option(k, subs[v1][k]));
-}
-
-// 素材だけをストックする（味付けはまだしない）
-function pushStock() {
-    const m = document.getElementById('m3').value;
-    const label = document.getElementById('m3').options[document.getElementById('m3').selectedIndex].text;
-    stockItems.push({ m, label, id: Date.now() });
-    drawStock();
-}
-
-function drawStock() {
-    const area = document.getElementById('stock-area');
+function renderTiles(filter = "") {
+    const area = document.getElementById('tile-area');
     area.innerHTML = "";
-    stockItems.forEach(item => {
-        const d = document.createElement('div');
-        d.className = "stock-item";
-        d.draggable = true;
-        d.dataset.id = item.id;
-        d.textContent = item.label;
-        d.onclick = () => d.classList.toggle('selected');
-        area.appendChild(d);
-        d.addEventListener('dragstart', (e) => {
-            d.classList.add('dragging');
-            e.dataTransfer.setData('text/plain', item.id);
-        });
-        d.addEventListener('dragend', () => d.classList.remove('dragging'));
+    const list = masterData.filter(d => (filter === "" ? d.cat === currentTab : d.jp.includes(filter) || d.en.includes(filter)));
+    
+    list.forEach(item => {
+        const t = document.createElement('div');
+        t.className = "tile";
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+        t.onclick = () => openConsole(item);
+        area.appendChild(t);
     });
 }
 
-// パッケージ化：選択中の素材に「現在の設定」を一括適用して出力
-function build() {
-    const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
-    if (sels.length === 0) return;
-
-    undoLog.push({ stock: JSON.parse(JSON.stringify(stockItems)), output: document.getElementById('final-output').value });
-
-    const s = document.getElementById('s2').value;
-    const w = document.getElementById('weight').value;
-
-    // 各素材に現在の属性（S2）を適用
-    let processedWords = sels.map(el => {
-        const it = stockItems.find(item => item.id == el.dataset.id);
-        let word = (s === "----" || !s) ? it.m : (s === "less" ? it.m + " " + s : s + " " + it.m);
-        return word;
-    });
-
-    // まとめて一つの文字列にする
-    let packageResult = processedWords.join(", ");
-
-    // 強調（Weight）が1.0以外ならパッケージ全体を括弧で包む
-    if (w !== "1.0" && w !== "1") {
-        packageResult = `(${packageResult}:${w})`;
-    }
-
-    const currentVal = document.getElementById('final-output').value;
-    const glue = (currentVal.trim() === "" || currentVal.trim().endsWith(",")) ? "" : ", ";
-    document.getElementById('final-output').value = currentVal + glue + packageResult + ", ";
-
-    // パッケージ化した素材はストックから消す
-    const sIds = sels.map(el => el.dataset.id);
-    stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
-    drawStock();
+function filterTiles() {
+    const query = document.getElementById('search-box').value;
+    renderTiles(query);
 }
 
-function undo() {
-    if (undoLog.length === 0) return;
-    const lastState = undoLog.pop();
-    stockItems = lastState.stock;
-    document.getElementById('final-output').value = lastState.output;
-    drawStock();
+function openConsole(item) {
+    activeTag = item;
+    document.getElementById('console-title').textContent = item.jp;
+    document.getElementById('console').style.display = "block";
 }
 
-function copyAndClear() {
-    const output = document.getElementById('final-output');
-    if (!output.value) return;
-    navigator.clipboard.writeText(output.value).then(() => {
-        alert("呪文を継承しました。詠唱台を清浄化します。");
-        output.value = DEFAULT_PROMPT;
-        stockItems = [];
-        drawStock();
-    });
+function closeConsole() {
+    document.getElementById('console').style.display = "none";
 }
 
-function setupDragAndDrop() {
-    const area = document.getElementById('stock-area');
-    const bin = document.getElementById('trash-bin');
-    area.addEventListener('dragover', e => e.preventDefault());
-    bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
-    bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
-    bin.addEventListener('drop', e => {
-        e.preventDefault(); bin.classList.remove('drag-over');
-        const id = e.dataTransfer.getData('text/plain');
-        stockItems = stockItems.filter(it => it.id != id);
-        drawStock();
-    });
+function commitTag() {
+    const sub = document.getElementById('console-sub').value;
+    const weight = document.getElementById('console-weight').value;
+    let res = sub ? `${sub} ${activeTag.en}` : activeTag.en;
+    if (weight !== "1.0" && weight !== "1") res = `(${res}:${weight})`;
+    
+    const out = document.getElementById('output-area');
+    out.value += (out.value ? ", " : "") + res;
+    closeConsole();
 }
+
+function expandOutput() {
+    document.getElementById('output-area').classList.toggle('expanded');
+}
+
+function copyOutput() {
+    const out = document.getElementById('output-area');
+    navigator.clipboard.writeText(out.value).then(() => alert("コピーしたで！"));
+}
+
+function resetOutput() {
+    if(confirm("クリアするで？")) document.getElementById('output-area').value = "";
+}
+
+// ダミー
+function toggleDict() { alert("外典登録（未実装）"); }
+function openFavList() { alert("お気に入りリスト（未実装）"); }
+
 init();
 </script>
 </body>
