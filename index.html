@@ -34,39 +34,49 @@
         .subtitle { display: block; font-size: 0.9rem; letter-spacing: 0.2rem; margin-top: 5px; color: var(--accent-gold); }
         .section-label { font-weight: bold; font-size: 0.8rem; margin: 15px 0 5px 0; border-left: 4px solid var(--accent-gold); padding-left: 10px; }
         .input-group { background: rgba(0,0,0,0.03); padding: 12px; border: 1px solid rgba(176,141,87,0.3); border-radius: 4px; }
-        select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; box-sizing: border-box; }
+        select, input, textarea { width: 100%; padding: 12px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; box-sizing: border-box; }
         
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         button { padding: 12px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.85rem; transition: all 0.2s ease; }
-        
-        /* ホバー/アクティブアクション */
         .btn-add { background-color: var(--accent-gold); color: white; }
         .btn-add:active { background-color: var(--btn-hover); transform: translateY(2px); }
-        
         .btn-build { background-color: #5a7d6a; color: white; }
-        .btn-build:active { background-color: #7a9d8a; transform: translateY(2px); }
-
         .btn-undo { background-color: #8e9aaf; color: white; }
-        .btn-undo:active { background-color: #aeb9cf; transform: translateY(2px); }
 
-        .storage-wrapper { display: grid; grid-template-columns: 1fr 80px; gap: 10px; margin: 10px 0; }
-        #stock-area { min-height: 100px; border: 1px dashed var(--accent-gold); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); }
-        #trash-bin { background-color: var(--dust-red); border: 2px solid var(--ink-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-radius: 4px; transition: all 0.2s; font-size: 0.7rem; }
-        #trash-bin.drag-over { background-color: var(--trash-pink); color: var(--dust-red); transform: scale(1.05); }
+        /* ストックエリアとゴミ箱（拡大版） */
+        .storage-wrapper { 
+            display: grid; 
+            grid-template-columns: 1fr 100px; /* ゴミ箱の幅を100pxに拡大 */
+            gap: 12px; 
+            margin: 10px 0; 
+        }
+        #stock-area { 
+            min-height: 120px; border: 1px dashed var(--accent-gold); 
+            padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2); 
+        }
+        #trash-bin { 
+            background-color: var(--dust-red); 
+            border: 2px solid var(--ink-color); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            color: white; border-radius: 4px; transition: all 0.2s; 
+            min-height: 120px; /* 高さをストックエリアと合わせる */
+        }
+        #trash-bin.drag-over { 
+            background-color: var(--trash-pink); 
+            color: var(--dust-red); 
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--trash-pink);
+        }
+        .trash-icon-large { font-size: 2.2rem; margin-bottom: 5px; } /* アイコンをデカく！ */
+        .trash-label { font-size: 0.8rem; font-weight: bold; }
 
-        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px; font-size: 0.85rem; cursor: grab; user-select: none; }
+        .stock-item { background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 10px 14px; font-size: 0.85rem; cursor: grab; user-select: none; }
         .stock-item.dragging { opacity: 0.3; }
         .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); }
 
-        /* 紡がれた呪文（編集可能エリア） */
         #final-output { 
-            background: rgba(255,255,255,0.8); 
-            padding: 15px; 
-            border: 1px double var(--accent-gold); 
-            min-height: 80px; 
-            font-size: 1rem; 
-            line-height: 1.4;
-            resize: vertical; /* 縦方向に広げられる */
+            background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); 
+            min-height: 100px; font-size: 1rem; line-height: 1.4; resize: vertical; 
         }
     </style>
 </head>
@@ -96,10 +106,13 @@
         <button class="btn-build" onclick="build()">パッケージ化</button>
     </div>
 
-    <div class="section-label">一時記憶（整理・破棄）</div>
+    <div class="section-label">一時記憶（ドラッグで整理/破棄）</div>
     <div class="storage-wrapper">
         <div id="stock-area"></div>
-        <div id="trash-bin">🗑<br>消去</div>
+        <div id="trash-bin">
+            <div class="trash-icon-large">🗑</div>
+            <div class="trash-label">消去</div>
+        </div>
     </div>
 
     <div class="section-label">紡がれた呪文（詠唱・修正）</div>
@@ -112,21 +125,21 @@
 </div>
 
 <script>
+// カテゴリデータ（ボトムス独立済み）
 const master = {
-    "髪設定": { "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob" }, "パーツ": { "アホ毛": "ahoge", "三つ編み": "braids" } },
-    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" }, "瞳": { "ハート": "heart-shaped pupils" } },
-    "衣装(上)": { "トップス": { "セーラー": "school uniform", "ドレス": "dress", "パーカー": "hoodie" } },
-    "衣装(下)": { "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans" } },
-    "アクセ": { "小物": { "リボン": "ribbon", "眼鏡": "glasses" } }
+    "髪設定": { "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob" }, "パーツ": { "アホ毛": "ahoge" } },
+    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" } },
+    "衣装(上)": { "トップス": { "セーラー": "school uniform", "ドレス": "dress" } },
+    "衣装(下)": { "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ジーンズ": "jeans" } }
 };
 const subs = {
     "カラー": { "赤色": "red", "青色": "blue", "金色": "gold" },
-    "マテリアル": { "金属": "metallic", "光沢": "shiny", "透明": "transparent" },
+    "マテリアル": { "金属": "metallic", "光沢": "shiny" },
     "ブランク": { "なし": "" }
 };
 
 let stockItems = [];
-let undoLog = []; // アンドゥ用：直前のストック状態と出力内容を保持
+let undoLog = [];
 
 function init() {
     const m1 = document.getElementById('m1');
@@ -189,25 +202,15 @@ function drawStock() {
 function build() {
     const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
     if (sels.length === 0) return;
-    
-    // 現在の歴史を保存（アンドゥ用）
-    undoLog.push({
-        stock: JSON.parse(JSON.stringify(stockItems)),
-        output: document.getElementById('final-output').value
-    });
-
+    undoLog.push({ stock: JSON.parse(JSON.stringify(stockItems)), output: document.getElementById('final-output').value });
     let words = []; let weight = "1.0";
     sels.forEach(el => {
         const it = stockItems.find(item => item.id == el.dataset.id);
-        weight = it.weight;
-        if (it.s) words.push(it.s);
-        words.push(it.m);
+        weight = it.weight; if (it.s) words.push(it.s); words.push(it.m);
     });
-    
     const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
     const currentVal = document.getElementById('final-output').value;
     document.getElementById('final-output').value = (currentVal ? currentVal + ", " : "") + combined;
-    
     const sIds = sels.map(el => el.dataset.id);
     stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
     drawStock();
@@ -224,9 +227,8 @@ function undo() {
 function copyAndClear() {
     const output = document.getElementById('final-output');
     if (!output.value) return;
-    
     navigator.clipboard.writeText(output.value).then(() => {
-        alert("叡智を写し取ったで！魔導書を浄化（クリア）するわ。");
+        alert("叡智を写し取ったで！魔導書を浄化するわ。");
         output.value = "";
         undoLog = [];
     });
@@ -235,7 +237,6 @@ function copyAndClear() {
 function setupDragAndDrop() {
     const area = document.getElementById('stock-area');
     const bin = document.getElementById('trash-bin');
-
     area.addEventListener('dragover', e => {
         e.preventDefault();
         const dragging = document.querySelector('.dragging');
@@ -249,22 +250,18 @@ function setupDragAndDrop() {
         if (afterElement == null) area.appendChild(dragging);
         else area.insertBefore(dragging, afterElement);
     });
-
     area.addEventListener('drop', () => {
         stockItems = Array.from(area.querySelectorAll('.stock-item')).map(el => stockItems.find(it => it.id == el.dataset.id));
     });
-
     bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
     bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
     bin.addEventListener('drop', e => {
-        e.preventDefault();
-        bin.classList.remove('drag-over');
+        e.preventDefault(); bin.classList.remove('drag-over');
         const id = e.dataTransfer.getData('text/plain');
         stockItems = stockItems.filter(it => it.id != id);
         drawStock();
     });
 }
-
 init();
 </script>
 </body>
