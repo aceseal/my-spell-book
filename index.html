@@ -3,54 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最強プロンプト・ジェネレーター</title>
+    <title>AIプロンプト完全魔導書</title>
     <style>
-        /* ここにスマホ対応の修正を入れたで！ */
-        :root { --bg: #f0f2f5; --card: #ffffff; --primary: #4a90e2; --text: #333; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
-        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; font-size: 1.2rem; margin-bottom: 20px; color: var(--primary); }
+        :root { --bg: #f4f7f6; --card: #ffffff; --primary: #2c3e50; --accent: #3498db; }
+        body { font-family: 'Helvetica Neue', Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background: var(--bg); color: #333; padding: 10px; margin: 0; }
+        .container { max-width: 600px; margin: auto; background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { text-align: center; font-size: 1.4rem; margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
         .group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85rem; }
-        
-        /* 入力エリア：PCでは横並び、スマホでは縦並び */
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85rem; color: #555; }
         .input-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        select { flex: 1; min-width: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; }
-        .weight-input { width: 60px; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
-
-        /* スマホ向けの魔法（メディアクエリ） */
+        select { flex: 1; min-width: 150px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #fff; appearance: none; cursor: pointer; }
+        .weight-input { width: 70px; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         @media (max-width: 480px) {
             .input-row { flex-direction: column; }
-            .weight-input { width: 100%; box-sizing: border-box; }
-            select { width: 100%; }
+            .weight-input, select { width: 100%; }
         }
-
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-add { background: var(--primary); color: white; }
-        .btn-copy { background: #2ecc71; color: white; }
+        button { padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .btn-add { background: var(--accent); color: white; }
+        .btn-copy { background: #27ae60; color: white; }
         .btn-reset { background: #e74c3c; color: white; grid-column: span 2; }
-        button:active { opacity: 0.7; transform: scale(0.98); }
-
+        button:active { transform: scale(0.95); opacity: 0.8; }
         #result-area { 
-            margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; 
-            border: 1px dashed var(--primary); min-height: 60px; word-break: break-all; 
-            font-size: 0.9rem; line-height: 1.4; color: #555;
+            margin-top: 20px; padding: 15px; background: #fefefe; border-radius: 8px; 
+            border: 2px dashed #bdc3c7; min-height: 80px; word-break: break-all; 
+            font-size: 0.9rem; line-height: 1.5; color: #2c3e50;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🪄 魔導書コンソール</h1>
+    <h1>🪄 AIプロンプト完全魔導書</h1>
 
     <div class="group">
-        <label>カテゴリ</label>
+        <label>カテゴリ選択</label>
         <select id="category-select" onchange="updateSubCategory()"></select>
     </div>
 
     <div class="group">
-        <label>内容</label>
+        <label>呪文選択</label>
         <div class="input-row">
             <select id="spell-select"></select>
             <input type="number" id="weight" class="weight-input" step="0.1" value="1.0" min="0.1" max="2.0">
@@ -67,64 +59,59 @@
 </div>
 
 <script>
-    /* イッチが一生懸命選んだ最強のデータベース（日本語化＆整理済み） */
+    // --- イッチの全データを完全網羅版 ---
     const spellData = {
-        "前髪の形状": {
-            "ぱっつん": "blunt bangs", "姫カット": "hime cut", "斜め前髪": "diagonal bangs", "アーチ前髪": "arched bangs",
-            "アシンメトリー": "asymmetrical bangs", "交差": "crossed bangs", "ハネ前髪": "flipped bangs", "長い前髪": "long bangs",
-            "短い前髪": "short bangs", "チョッピー": "choppy bangs", "分け目あり": "parted bangs", "センター分け": "center flap bangs",
-            "横流し": "swept bangs", "ピン留め": "bangs pinned back", "オールバック": "hair slicked back", "引っ詰め": "hair pulled back",
-            "目にかかる": "hair over eyes", "片目隠れ": "hair over one eye", "両目隠れ": "hair over both eyes"
+        "前髪": {
+            "ぱっつん": "blunt bangs", "姫カット": "hime cut", "斜め": "diagonal bangs", "アーチ": "arched bangs", "非対称": "asymmetrical bangs", "交差": "crossed bangs", "ハネ": "flipped bangs", "長い前髪": "long bangs", "短い前髪": "short bangs", "チョッピー": "choppy bangs", "分け目": "parted bangs", "センター分け": "center flap bangs", "横流し": "swept bangs", "ピン留め": "bangs pinned back", "オールバック": "hair slicked back", "引っ詰め": "hair pulled back", "目にかかる": "hair over eyes", "片目隠れ": "hair over one eye", "両目隠れ": "hair over both eyes"
         },
-        "髪の形状": {
-            "ショート": "short hair", "ベリーショート": "very short hair", "ピクシー": "pixie cut", "ボブ": "bob cut",
-            "ミディアム": "medium hair", "ロング": "long hair", "超ロング": "very long hair", "ポニテ": "ponytail",
-            "ツインテ": "twin tails", "お団子": "hair bun", "三つ編み": "braid", "フィッシュテール": "french braid",
-            "ハーフアップ": "half updo", "ストレート": "straight hair", "ウェーブ": "wavy hair", "ドリル": "drill hair",
-            "縦ロール": "ringlets", "アホ毛": "ahoge", "触角": "antenna hair", "サイドロック": "sidelocks", "レイヤー": "layered hair"
+        "髪型": {
+            "ベリーショート": "very short hair", "ショート": "short hair", "ピクシーカット": "pixie cut", "ボブ": "bob cut", "ミディアム": "medium hair", "ロング": "long hair", "超ロング": "very long hair", "ポニーテール": "ponytail", "サイドポニー": "side ponytail", "ツインテール": "twin tails", "低めツインテ": "low twin tails", "ショートツインテ": "short twin tails", "お団子": "hair bun", "ダブルお団子": "double bun", "三つ編み": "braid", "サイド三つ編み": "side braid", "ツイン三つ編み": "twin braids", "フランス風編み込み": "french braid", "ハーフアップ": "half updo", "ストレート": "straight hair", "ウェーブ": "wavy hair", "巻き髪": "curly hair", "ドリル": "drill hair", "縦ロール": "ringlets", "アホ毛": "ahoge", "複数のアホ毛": "multiple ahoge", "ハートアホ毛": "heart ahoge", "触角": "antenna hair", "サイドロック": "sidelocks", "段カット": "layered hair", "ハネ髪": "flipped hair"
         },
         "髪の色": {
-            "赤": "red hair", "茶": "brown hair", "金": "blonde hair", "黒": "black hair", "銀": "silver hair", "白": "white hair",
-            "青": "blue hair", "水色": "aqua hair", "緑": "green hair", "紫": "purple hair", "ピンク": "pink hair",
-            "オレンジ": "orange hair", "チャコール": "charcoal hair", "アッシュ": "ash gray hair", "グラデーション": "gradient hair", "ツートン": "two-tone hair"
+            "濃い赤": "dark red hair", "赤": "red hair", "薄い赤": "light red hair", "濃いオレンジ": "dark orange hair", "オレンジ": "orange hair", "薄いオレンジ": "light orange hair", "濃い茶": "dark brown hair", "茶": "brown hair", "薄い茶": "light brown hair", "濃い金": "dark blonde hair", "金": "blonde hair", "薄い金": "light blonde hair", "濃い緑": "dark green hair", "緑": "green hair", "薄い緑": "light green hair", "濃いアクア": "dark aqua hair", "アクア": "aqua hair", "薄いアクア": "light aqua hair", "濃い青": "dark blue hair", "青": "blue hair", "薄い青": "light blue hair", "濃い紫": "dark purple hair", "紫": "purple hair", "薄い紫": "light purple hair", "濃いピンク": "dark pink hair", "ピンク": "pink hair", "薄いピンク": "light pink hair", "黒": "black hair", "チャコール": "charcoal hair", "チャコールグレー": "charcoal gray hair", "濃いグレー": "dark grey hair", "グレー": "grey hair", "アッシュグレー": "ash gray hair", "薄いグレー": "light gray hair", "シルバー": "silver hair", "白": "white hair", "グラデーション": "gradient hair", "ツートン": "two-tone hair", "メッシュ": "streaked hair"
         },
-        "視線・瞳": {
-            "こっち見てる": "looking at viewer", "逸らす": "looking away", "上目遣い": "upturned eyes", "見上げる": "looking up", "見下ろす": "looking down",
-            "赤目": "red eyes", "青目": "blue eyes", "緑目": "green eyes", "金目": "yellow eyes", "オッドアイ": "heterochromia",
-            "縦瞳孔": "slit pupils", "輪っか瞳": "ringed eyes", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils",
-            "虚無の目": "empty eyes", "発光": "glowing eyes", "キラキラ": "sparkling eyes"
+        "視線": {
+            "こちらを見る": "looking at viewer", "逸らす": "looking away", "見上げる": "looking up", "見下ろす": "looking down", "横を見る": "looking to the side", "横目": "sideways glance", "目を伏せる": "averting eyes", "遠くを見る": "looking afar", "手元を見る": "looking at hands", "右手を見る": "looking at right hand", "左手を見る": "looking at left hand", "上目遣い": "upturned eyes"
+        },
+        "目の形": {
+            "閉じ目": "closed eyes", "片目閉じ": "one eye closed", "細め目": "narrowed eyes", "目を細める": "squinting", "半目": "half-closed eyes", "見開き": "wide-eyed", "ツリ目": "tsurime", "タレ目": "tareme", "ジト目": "jitome", "寄り目": "cross-eyed", "左右非対称": "uneven eyes"
+        },
+        "目の色": {
+            "赤": "red eyes", "緑": "green eyes", "青": "blue eyes", "黄色": "yellow eyes", "オレンジ": "orange eyes", "茶色": "brown eyes", "紫": "purple eyes", "ピンク": "pink eyes", "グレー": "grey eyes", "黒": "black eyes", "白": "white eyes", "多色": "multicolored eyes", "オッドアイ": "heterochromia"
+        },
+        "瞳の形状・輝き": {
+            "縦瞳孔": "slit pupils", "輪っか瞳": "ringed eyes", "ぐるぐる瞳": "spiral-only eyes", "ハート瞳": "heart-shaped pupils", "星瞳": "star-shaped pupils", "記号瞳": "symbol-shaped pupils", "塗り潰し瞳": "solid circle eyes", "虚無の目": "empty eyes", "瞳の反射": "eye reflection", "発光": "glowing eyes", "キラキラ": "sparkling eyes", "十字の輝き": "plus eye"
         },
         "表情": {
-            "笑顔": "happy", "ドヤ顔": "smug", "ニヤリ": "smirk", "邪悪な笑み": "evil grin", "興奮": "excited",
-            "怒り": "angry", "不機嫌": "annoyed", "ジト目": "jitome", "悲しい": "sad", "絶望": "despair",
-            "驚き": "surprised", "パニック": "panicking", "照れ": "blush", "困惑": "confused", "無表情": "expressionless",
-            "眠い": "sleepy", "舌出し": "tongue out", "真剣": "serious"
+            "幸せ": "happy", "ドヤ顔": "smug", "薄笑い": "smirk", "邪悪な笑み": "evil grin", "興奮": "excited", "口開け": "open mouth", "口閉じ": "closed mouth", "怒り": "angry", "怒り筋": "anger vein", "イライラ": "annoyed", "食いしばり": "clenched teeth", "しかめっ面": "scowl", "挫折": "frustrated", "ふくれっ面": "pout", "睨み": "glaring", "青ざめる": "turn pale", "悲しい": "sad", "失望": "disappointed", "落ち込む": "depressed", "憂鬱": "gloom", "涙": "tears", "むせび泣き": "sobbing", "絶望": "despair", "トラウマ": "traumatized", "叫び": "screaming", "驚き": "surprised", "怖い": "scared", "恐怖": "horrified", "パニック": "panicking", "混乱": "confused", "思考中": "thinking", "物思い": "pensive", "すくむ": "wince", "眉間に皺": "furrowed brow", "片眉上げ": "cocked eyebrow", "照れ": "blush", "照れステッカー": "blush stickers", "顔中真っ赤": "full-face blush", "鼻赤": "nose blush", "恥ずかしい": "embarrassed", "狼狽": "flustered", "無表情": "expressionless", "疲労": "exhausted", "半開き口": "parted lips", "顔に手": "facepalm", "眠い": "sleepy", "ため息": "sigh", "拗ねる": "sulking", "真剣": "serious", "決意": "determined", "キューブリック凝視": "kubrick stare", "軽蔑": "disdain", "嫌悪": "disgust", "ダイヤ口": "diamond mouth", "三角口": "triangle mouth", "舌出し": "tongue out", "悪戯な顔": "naughty face"
         },
-        "ポーズ": {
-            "立ち": "standing", "座り": "sitting", "寝そべり": "lying", "膝立ち": "kneeling", "正座": "seiza", "歩き": "walking",
-            "走り": "running", "ジャンプ": "jumping", "ストレッチ": "stretching", "お辞儀": "bowing", "前かがみ": "leaning forward",
-            "腕組み": "crossed arms", "手を振る": "waving", "ピース": "peace sign", "ハート手": "heart hands", "髪をいじる": "playing with own hair",
-            "頬杖": "hand on own cheek", "腰に手": "hand on own hip", "ポケットに手": "hand in pocket"
+        "ポーズ(全身)": {
+            "寝そべり": "lying", "仰向け": "on back", "横向き寝": "on side", "うつ伏せ": "on stomach", "決めポーズ": "the pose", "座り": "sitting", "膝立ち": "kneeling", "片膝立ち": "on one knee", "しゃがみ": "squatting", "足組み": "crossed legs", "胎児のポーズ": "fetal position", "胡坐": "indian style", "体育座り": "hugging own legs", "正座": "seiza", "割り座": "wariza", "横座り": "yokozuwari", "もたれかかる": "reclining", "逆向き座り": "sitting backwards", "立ち": "standing", "足を開く": "legs apart", "片足立ち": "standing on one leg", "コントラポスト": "contrapposto", "歩き": "walking", "走り": "running", "ジャンプ": "jumping", "背伸び": "stretching", "ヨガ": "yoga", "バランス": "balancing", "お辞儀": "bowing", "会釈": "curtsey", "あくび": "yawning", "背を反らす": "arched back", "前かがみ": "bent over", "のけぞり": "leaning back", "腕で支える": "arm support", "前のめり": "leaning forward", "猫背": "slouching", "構え": "fighting stance", "体を捻る": "twisted torso"
+        },
+        "ポーズ(手・腕)": {
+            "片手上げ": "arm up", "両手上げ": "arms up", "頭の上に手": "arm on own head", "後頭部に手": "arm behind head", "両手を後ろに": "arms behind back", "横に広げる": "spread arms", "伸ばした手": "outstretched arm", "Tポーズ": "t-pose", "Aポーズ": "a-pose", "腕組み": "crossed arms", "力こぶ": "flexing", "肩をすくめる": "shrugging", "顎を乗せる": "head rest", "膝に手": "arm on knee", "指差し": "pointing", "自分を指す": "pointing at self", "頬に指": "finger to cheek", "口元に指": "finger to mouth", "静かに": "shushing", "サムズアップ": "thumbs up", "指鉄砲": "finger gun", "ピース": "peace sign", "ギャルピース": "gyaru peace sign", "手を振る": "waving", "ハート手": "heart hands", "指を絡める": "interlocked fingers", "髪をいじる": "playing with own hair", "髪を耳にかける": "tucking hair", "顔を覆う": "covering face", "口を覆う": "covering own mouth", "腰に手": "hand on own hip", "ポケットに手": "hand in pocket"
         },
         "構図・視点": {
-            "全身": "full body", "ポートレート": "portrait", "上半身": "upper body", "膝上": "cowboy shot", "アップ": "close-up",
-            "横顔": "profile", "俯瞰": "from above", "煽り": "from below", "後ろから": "from behind", "斜め角度": "dutch angle",
-            "魚眼": "fisheye", "パース強調": "perspective"
+            "全身": "full body", "ポートレート": "portrait", "上半身": "upper body", "下半身": "lower body", "カウボーイショット": "cowboy shot", "足元切り取り": "feet out of frame", "接写": "close-up", "横顔": "profile", "引きの絵": "wide shot", "正面から": "straight-on", "俯瞰": "from above", "煽り": "from below", "後ろから": "from behind", "横から": "from side", "斜めアングル": "dutch angle", "逆さま": "upside-down", "空気遠近法": "atmospheric perspective", "魚眼レンズ": "fisheye", "パノラマ": "panorama", "消失点": "vanishing point"
         },
-        "衣装": {
-            "Tシャツ": "t-shirt", "シャツ": "dress shirt", "セーター": "sweater", "パーカー": "hoodie", "制服": "school uniform",
-            "ドレス": "dress", "スーツ": "business suit", "着物": "kimono", "ミニスカ": "miniskirt", "ロングスカ": "long skirt",
-            "ジーンズ": "jeans", "コート": "coat", "ブレザー": "blazer", "水着": "swimsuit", "メイド服": "maid outfit"
+        "背景・エフェクト": {
+            "玉ボケ": "bokeh", "被写界深度": "depth of field", "逆光": "back lighting", "霧": "foggy", "海": "ocean", "砂浜": "beach", "川": "river", "滝": "waterfall", "プール": "pool", "野原": "field", "花畑": "flower field", "森": "forest", "竹林": "bamboo forest", "砂漠": "desert", "都会": "city", "道路": "road", "屋上": "rooftop", "駅": "train station", "公園": "park", "城": "castle", "廃墟": "ruins", "青空": "blue sky", "夕焼け": "sun set sky", "星空": "starry sky", "寝室": "bedroom", "教室": "classroom", "カフェ": "cafe", "電車内": "train interior", "水彩背景": "watercolor background", "ドット背景": "polka dot background"
         },
-        "背景": {
-            "教室": "classroom", "街中": "street", "海辺": "beach", "森": "forest", "夜景": "night city",
-            "空": "sky", "室内": "indoor", "廃墟": "ruins", "ファンタジー": "fantasy background", "白背景": "white background"
+        "衣装(頭部・全身)": {
+            "キャップ": "baseball cap", "ニット帽": "beanie", "麦わら帽子": "straw hat", "ベレー帽": "beret", "シルクハット": "top hat", "魔女の帽子": "witch hat", "王冠": "crown", "ティアラ": "tiara", "髪飾り": "hair ornament", "ヘアピン": "hairpin", "シュシュ": "hair scrunchie", "セーラー服": "japanese schoolgirl sailor uniform", "着物": "kimono", "浴衣": "yukata", "袴": "hakama", "ロリータ": "lolita fashion", "ドレス": "dress", "ビジネススーツ": "business suit", "アオザイ": "ao dai", "体操服": "gym uniform"
+        },
+        "衣装(上下・外)": {
+            "Tシャツ": "t-shirt", "シャツ": "dress shirt", "セーター": "sweater", "タートルネック": "turtleneck sweater", "カーディガン": "cardigan", "コルセット": "corset", "ジーンズ": "jeans", "ミニスカート": "miniskirt", "ロングスカート": "long skirt", "プリーツスカート": "pleated skirt", "ジャケット": "jacket", "ブレザー": "blazer", "パーカー": "hoodie", "白衣": "lab coat", "コート": "coat", "ケープ": "cape"
+        },
+        "靴・靴下": {
+            "ブーツ": "boots", "ニーハイブーツ": "thigh boots", "サンダル": "sandals", "パンプス": "pumps", "ハイヒール": "high heels", "スニーカー": "sneakers", "ローファー": "loafers", "サイハイ": "thighhighs", "ニーハイ": "kneehighs", "ルーズソックス": "loose socks", "タイツ": "pantyhose"
         }
     };
 
     let selectedPrompts = [];
     const catSelect = document.getElementById('category-select');
 
+    // カテゴリの初期化
     for (let cat in spellData) {
         let newOpt = document.createElement('option');
         newOpt.value = cat;
@@ -132,6 +119,7 @@
         catSelect.appendChild(newOpt);
     }
 
+    // サブカテゴリ（呪文）の更新
     function updateSubCategory() {
         const cat = catSelect.value;
         const spellSelect = document.getElementById('spell-select');
@@ -159,14 +147,22 @@
     function copyPrompt() {
         const text = document.getElementById('result-area').textContent;
         if(!text) return;
-        navigator.clipboard.writeText(text).then(() => alert('コピーしたで！'));
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('.btn-copy');
+            const originalText = btn.textContent;
+            btn.textContent = 'コピー成功！';
+            setTimeout(() => btn.textContent = originalText, 1500);
+        });
     }
 
     function resetPrompt() {
-        selectedPrompts = [];
-        updateResult();
+        if(confirm('リセットしてええんか？')) {
+            selectedPrompts = [];
+            updateResult();
+        }
     }
 
+    // 起動時に最初のカテゴリを表示
     updateSubCategory();
 </script>
 
