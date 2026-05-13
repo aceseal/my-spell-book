@@ -6,131 +6,76 @@
     <title>叡智の魔導書《アトモソフィア・グリモワール》</title>
     <style>
         :root {
-            --bg-paper: #f4ecd8; /* 羊皮紙の温かみ */
-            --ink-color: #2c1e14; /* 濃いセピアインク */
-            --accent-gold: #b08d57; /* 鈍く光る金装飾 */
-            --highlight: #d4a373;
+            --bg-paper: #f4ecd8;
+            --ink-color: #2c1e14;
+            --accent-gold: #b08d57;
+            --dust-red: #a0522d;
+            --trash-pink: #ffafcc; /* 重なった時の発光色 */
         }
         body {
             background-color: #3d2b1f;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png'); /* 革装丁の背景 */
-            font-family: "Sawarabi Mincho", "serif";
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            font-family: "Sawarabi Mincho", serif;
             color: var(--ink-color);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
+            margin: 0; padding: 10px;
+            display: flex; justify-content: center;
+            overflow-x: hidden;
         }
         .book-container {
-            max-width: 700px;
-            width: 100%;
+            max-width: 700px; width: 100%;
             background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
-            padding: 40px 30px;
+            padding: 30px 20px;
             border-radius: 3px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            border-left: 15px solid #5a3e2b; /* 本の背表紙感 */
-            position: relative;
+            border-left: 10px solid #5a3e2b;
         }
-        h1 {
-            text-align: center;
-            margin-top: 0;
-            font-size: 1.6rem;
-            border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 15px;
-            line-height: 1.5;
-        }
-        .subtitle {
-            display: block;
-            font-size: 1.1rem;
-            letter-spacing: 0.3rem;
-            margin-top: 10px;
-            color: var(--accent-gold);
-        }
-        .section-label {
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin: 20px 0 8px 0;
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--accent-gold);
-            padding-left: 10px;
-        }
-        .input-group {
-            background: rgba(0,0,0,0.03);
-            padding: 15px;
-            border: 1px solid rgba(176,141,87,0.3);
-            border-radius: 4px;
-        }
-        select, input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            background-color: rgba(255,255,255,0.6);
-            border: 1px solid var(--accent-gold);
-            font-family: inherit;
-            color: var(--ink-color);
-            box-sizing: border-box;
-        }
-        .parallel-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        button {
-            padding: 12px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: inherit;
-            transition: 0.2s;
-            border-radius: 2px;
-        }
+        h1 { text-align: center; border-bottom: 1px solid var(--accent-gold); padding-bottom: 10px; font-size: 1.4rem; }
+        .subtitle { display: block; font-size: 0.9rem; letter-spacing: 0.2rem; margin-top: 5px; color: var(--accent-gold); }
+        .section-label { font-weight: bold; font-size: 0.8rem; margin: 15px 0 5px 0; border-left: 4px solid var(--accent-gold); padding-left: 10px; }
+        .input-group { background: rgba(0,0,0,0.03); padding: 12px; border: 1px solid rgba(176,141,87,0.3); border-radius: 4px; }
+        select, input { width: 100%; padding: 10px; margin-bottom: 8px; background-color: rgba(255,255,255,0.7); border: 1px solid var(--accent-gold); font-family: inherit; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        button { padding: 10px; border: none; cursor: pointer; font-weight: bold; font-family: inherit; border-radius: 2px; font-size: 0.8rem; }
         .btn-add { background-color: var(--accent-gold); color: white; }
         .btn-build { background-color: #5a7d6a; color: white; }
-        .btn-copy { background-color: #4a6fa5; color: white; }
-        .btn-clear { background-color: #a0522d; color: white; }
-        
-        button:active { transform: scale(0.98); }
 
+        /* ストックエリアとゴミ箱のレイアウト */
+        .storage-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 80px;
+            gap: 10px;
+            margin: 10px 0;
+        }
         #stock-area {
-            min-height: 60px;
-            border: 1px dashed var(--accent-gold);
-            margin: 15px 0;
-            padding: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            background: rgba(255,255,255,0.2);
+            min-height: 100px; border: 1px dashed var(--accent-gold); 
+            padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.2);
         }
+        /* イッチ特製：赤塗り四角のゴミ箱 */
+        #trash-bin {
+            background-color: var(--dust-red);
+            border: 2px solid var(--ink-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; border-radius: 4px; transition: all 0.2s;
+            font-size: 0.7rem; font-weight: bold;
+        }
+        #trash-bin.drag-over {
+            background-color: var(--trash-pink);
+            color: var(--dust-red);
+            box-shadow: 0 0 15px var(--trash-pink);
+            transform: scale(1.05);
+        }
+        .trash-icon-css { font-size: 1.5rem; margin-bottom: 5px; }
+
         .stock-item {
-            background: #e9dcc0;
-            border: 1px solid var(--accent-gold);
-            padding: 4px 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            user-select: none;
+            background: #e9dcc0; border: 1px solid var(--accent-gold); padding: 8px 12px;
+            font-size: 0.85rem; cursor: grab; user-select: none;
         }
-        .stock-item.selected {
-            background: var(--ink-color);
-            color: var(--bg-paper);
-        }
-        #final-output {
-            background: rgba(255,255,255,0.8);
-            padding: 20px;
-            border: 1px double var(--accent-gold);
-            min-height: 80px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-top: 10px;
-            white-space: pre-wrap;
-        }
+        .stock-item.dragging { opacity: 0.3; transform: scale(0.9); }
+        .stock-item.selected { background: var(--ink-color); color: var(--bg-paper); }
+
+        #final-output { background: rgba(255,255,255,0.8); padding: 15px; border: 1px double var(--accent-gold); min-height: 60px; font-size: 1rem; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -138,60 +83,50 @@
 <div class="book-container">
     <h1>叡智の魔導書<br><span class="subtitle">《 アトモソフィア ・ グリモワール 》</span></h1>
 
-    <div class="section-label">主軸の構成（メイン・ビルド）</div>
+    <div class="section-label">構成の刻印</div>
     <div class="input-group">
         <select id="m1" onchange="syncM2()"></select>
         <select id="m2" onchange="syncM3()"></select>
         <select id="m3"></select>
     </div>
 
-    <div class="section-label">平行属性（アトモスフィア付与）</div>
+    <div class="section-label">属性の調律</div>
     <div class="input-group">
-        <div class="parallel-grid">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <select id="s1" onchange="syncS2()"></select>
             <select id="s2"></select>
         </div>
-        <div style="margin-top:10px; font-size:0.8rem;">◆ 重み付け</div>
-        <input type="number" id="weight" step="0.1" value="1.0">
+        <input type="number" id="weight" step="0.1" value="1.0" style="margin-top:10px;">
     </div>
 
     <div class="btn-grid">
         <button class="btn-add" onclick="pushStock()">パーツを刻む</button>
         <button class="btn-build" onclick="build()">パッケージ化</button>
-        <button class="btn-copy" onclick="copy()">写し取る</button>
-        <button class="btn-clear" onclick="clearAll()">白紙に戻す</button>
     </div>
 
-    <div class="section-label">一時記憶（選んで一括パッキング）</div>
-    <div id="stock-area"></div>
+    <div class="section-label">一時記憶（ドラッグしてゴミ箱へ）</div>
+    <div class="storage-wrapper">
+        <div id="stock-area"></div>
+        <div id="trash-bin">
+            <div class="trash-icon-css">🗑</div>
+            <div>消去</div>
+        </div>
+    </div>
 
-    <div class="section-label">紡がれた呪文（nano bananaへの指示）</div>
+    <div class="section-label">紡がれた呪文</div>
     <div id="final-output"></div>
+    <button class="btn-add" style="width:100%; margin-top:10px; background-color:#4a6fa5;" onclick="copy()">写し取る</button>
 </div>
 
 <script>
 const master = {
-    "髪設定": {
-        "スタイル": { "ポニーテール": "ponytail", "ツインテール": "twin tails", "ボブ": "short bob", "姫カット": "hime cut" },
-        "パーツ": { "アホ毛": "ahoge", "サイドロック": "sidelocks", "三つ編み": "braids" }
-    },
-    "顔・瞳": {
-        "表情": { "ジト目": "jitome", "ドヤ顔": "smug", "照れ": "blushing", "驚き": "surprised" },
-        "瞳の特殊": { "ハート瞳": "heart-shaped pupils", "発光": "glowing eyes", "十字瞳": "cross-shaped pupils" }
-    },
-    "衣装": {
-        "トップス": { "セーラー服": "school uniform", "パーカー": "hoodie", "着物": "kimono", "ドレス": "dress" },
-        "ボトムス": { "ミニスカ": "miniskirt", "タイツ": "pantyhose", "ショートパンツ": "short shorts" }
-    },
-    "構図": {
-        "アングル": { "俯瞰": "from above", "煽り": "from below", "横顔": "profile view" }
-    }
+    "髪設定": { "スタイル": { "ポニテ": "ponytail", "ツインテ": "twin tails", "ボブ": "short bob" }, "パーツ": { "アホ毛": "ahoge", "三つ編み": "braids" } },
+    "顔・瞳": { "表情": { "ジト目": "jitome", "ドヤ顔": "smug" }, "瞳": { "ハート": "heart pupils" } },
+    "衣装": { "トップス": { "セーラー": "school uniform", "ドレス": "dress" } }
 };
-
 const subs = {
-    "カラー": { "赤色": "red", "青色": "blue", "金色": "gold", "銀色": "silver", "虹色": "rainbow" },
-    "マテリアル": { "金属質": "metallic", "透明感": "transparent", "光沢": "shiny", "濡れ": "wet" },
-    "サイズ": { "ロング": "long", "ショート": "short", "巨大": "huge" },
+    "カラー": { "赤色": "red", "青色": "blue", "金色": "gold" },
+    "マテリアル": { "金属": "metallic", "光沢": "shiny" },
     "ブランク": { "なし": "" }
 };
 
@@ -203,8 +138,8 @@ function init() {
     for (let k in master) m1.add(new Option(k, k));
     const s1 = document.getElementById('s1');
     for (let k in subs) s1.add(new Option(k, k));
-    syncM2();
-    syncS2();
+    syncM2(); syncS2();
+    setupDragAndDrop();
 }
 
 function syncM2() {
@@ -234,57 +169,93 @@ function pushStock() {
     const m = document.getElementById('m3').value;
     const s = document.getElementById('s2').value;
     const w = document.getElementById('weight').value;
-    stockItems.push({ m, s, w });
+    stockItems.push({ m, s, w, id: Date.now() });
     drawStock();
 }
 
 function drawStock() {
     const area = document.getElementById('stock-area');
     area.innerHTML = "";
-    stockItems.forEach((item, i) => {
+    stockItems.forEach(item => {
         const d = document.createElement('div');
         d.className = "stock-item";
+        d.draggable = true;
+        d.dataset.id = item.id;
         d.textContent = (item.s ? item.s + " " : "") + item.m;
         d.onclick = () => d.classList.toggle('selected');
-        d.dataset.idx = i;
         area.appendChild(d);
+
+        d.addEventListener('dragstart', (e) => {
+            d.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', item.id);
+        });
+        d.addEventListener('dragend', () => d.classList.remove('dragging'));
+    });
+}
+
+function setupDragAndDrop() {
+    const area = document.getElementById('stock-area');
+    const bin = document.getElementById('trash-bin');
+
+    // 並び替えロジック
+    area.addEventListener('dragover', e => {
+        e.preventDefault();
+        const dragging = document.querySelector('.dragging');
+        if (!dragging) return;
+        const afterElement = [...area.querySelectorAll('.stock-item:not(.dragging)')].reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = e.clientX - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) return { offset, element: child };
+            else return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+        if (afterElement == null) area.appendChild(dragging);
+        else area.insertBefore(dragging, afterElement);
+    });
+
+    area.addEventListener('drop', () => {
+        stockItems = Array.from(area.querySelectorAll('.stock-item')).map(el => stockItems.find(it => it.id == el.dataset.id));
+    });
+
+    // ゴミ箱ロジック
+    bin.addEventListener('dragover', e => {
+        e.preventDefault();
+        bin.classList.add('drag-over');
+    });
+
+    bin.addEventListener('dragleave', () => {
+        bin.classList.remove('drag-over');
+    });
+
+    bin.addEventListener('drop', e => {
+        e.preventDefault();
+        bin.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        stockItems = stockItems.filter(it => it.id != id);
+        drawStock();
     });
 }
 
 function build() {
     const sels = Array.from(document.querySelectorAll('.stock-item.selected'));
     if (sels.length === 0) return;
-    
-    let words = [];
-    let weight = "1.0";
+    let words = []; let weight = "1.0";
     sels.forEach(el => {
-        const it = stockItems[el.dataset.idx];
+        const it = stockItems.find(item => item.id == el.dataset.id);
         weight = it.weight;
         if (it.s) words.push(it.s);
         words.push(it.m);
     });
-    
-    const combined = words.join(", ");
-    const res = weight === "1.0" ? combined : `(${combined}:${weight})`;
-    outputList.push(res);
+    const combined = weight === "1.0" ? words.join(", ") : `(${words.join(", ")}:${weight})`;
+    outputList.push(combined);
     document.getElementById('final-output').textContent = outputList.join(", ");
-    
-    stockItems = stockItems.filter((_, i) => !sels.some(s => s.dataset.idx == i));
+    const sIds = sels.map(el => el.dataset.id);
+    stockItems = stockItems.filter(it => !sIds.includes(String(it.id)));
     drawStock();
 }
 
 function copy() {
     navigator.clipboard.writeText(document.getElementById('final-output').textContent);
     alert("叡智を写し取ったで！");
-}
-
-function clearAll() {
-    if(confirm("魔導書を白紙にするか？")) {
-        stockItems = [];
-        outputList = [];
-        drawStock();
-        document.getElementById('final-output').textContent = "";
-    }
 }
 
 init();
