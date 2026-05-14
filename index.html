@@ -3,221 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <!-- アプリ化の設定（成功していた当時のまま） -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#3d2b1f">
-
-    <title>叡智の魔導書 Ver.17.9</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>叡智の魔導書 Ver.17.2</title>
     <style>
         :root {
-            --bg-paper: #f4ecd8;
-            --ink: #2c1e14;
-            --gold: #b08d57;
-            --accent: #5a7d6a;
-            --fav-red: #d66d67;
-            --tab-inactive: #e9dcc0;
-            --chip-bg: #fff;
-            --chip-active: #5a7d6a;
+            --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; --accent: #5a7d6a; --fav-red: #d66d67; --tab-inactive: #e9dcc0;
         }
-
-        body { 
-            background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; color: var(--ink);
-            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        /* ヘッダー・タブは上部に固定 */
-        header { background: var(--bg-paper); padding: 10px; border-bottom: 2px solid var(--gold); flex-shrink: 0; z-index: 10; }
-        .search-container { display: flex; gap: 8px; }
-        #search-box { flex-grow: 1; padding: 10px; border: 1px solid var(--gold); border-radius: 20px; font-size: 0.9rem; }
-        .btn-icon { background: var(--gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; }
-
-        .tab-bar { display: flex; overflow-x: auto; background: var(--tab-inactive); white-space: nowrap; scrollbar-width: none; flex-shrink: 0; }
-        .tab-btn { padding: 12px 18px; border: none; background: none; font-weight: bold; font-size: 0.8rem; color: #5a3e2b; }
+        body { background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; color: var(--ink); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { background: var(--bg-paper); padding: 12px; border-bottom: 2px solid var(--gold); }
+        .search-container { display: flex; gap: 10px; }
+        #search-box { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 25px; font-size: 0.9rem; }
+        .btn-icon { background: var(--gold); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+        .tab-bar { display: flex; overflow-x: auto; background: var(--tab-inactive); border-bottom: 1px solid var(--gold); }
+        .tab-btn { padding: 12px 20px; border: none; background: none; font-weight: bold; font-size: 0.85rem; color: #5a3e2b; }
         .tab-btn.active { background: var(--bg-paper); border-bottom: 3px solid var(--gold); }
-
-        /* 中央のタイルエリア */
-        main { 
-            flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 10px; 
-            padding-bottom: 120px; /* フッターの高さ分を確保 */
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px; align-content: flex-start;
-        }
-        .tile { background: rgba(255,255,255,0.7); border: 1px solid rgba(176,141,87,0.3); border-radius: 8px; padding: 10px 5px; text-align: center; position: relative; }
-        .tile .jp { display: block; font-weight: bold; font-size: 0.75rem; margin-bottom: 2px; }
-        .tile .en { display: block; font-size: 0.55rem; color: #777; }
-        .user-mark { position: absolute; top: 2px; right: 4px; color: var(--gold); font-size: 0.7rem; }
-
-        /* コンソール */
-        #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; }
-        #console { position: absolute; bottom: 0; width: 100%; background: var(--bg-paper); padding: 20px; border-radius: 20px 20px 0 0; box-sizing: border-box; max-height: 80vh; overflow-y: auto; border-top: 4px solid var(--gold); }
-        .console-section { margin-bottom: 15px; }
-        .console-label { font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; display: block; color: var(--gold); border-left: 3px solid var(--gold); padding-left: 6px; }
-        .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .chip { padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 15px; font-size: 0.75rem; color: #5a3e2b; }
-        .chip.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: bold; }
-
-        /* 呪文欄（フッター）：確実に底に張り付く設定 */
-        footer { 
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; border-top: 2px solid var(--gold); 
-            padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); 
-            box-sizing: border-box; z-index: 20;
-        }
-        #output-area { width: 100%; height: 50px; border: 1px solid #eee; padding: 8px; box-sizing: border-box; font-family: monospace; font-size: 0.85rem; background: #f9f9f9; border-radius: 6px; resize: none; }
-        #output-area.expanded { height: 150px; }
+        main { flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+        .tile { background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; }
+        .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
+        .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
+        footer { background: white; border-top: 2px solid var(--gold); padding: 10px; }
+        #output-area { width: 100%; height: 50px; border: 1px solid #ddd; padding: 10px; font-family: monospace; font-size: 0.9rem; background: #fafafa; }
         .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
-        .btn-action { padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 0.75rem; color: white; cursor: pointer; }
-
-        #dict-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid var(--gold); padding: 20px; z-index: 110; display: none; width: 85%; border-radius: 12px; }
-        .modal-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-action { padding: 10px; border: none; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; }
     </style>
 </head>
 <body>
-
 <header>
     <div class="search-container">
-        <input type="text" id="search-box" placeholder="日本語・英語で検索..." oninput="refreshDisplay()">
+        <input type="text" id="search-box" placeholder="検索..." oninput="refreshDisplay()">
         <button class="btn-icon" onclick="openDictModal()">✏️</button>
     </div>
 </header>
-
 <div class="tab-bar" id="tab-bar"></div>
 <main id="tile-area"></main>
-
-<div id="console-overlay" onclick="closeConsole()">
-    <div id="console" onclick="event.stopPropagation()">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <h3 id="console-title" style="margin:0; font-size:1.1rem; color:var(--ink);"></h3>
-            <button onclick="closeConsole()" style="background:none; border:none; font-size:1.5rem;">×</button>
-        </div>
-        <div class="console-section"><span class="console-label">色彩：明るさ・鮮やかさ</span><div id="group-tone" class="chip-group"></div></div>
-        <div class="console-section"><span class="console-label">色彩：ベースの色</span><div id="group-hue" class="chip-group"></div></div>
-        <div class="console-section"><span class="console-label">形態：サイズ・長さ</span><div id="group-length" class="chip-group"></div></div>
-        <div class="console-section"><span class="console-label">質感・こだわり詳細</span><div id="group-material" class="chip-group"></div></div>
-        <div class="console-section"><span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span><input type="range" id="console-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;"></div>
-        <button onclick="commitTag()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold;">詠唱台に反映</button>
-    </div>
-</div>
-
-<div id="dict-modal">
-    <h3 style="margin:0 0 10px;">外典登録</h3>
-    <select id="reg-cat" class="modal-input"></select>
-    <input type="text" id="reg-jp" class="modal-input" placeholder="名前">
-    <input type="text" id="reg-en" class="modal-input" placeholder="タグ">
-    <div style="display:flex; gap:10px;">
-        <button onclick="saveToDict()" style="flex:1; padding:12px; background:var(--gold); color:white; border:none; border-radius:6px;">登録</button>
-        <button onclick="closeDictModal()" style="flex:1; padding:12px; background:#ccc; color:white; border:none; border-radius:6px;">閉じる</button>
-    </div>
-</div>
-
 <footer>
-    <textarea id="output-area" readonly onclick="toggleExpand()" placeholder="呪文を紡ぐ..."></textarea>
+    <textarea id="output-area" readonly placeholder="呪文が紡がれます..."></textarea>
     <div class="footer-btns">
         <button class="btn-action" style="background:#4a6fa5;" onclick="copyOutput()">COPY</button>
         <button class="btn-action" style="background:#8e9aaf;" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background:var(--fav-red);" onclick="saveToFav()">FAV</button>
+        <button class="btn-action" style="background:#d66d67;" onclick="saveToFav()">FAV</button>
     </div>
 </footer>
-
 <script>
-const baseCategories = ["演出", "顔・体", "髪", "衣装", "ポーズ", "背景", "お気に入りリスト"];
-const masterData = [
-    { cat: "演出", jp: "アニメ風", en: "anime style" }, { cat: "演出", jp: "イラスト", en: "illustration" }, { cat: "演出", jp: "逆光", en: "back lighting" },
-    { cat: "顔・体", jp: "笑顔", en: "happy" }, { cat: "顔・体", jp: "照れ", en: "blush" }, { cat: "顔・体", jp: "ウインク", en: "wink" },
-    { cat: "髪", jp: "ポニーテール", en: "ponytail" }, { cat: "髪", jp: "ツインテール", en: "twintails" }, { cat: "髪", jp: "アホ毛", en: "ahoge" },
-    { cat: "衣装", jp: "オフショルダー", en: "off-shoulder" }, { cat: "衣装", jp: "セーラー服", en: "sailor uniform" }, { cat: "衣装", jp: "ミニスカート", en: "miniskirt" },
-    { cat: "ポーズ", jp: "立ちポーズ", en: "standing" }, { cat: "ポーズ", jp: "ピース", en: "peace sign" },
-    { cat: "背景", jp: "ライブステージ", en: "concert stage" }, { cat: "背景", jp: "青空", en: "blue sky" }
-];
-const slots = {
-    tone: [{jp:"ビビッド", en:"vivid"}, {jp:"パステル", en:"pastel"}, {jp:"淡い", en:"pale"}, {jp:"深い", en:"deep"}],
-    hue: [{jp:"赤", en:"red"}, {jp:"ピンク", en:"pink"}, {jp:"青", en:"blue"}, {jp:"白", en:"white"}, {jp:"金", en:"gold"}],
-    length: [{jp:"ショート", en:"short"}, {jp:"ロング", en:"long"}, {jp:"ミニ", en:"mini"}],
-    material: [{jp:"フリル", en:"frilled"}, {jp:"光沢", en:"shiny"}, {jp:"シースルー", en:"see-through"}]
-};
-
-let userDict = JSON.parse(localStorage.getItem('amo_grimoire_dict')) || [];
-let favorites = JSON.parse(localStorage.getItem('amo_grimoire_favs')) || [];
-window.currentTab = "演出";
-
-function init() {
-    const tabBar = document.getElementById('tab-bar');
-    const regCat = document.getElementById('reg-cat');
-    baseCategories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = `tab-btn ${cat === window.currentTab ? 'active' : ''}`;
-        btn.textContent = cat;
-        btn.onclick = () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); window.currentTab = cat; refreshDisplay(); };
-        tabBar.appendChild(btn);
-        if(cat !== "お気に入りリスト") regCat.add(new Option(cat, cat));
-    });
-    Object.keys(slots).forEach(key => {
-        const container = document.getElementById(`group-${key}`);
-        slots[key].forEach(obj => {
-            const chip = document.createElement('div');
-            chip.className = "chip"; chip.textContent = obj.jp; chip.dataset.en = obj.en;
-            chip.onclick = () => {
-                const isSelected = chip.classList.contains('active');
-                document.querySelectorAll(`#group-${key} .chip`).forEach(c => c.classList.remove('active'));
-                if(!isSelected) chip.classList.add('active');
-            };
-            container.appendChild(chip);
-        });
-    });
-    refreshDisplay();
-}
-
+// シンプルなVer.17.2のロジック（一部簡略化）
+const baseCategories = ["演出", "顔・体", "髪", "衣装"];
+const masterData = [{ cat: "衣装", jp: "オフショルダー", en: "off-shoulder" }];
 function refreshDisplay() {
-    const query = document.getElementById('search-box').value.toLowerCase();
-    const area = document.getElementById('tile-area');
-    area.innerHTML = "";
-    if (window.currentTab === "お気に入りリスト" && !query) {
-        favorites.forEach((f, i) => {
-            const t = document.createElement('div'); t.className = "tile"; t.style.borderColor = "var(--fav-red)";
-            t.innerHTML = `<span class="jp">${f.name}</span><span style="font-size:0.5rem;color:red;display:block;" onclick="deleteFav(${i});event.stopPropagation();">[削除]</span>`;
-            t.onclick = () => { document.getElementById('output-area').value = f.code; }; area.appendChild(t);
-        });
-        return;
-    }
-    const combined = [...masterData, ...userDict];
-    const filtered = combined.filter(d => (query !== "" || d.cat === window.currentTab) && (d.jp.includes(query) || d.en.includes(query)));
-    filtered.forEach(item => {
+    const area = document.getElementById('tile-area'); area.innerHTML = "";
+    masterData.forEach(item => {
         const t = document.createElement('div'); t.className = "tile";
-        if(item.isUser) t.innerHTML += `<span class="user-mark">★</span>`;
-        t.innerHTML += `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-        t.onclick = () => openConsole(item); area.appendChild(t);
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+        area.appendChild(t);
     });
 }
-
-function openConsole(item) { window.activeItem = item; document.getElementById('console-title').textContent = item.jp; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); document.getElementById('console-overlay').style.display = "block"; }
-function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
-function commitTag() {
-    const getEn = (id) => { const el = document.querySelector(`#group-${id} .chip.active`); return el ? el.dataset.en : ""; };
-    const res = [getEn('tone'), getEn('hue'), getEn('material'), getEn('length'), window.activeItem.en].filter(v => v).join(" ");
-    const weight = document.getElementById('console-weight').value;
-    const final = (weight !== "1.0") ? `(${res}:${weight})` : res;
-    const out = document.getElementById('output-area');
-    out.value += (out.value ? ", " : "") + final + ", "; closeConsole();
-}
-function toggleExpand() { document.getElementById('output-area').classList.toggle('expanded'); }
-function copyOutput() { navigator.clipboard.writeText(document.getElementById('output-area').value).then(() => alert("コピー完了！")); }
-function resetOutput() { if(confirm("クリアする？")) document.getElementById('output-area').value = ""; }
-function openDictModal() { document.getElementById('dict-modal').style.display = "block"; }
-function closeDictModal() { document.getElementById('dict-modal').style.display = "none"; }
-function saveToDict() {
-    const jp = document.getElementById('reg-jp').value, en = document.getElementById('reg-en').value, cat = document.getElementById('reg-cat').value;
-    if(!jp || !en) return; userDict.push({cat, jp, en, isUser:true});
-    localStorage.setItem('amo_grimoire_dict', JSON.stringify(userDict)); closeDictModal(); refreshDisplay();
-}
-function saveToFav() {
-    const c = document.getElementById('output-area').value; if(!c) return;
-    const n = prompt("お気に入り名を入力してな"); if(!n) return;
-    favorites.push({name:n, code:c}); localStorage.setItem('amo_grimoire_favs', JSON.stringify(favorites));
-}
-function deleteFav(i) { favorites.splice(i,1); localStorage.setItem('amo_grimoire_favs', JSON.stringify(favorites)); refreshDisplay(); }
-
-init();
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output-area').value); }
+function resetOutput() { document.getElementById('output-area').value = ""; }
+refreshDisplay();
 </script>
 </body>
 </html>
