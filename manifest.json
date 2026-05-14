@@ -1,11 +1,15 @@
 {
-  "name": "My Spell Book",
-  "short_name": "Spell",
-  "start_url": "index.html",
+  "name": "叡智の魔導書",
+  "short_name": "魔導書",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f0f4f8",
-  "theme_color": "#4a90e2",
+  "background_color": "#3d2b1f",
+  "theme_color": "#3d2b1f",
   "icons": [
-    { "src": "icon.png", "sizes": "192x192", "type": "image/png" }
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209260.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
