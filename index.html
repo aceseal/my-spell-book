@@ -20,7 +20,7 @@
     /* フッター：出力操作（Footer Actions） */
     --action-copy: #4a6fa5;   /* COPY用 */
     --action-clear: #d66d67;  /* CLEAR用 */
-    --action-fav: #8e9aaf;    /* FAV用 */
+    --action-undo: #8e9aaf; /* Undo用 */
     /* コンソール：反映と中断（Console Actions） */
     --console-commit: #5a7d6a; /* 詠唱台に反映用 */
     --console-cancel: #bc7670; /* 戻るボタン用 */
@@ -145,7 +145,7 @@
     <div class="footer-btns">
         <button class="btn-action" style="background: var(--action-copy);" onclick="copyOutput()">COPY</button>
         <button class="btn-action" style="background: var(--action-clear);" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background: var(--action-fav);" onclick="alert('お気に入りは後ほど！')">FAV</button>
+        <button class="btn-action" style="background: var(--action-undo);" onclick="undo()">UNDO</button>
     </div>
 </footer>
 
@@ -862,7 +862,9 @@ let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
 let currentMode = 'pos'; 
-
+let posHistory = []; // ポジティブ呪文のスタック
+let negHistory = []; // ネガティブ（Avoid）のスタック
+    
 function buildCategories() {
     categories = {};
     masterData.forEach(item => {
@@ -887,6 +889,16 @@ function setParent(p) {
     const cBar = document.getElementById('c-tabs');
     cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
     if (cs.length > 0) setChild(cs[0]); else { curC = ""; refreshDisplay(); }
+}
+
+function updateTextarea() {
+    // 配列の要素を ", " で繋いで、最後にもカンマとスペースを添える
+    // もし配列が空なら、textarea も空にする
+    const posText = posHistory.length > 0 ? posHistory.join(", ") + ", " : "";
+    const negText = negHistory.length > 0 ? negHistory.join(", ") + ", " : "";
+    
+    document.getElementById('pos-area').value = posText;
+    document.getElementById('neg-area').value = negText;
 }
 
 function setChild(c) {
