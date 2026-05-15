@@ -506,11 +506,11 @@ const masterData = [
 { p: "顔", c: "表情", jp: "三角口", en: "triangle mouth", attrs: [] },
 { p: "顔", c: "表情", jp: "舌出し", en: "tongue out", attrs: [] },
 { p: "顔", c: "表情", jp: "いたずらな顔", en: "naughty face", attrs: [] },
-{ p: "顔", c: "メイク", jp: "アイシャドウ", en: "eye shadow", attrs: ["color"] },
-{ p: "顔", c: "メイク", jp: "口紅", en: "lipstick", attrs: ["color"] },
+{ p: "顔", c: "メイク", jp: "アイシャドウ", en: "eye shadow", attrs: ["tone", "color"] },
+{ p: "顔", c: "メイク", jp: "口紅", en: "lipstick", attrs: ["tone", "color"] },
 { p: "顔", c: "メイク", jp: "泣きぼくろ", en: "teary mole", attrs: [] },
-{ p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["color"] },
-{ p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["color"] },
+{ p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["tone", "color"] },
+{ p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["tone", "color"] },
 
 // --- ポーズ (attrs: []) ---
 { p: "ポーズ", c: "全身", jp: "寝そべり", en: "lying", attrs: [] },
@@ -874,16 +874,16 @@ const masterData = [
 { p: "衣装", c: "ボトムス", jp: "チェック柄スカート", en: "plaid skirt", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ギンガムスカート", en: "gingham skirt", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "ボトムス", jp: "スパッツ", en: "bike shorts", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "ワンピース", en: "one-piece dress", attrs: [] },
-{ p: "衣装", c: "全身衣装", jp: "カジュアルワンピース", en: "casual dress", attrs: [] },
-{ p: "衣装", c: "全身衣装", jp: "サマードレス", en: "summer dress", attrs: [] },
-{ p: "衣装", c: "全身衣装", jp: "サン・ドレス（露出多め）", en: "sundress", attrs: ["ノースリーブや背中開きになりやすい"] },
-{ p: "衣装", c: "全身衣装", jp: "シャツワンピース", en: "shirt dress", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "ノースリーブワンピ", en: "sleeveless dress", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "キャミワンピ", en: "camisole dress", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "ジャンパースカート", en: "pinafore dress", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "オーバーオール", en: "overalls", attrs: ["tone", "color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ワンピース", en: "one-piece dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "カジュアルワンピース", en: "casual dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "サマードレス", en: "summer dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "サン・ドレス（露出多め）", en: "sundress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "シャツワンピース", en: "shirt dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ノースリーブワンピ", en: "sleeveless dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "キャミワンピ", en: "camisole dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ジャンパースカート", en: "pinafore dress", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "オーバーオール", en: "overalls", attrs: ["tone", "color", "length", "material"] },
 { p: "衣装", c: "全身衣装", jp: "サロペット", en: "saloppette", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "フィッシュテール", en: "high-low skirt", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "セーラードレス", en: "sailor dress", attrs: ["tone", "color", "material"] },
@@ -893,8 +893,8 @@ const masterData = [
 { p: "衣装", c: "全身衣装", jp: "燕尾服", en: "tailcoat", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "フォーマル", en: "formal clothes", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "アオザイ", en: "ao dao", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "着物", en: "kimono", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "全身衣装", jp: "浴衣", en: "yukata", attrs: ["tone", "color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "着物", en: "kimono", attrs: ["tone", "color", "length", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "浴衣", en: "yukata", attrs: ["tone", "color", "length", "material"] },
 { p: "衣装", c: "全身衣装", jp: "袴", en: "hakama", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "ロリィタ", en: "lolita fashion", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "全身衣装", jp: "ゴスロリ服", en: "gothic lolita fashion", attrs: ["tone", "color"] },
@@ -903,7 +903,6 @@ const masterData = [
 { p: "衣装", c: "全身衣装", jp: "体操着", en: "gym uniform", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "アウター", jp: "ジャケット", en: "jacket", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "アウター", jp: "ブレザー", en: "blazer", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "アウター", jp: "パーカー", en: "hoodie", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "アウター", jp: "白衣", en: "lab coat", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "アウター", jp: "コート", en: "coat", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "アウター", jp: "ロングコート", en: "long coat", attrs: ["tone", "color", "material"] },
@@ -922,7 +921,6 @@ const masterData = [
 { p: "衣装", c: "シューズ", jp: "サンダル", en: "sandals", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "パンプス", en: "pumps", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "ハイヒール", en: "high heels", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "シューズ", jp: "紳士靴", en: "dress shoes", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "ローファー", en: "loaders", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "スリッパ", en: "slippers", attrs: ["tone", "color", "material"] },
@@ -987,7 +985,7 @@ const masterData = [
 { p: "小物・持ち物", c: "日常品", jp: "手紙・書類", en: "letter", attrs: ["material"] },
 { p: "小物・持ち物", c: "食べ物・飲み物", jp: "紅茶（ティーカップ）", en: "tea cup", attrs: ["material", "color"] },
 { p: "小物・持ち物", c: "食べ物・飲み物", jp: "クレープ", en: "crepe", attrs: [] },
-{ p: "小物・持ち物", c: "食べ物・飲み物", jp: "酒瓶", en: "bottle of alcohol", attrs: ["material"] }
+{ p: "小物・持ち物", c: "食べ物・飲み物", jp: "水ペットボトル", en: "plastic bottle of water", attrs: ["material"] }
 ];
 
 const attributes = {
@@ -1011,8 +1009,8 @@ const attributes = {
             {jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}, {jp:"ブロンズ", en:"Bronze"}, {jp:"銅", en:"Copper"}]
     },
     length: [
-        {jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}, 
-        {jp:"巨大", en:"Huge"}, {jp:"ミニ", en:"Mini"}
+        {jp:"短い", en:"Short"}, {jp:"中間", en:"Medium"}, {jp:"長い", en:"Long"}, 
+        {jp:"巨大", en:"Huge"}, {jp:"標準", en:"Standard"}, {jp:"ミニ", en:"Mini"}
     ],
     material: [
         {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
