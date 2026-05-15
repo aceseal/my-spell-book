@@ -796,12 +796,29 @@ const masterData = [
 { p: "衣装", c: "衣装細部", jp: "レース刺繍", en: "lace trim", attrs: ["color", "material"] }
 ];
 
-// --- 以下、ロジック修正版 ---
 const attributes = {
-    tone: [{jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}],
-    color: [{jp:"白", en:"White"}, {jp:"黒", en:"Black"}, {jp:"赤", en:"Red"}, {jp:"青", en:"Blue"}, {jp:"金", en:"Gold"}],
-    length: [{jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}],
-    material: [{jp:"シルク", en:"Silk"}, {jp:"金属", en:"Metal"}, {jp:"レザー", en:"Leather"}]
+    tone: [
+        {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
+        {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"くすんだ", en:"Muted"}
+    ],
+    // 色彩をグループ化
+    color: {
+        "無彩色": [
+            {jp:"白", en:"White"}, {jp:"黒", en:"Black"}, {jp:"灰色", en:"Gray"}, {jp:"銀色", en:"Silver"}
+        ],
+        "有彩色": [
+            {jp:"赤", en:"Red"}, {jp:"青", en:"Blue"}, {jp:"緑", en:"Green"}, {jp:"黄", en:"Yellow"}, 
+            {jp:"紫", en:"Purple"}, {jp:"桃色", en:"Pink"}, {jp:"橙色", en:"Orange"}, {jp:"茶色", en:"Brown"}
+        ],
+        "金属・特殊": [
+            {jp:"金色", en:"Gold"}, {jp:"銅色", en:"Copper"}, {jp:"虹色", en:"Iridescent"}, {jp:"ネオン", en:"Neon"}
+        ]
+    },
+    length: [{jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}, {jp:"超長い", en:"Very Long"}],
+    material: [
+        {jp:"シルク", en:"Silk"}, {jp:"金属", en:"Metal"}, {jp:"レザー", en:"Leather"}, 
+        {jp:"デニム", en:"Denim"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
+    ]
 };
 
 let categories = {}; 
@@ -885,9 +902,40 @@ function openConsole(item) {
     document.getElementById('console-overlay').style.display = "flex";
 }
 
-function renderChips(type, list) {
+function renderChips(type, data) {
     const div = document.getElementById(type === 'color' ? 'list-color' : `lst-${type}`);
-    div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
+    div.innerHTML = "";
+
+    if (type === 'color') {
+        // 色彩パレット専用：グループごとに描画
+        for (const [groupName, list] of Object.entries(data)) {
+            const groupLabel = document.createElement('div');
+            groupLabel.style = "font-size:0.6rem; color:var(--gold); margin-top:10px; width:100%; border-bottom:1px solid #ddd;";
+            groupLabel.innerText = groupName;
+            div.appendChild(groupLabel);
+            
+            list.forEach(v => {
+                const chip = createChip(type, v);
+                div.appendChild(chip);
+            });
+        }
+    } else {
+        // 通常の属性（トーン、長さなど）
+        data.forEach(v => {
+            const chip = createChip(type, v);
+            div.appendChild(chip);
+        });
+    }
+}
+
+function createChip(type, v) {
+    const chip = document.createElement('div');
+    chip.className = "chip";
+    if (selAttr[type] === v.en && v.en !== "") chip.classList.add('active');
+    chip.id = `cp-${type}-${v.en}`;
+    chip.innerHTML = `${v.jp}<small>${v.en}</small>`;
+    chip.onclick = () => selectAttr(type, v.en);
+    return chip;
 }
 
 function selectAttr(type, en, jp) {
