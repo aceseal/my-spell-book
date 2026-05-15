@@ -150,7 +150,7 @@
     <div class="output-container">
         <div class="output-tab">
             <button id="tab-pos" class="active" onclick="switchOutput('pos')">叡智の呪文 (Positive)</button>
-            <button id="tab-neg" onclick="switchOutput('neg')">叡智の対価 (Negative)</button>
+            <button id="tab-neg" onclick="switchOutput('neg')">叡智の禁忌 (Negative)</button>
         </div>
         <textarea id="pos-area" placeholder="呪文が紡がれます..."></textarea>
         <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..."></textarea>
@@ -158,7 +158,7 @@
     <div class="footer-btns">
         <button class="btn-action" style="background: var(--action-copy);" onclick="copyOutput()">呪文を詠唱</button>
         <button class="btn-action" style="background: var(--action-clear);" onclick="resetOutput()">呪文を破棄</button>
-        <button class="btn-action" style="background: var(--action-undo);" onclick="undo()">1つ戻る</button>
+        <button class="btn-action" style="background: var(--action-undo);" onclick="undo()">1節巻き戻す</button>
     </div>
 </footer>
 
@@ -1148,7 +1148,7 @@ function commit() {
 function undo() {
     if (currentMode === 'pos' && posHistory.length === 0) return;// 履歴が空の場合は何もしない（ポップアップの煩わしさを防止）
     if (currentMode === 'neg' && negHistory.length === 0) return;// 確認ポップアップを出して、OKなら1つ消す
-    if (confirm("1つ戻りますか？")) {if (currentMode === 'pos') { posHistory.pop(); } else { negHistory.pop(); }updateTextarea();}
+    if (confirm("呪文を1節巻き戻しますか？")) {if (currentMode === 'pos') { posHistory.pop(); } else { negHistory.pop(); }updateTextarea();}
 }
     
 function resetOutput() {
