@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#3d2b1f">
 
-    <title>叡智の魔導書 Ver.18.8</title>
+    <title>叡智の魔導書 Ver.18.9</title>
     <style>
         :root {
             --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
@@ -796,6 +796,7 @@ const masterData = [
 { p: "衣装", c: "衣装細部", jp: "レース刺繍", en: "lace trim", attrs: ["color", "material"] }
 ];
 
+// --- 以下、ロジック修正版 ---
 const attributes = {
     tone: [{jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}],
     color: [{jp:"白", en:"White"}, {jp:"黒", en:"Black"}, {jp:"赤", en:"Red"}, {jp:"青", en:"Blue"}, {jp:"金", en:"Gold"}],
@@ -807,7 +808,7 @@ let categories = {};
 let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
-let currentMode = 'pos'; // 'pos' or 'neg'
+let currentMode = 'pos'; 
 
 function buildCategories() {
     categories = {};
@@ -896,6 +897,7 @@ function selectAttr(type, en, jp) {
     if(!isOff) document.getElementById(`cp-${type}-${en}`).classList.add('active');
 }
 
+// 【修正ポイント：単語追加ロジック】
 function commit() {
     const { tone, color, length, material } = selAttr;
     const p = [tone, color, length, material, activeItem.en].filter(x => x).join(" ");
@@ -903,16 +905,52 @@ function commit() {
     const final = (w === 1) ? p : `(${p}:${w})`;
     const target = currentMode === 'pos' ? 'pos-area' : 'neg-area';
     const out = document.getElementById(target);
-    out.value += (out.value ? ", " : "") + final + ", ";
+    
+    // 単語の後ろにだけカンマを付ける（前への自動カンマは廃止）
+    out.value += final + ", ";
     closeConsole();
 }
 
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
+
+// 【修正ポイント：合体・浄化・ピリオド締めロジック】
 function copyOutput() {
-    const target = currentMode === 'pos' ? 'pos-area' : 'neg-area';
-    navigator.clipboard.writeText(document.getElementById(target).value).then(()=>alert("写本完了！"));
+    let posRaw = document.getElementById('pos-area').value.trim();
+    let negRaw = document.getElementById('neg-area').value.trim();
+
+    // アス比を抽出して最後に送る準備
+    let arMatch = posRaw.match(/--ar\s[\d:]+/);
+    let arPart = "";
+    if (arMatch) {
+        arPart = arMatch[0];
+        // 元の文字列からアス比タグを削り取る（カンマも整理）
+        posRaw = posRaw.replace(arMatch[0], "").replace(/,\s*,/g, ",").trim();
+    }
+
+    // 浄化：末尾のカンマを取り除いてピリオドにする関数
+    const clean = (str) => str.replace(/,[\s]*$/, "").trim();
+
+    let pos = clean(posRaw);
+    let neg = clean(negRaw);
+
+    // Nano Banana 2 (Gemini) 向けの合体ビルド
+    let result = "";
+    if (pos) result += pos + ".";
+    if (neg) result += (result ? " " : "") + "Avoid: " + neg + ".";
+    if (arPart) result += " Aspect ratio " + arPart.replace("--ar ", "") + ".";
+
+    // 連続したカンマやスペースを最終掃除
+    const finalMsg = result.replace(/,\s*,/g, ",").replace(/\s+/g, " ");
+
+    navigator.clipboard.writeText(finalMsg).then(() => {
+        alert("叡智の写本を合体・浄化したで！\n\n" + finalMsg);
+    });
 }
-function resetOutput() { if(confirm("浄化する？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
+
+function resetOutput() { 
+    const modeName = currentMode === 'pos' ? '呪文' : '対価';
+    if(confirm(modeName + "を浄化する？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; 
+}
 
 function openApocrypha() {
     const en = prompt("外典の真名（英語タグ）を入力せよ：");
