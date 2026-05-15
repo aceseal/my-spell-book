@@ -1039,7 +1039,7 @@ function switchOutput(mode) {
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
 
-function resetOutput() { if(confirm("呪文を浄化しますか？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
+function resetOutput() { if(confirm("呪文を破棄しますか？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 function openApocrypha() { let en = prompt("真名:"); if(en) masterData.push({p:curP, c:curC, jp:en, en:en, attrs:[]}); buildCategories(); refreshDisplay(); }
 
