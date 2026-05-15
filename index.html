@@ -867,10 +867,10 @@ let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
 let posHistory = []; // ポジティブ呪文のスタック
 let negHistory = []; // ネガティブ（Avoid）のスタック
-let userList = []; // ユーザー追加分だけのリスト
+let userList = [];   // ユーザー追加分だけのリスト
 let currentMode = 'pos'; 
 
-    
+// 1. カテゴリ構築
 function buildCategories() {
     categories = {};
     masterData.forEach(item => {
@@ -879,28 +879,68 @@ function buildCategories() {
     });
 }
 
+// 2. 初期化（UI構築とデータ読込を統合！）
 function init() {
-    buildCategories();
+    loadApocrypha();  // 外典読込
+    buildCategories(); // カテゴリ構築
+    
     const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景"];
     const pTabs = document.getElementById('p-tabs');
-    pTabs.innerHTML = order.filter(p => categories[p]).map(p => `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`).join('');
+    
+    // タブボタンの生成
+    pTabs.innerHTML = order.filter(p => categories[p]).map(p => 
+        `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`
+    ).join('');
+    
     if(order.length > 0) setParent(order[0]);
 }
 
+// --- 表示系 ---
 function setParent(p) {
     curP = p;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`pb-${p}`).classList.add('active');
+    const btn = document.getElementById(`pb-${p}`);
+    if(btn) btn.classList.add('active');
+    
     const cs = Array.from(categories[p] || []);
     const cBar = document.getElementById('c-tabs');
     cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
+    
     if (cs.length > 0) setChild(cs[0]); else { curC = ""; refreshDisplay(); }
 }
 
+function setChild(c) {
+    curC = c;
+    document.querySelectorAll('.child-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById(`cb-${c}`);
+    if(btn) btn.classList.add('active');
+    refreshDisplay();
+}
+
+// タイル表示（ネイビー対応版のみを残す）
+function refreshDisplay() {
+    const q = document.getElementById('search-box').value.toLowerCase();
+    const area = document.getElementById('tile-area');
+    area.innerHTML = "";
+    
+    const filtered = masterData.filter(d => 
+        (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC))
+    );
+    
+    filtered.forEach(item => {
+        const t = document.createElement('div');
+        // 外典ならネイビー、通常なら通常クラス
+        t.className = item.isUser ? "tile user-tile" : "tile"; 
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+        t.onclick = () => openConsole(item);
+        area.appendChild(t);
+    });
+}
+
+// --- 呪文操作系 ---
 function updateTextarea() {
     const posText = posHistory.length > 0 ? posHistory.join(", ") + ", " : "";
     const negText = negHistory.length > 0 ? negHistory.join(", ") + ", " : "";
-    
     document.getElementById('pos-area').value = posText;
     document.getElementById('neg-area').value = negText;
 }
@@ -910,44 +950,29 @@ function commit() {
     const tagText = parts.join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? tagText : `(${tagText}:${w})`;
-    if (currentMode === 'pos') {
-        posHistory.push(final);
-    } else {
-        negHistory.push(final);
-    }
-    updateTextarea(); // 表示を更新
+    
+    if (currentMode === 'pos') posHistory.push(final);
+    else negHistory.push(final);
+    
+    updateTextarea();
     closeConsole();
 }
 
 function undo() {
-    if (currentMode === 'pos') {
-        if (posHistory.length > 0) posHistory.pop();
-    } else {
-        if (negHistory.length > 0) negHistory.pop();
-    }
+    if (currentMode === 'pos') { if (posHistory.length > 0) posHistory.pop(); }
+    else { if (negHistory.length > 0) negHistory.pop(); }
     updateTextarea();
 }
 
-function setChild(c) {
-    curC = c;
-    document.querySelectorAll('.child-btn').forEach(b => b.classList.remove('active'));
-    if(document.getElementById(`cb-${c}`)) document.getElementById(`cb-${c}`).classList.add('active');
-    refreshDisplay();
+function resetOutput() {
+    if(confirm("呪文を破棄しますか？")) {
+        if (currentMode === 'pos') posHistory = [];
+        else negHistory = [];
+        updateTextarea();
+    }
 }
 
-function refreshDisplay() {
-    const q = document.getElementById('search-box').value.toLowerCase();
-    const area = document.getElementById('tile-area');
-    area.innerHTML = "";
-    masterData.filter(d => (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC))).forEach(item => {
-        const t = document.createElement('div');
-        t.className = "tile";
-        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-        t.onclick = () => openConsole(item);
-        area.appendChild(t);
-    });
-}
-
+// --- コンソール・その他 ---
 function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
@@ -985,7 +1010,8 @@ function selectAttr(type, en, jp) {
     selAttr[type] = isOff ? "" : en;
     document.querySelectorAll(`#lst-${type} .chip`).forEach(c => c.classList.remove('active'));
     if(!isOff) {
-        document.getElementById(`cp-${type}-${en}`).classList.add('active');
+        const target = document.getElementById(`cp-${type}-${en}`);
+        if(target) target.classList.add('active');
         updateLabel(type, jp);
     } else { updateLabel(type, ""); }
 }
@@ -1002,13 +1028,8 @@ function copyOutput() {
     let negRaw = document.getElementById('neg-area').value.trim();
     let arMatch = posRaw.match(/--ar\s[\d:]+/);
     let arPart = arMatch ? arMatch[0] : "";
-    if (arPart) {
-        posRaw = posRaw.replace(arPart, "");
-    }
-    const clean = (s) => s
-        .replace(/,\s*,/g, ",")
-        .replace(/[,\s]+$/, "")
-        .trim();
+    if (arPart) posRaw = posRaw.replace(arPart, "");
+    const clean = (s) => s.replace(/,\s*,/g, ",").replace(/[,\s]+$/, "").trim();
     let pos = clean(posRaw);
     let neg = clean(negRaw);
     let result = "";
@@ -1032,21 +1053,17 @@ function switchOutput(mode) {
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
 
+function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
+
+// --- 外典（ユーザー登録）系 ---
 function openApocrypha() {
-    let en = prompt("【外典登録】英語名を入力（例: neon glow）:");
+    let en = prompt("【外典登録】英語名（例: neon glow）:");
     if (!en) return;
-    let jp = prompt("【外典登録】日本語名を入力（例: ネオンの輝き）:");
+    let jp = prompt("【外典登録】日本語名（例: ネオンの輝き）:");
     if (!jp) return;
     const sample = masterData.find(d => d.p === curP && d.c === curC);
     const inheritedAttrs = sample ? [...sample.attrs] : [];
-    const newItem = {
-        p: curP,
-        c: curC,
-        jp: jp,
-        en: en,
-        attrs: inheritedAttrs,
-        isUser: true // 外典フラグ
-    };
+    const newItem = { p: curP, c: curC, jp: jp, en: en, attrs: inheritedAttrs, isUser: true };
     masterData.push(newItem);
     userList.push(newItem);
     saveApocrypha();
@@ -1054,33 +1071,18 @@ function openApocrypha() {
     refreshDisplay();
 }
 
-function saveApocrypha() {localStorage.setItem("myGrimoire_UserAdd", JSON.stringify(userList));}
-function loadApocrypha() {const saved = localStorage.getItem("myGrimoire_UserAdd");
-    if (saved) {const parsed = JSON.parse(saved);userList = parsed;parsed.forEach(userItem => 
-        {if (!masterData.some(m => m.en === userItem.en)) {masterData.push(userItem);}});}
+function saveApocrypha() { localStorage.setItem("myGrimoire_UserAdd", JSON.stringify(userList)); }
+function loadApocrypha() {
+    const saved = localStorage.getItem("myGrimoire_UserAdd");
+    if (saved) {
+        userList = JSON.parse(saved);
+        userList.forEach(userItem => {
+            if (!masterData.some(m => m.en === userItem.en)) {
+                masterData.push(userItem);
+            }
+        });
+    }
 }
-    
-function init() {loadApocrypha(); buildCategories();}
-function refreshDisplay() {
-    const q = document.getElementById('search-box').value.toLowerCase();
-    const area = document.getElementById('tile-area');
-    area.innerHTML = "";
-    
-    const filtered = masterData.filter(d => (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC)));
-    
-    filtered.forEach(item => {
-        const t = document.createElement('div');
-        // isUserフラグがあれば専用クラスを付与
-        t.className = item.isUser ? "tile user-tile" : "tile"; 
-        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-        t.onclick = () => openConsole(item);
-        area.appendChild(t);
-    });
-}
-
-
-function resetOutput() { if(confirm("呪文を破棄しますか？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
-function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 
 init();
 </script>
