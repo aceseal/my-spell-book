@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#3d2b1f">
 
-    <title>叡智の魔導書 Ver.18.3</title>
+    <title>叡智の魔導書 Ver.18.4</title>
     <style>
         :root {
             --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
@@ -22,13 +22,11 @@
             color: var(--ink); display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
         }
 
-        /* ヘッダー（17.2のまま） */
         header { background: var(--bg-paper); padding: 12px; border-bottom: 2px solid var(--gold); flex-shrink: 0; }
         .search-container { display: flex; gap: 10px; }
         #search-box { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 25px; font-size: 0.9rem; }
         .btn-icon { background: var(--gold); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
 
-        /* タブエリア（17.2のデザインを継承して2段化） */
         .tab-wrapper { flex-shrink: 0; }
         .scroll-nav { display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .scroll-nav::-webkit-scrollbar { display: none; }
@@ -37,7 +35,6 @@
         .tab-btn { padding: 12px 20px; border: none; background: none; font-weight: bold; font-size: 0.85rem; color: #5a3e2b; opacity: 0.6; }
         .tab-btn.active { opacity: 1; background: var(--bg-paper); border-bottom: 3px solid var(--gold); }
         
-        /* 2段目（子カテゴリ） */
         .child-bar { background: #dfd3b8; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .child-btn { 
             padding: 6px 12px; font-size: 0.75rem; border-radius: 15px; margin: 0 5px; 
@@ -45,7 +42,6 @@
         }
         .child-btn.active { background: var(--gold); color: white; }
 
-        /* メインエリア（17.2のタイルを再現） */
         main { 
             flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px;
@@ -55,11 +51,9 @@
             background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); 
             border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; 
         }
-        .tile:active { background: rgba(255,255,255,0.9); }
         .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
         .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
 
-        /* コンソール（17.2の世界観に合わせたデザイン） */
         #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; align-items: flex-end; }
         #console { 
             width: 100%; background: var(--bg-paper); padding: 20px; 
@@ -67,18 +61,17 @@
             box-sizing: border-box; max-height: 80vh; overflow-y: auto;
         }
         .console-section { margin-bottom: 18px; }
-        .console-label { 
-            font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; display: block; 
-            color: var(--ink); border-left: 4px solid var(--gold); padding-left: 8px;
-        }
+        .console-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; display: block; color: var(--ink); border-left: 4px solid var(--gold); padding-left: 8px; }
         .console-label.active { color: var(--gold); font-weight: bold; }
 
         .chip-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; }
         .chip { 
             padding: 8px 16px; background: #fff; border: 1px solid #ddd; border-radius: 20px; 
-            font-size: 0.8rem; white-space: nowrap; flex-shrink: 0;
+            font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; text-align: center;
         }
+        .chip small { display: block; font-size: 0.6rem; color: #888; }
         .chip.active { background: var(--gold); color: white; border-color: var(--gold); }
+        .chip.active small { color: #eee; }
 
         .drawer-nav { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; }
         .drawer-nav button { padding: 6px 12px; font-size: 0.7rem; border-radius: 5px; border: 1px solid var(--gold); background: #fff; }
@@ -88,7 +81,6 @@
         .btn-commit { flex: 2; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; }
         .btn-cancel { flex: 1; padding: 15px; background: var(--cancel-red); color: white; border: none; border-radius: 8px; font-weight: bold; }
 
-        /* 呪文台（17.2のまま） */
         footer { background: white; border-top: 2px solid var(--gold); padding: 10px; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; z-index: 20; }
         #output-area { width: 100%; height: 50px; border: 1px solid #ddd; padding: 10px; font-family: monospace; font-size: 0.9rem; background: #fafafa; border-radius: 4px; resize: none; box-sizing: border-box; }
         .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
@@ -100,7 +92,7 @@
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
-        <button class="btn-icon" onclick="alert('外典登録はデータ移植後に！')">✏️</button>
+        <button class="btn-icon" onclick="alert('外典登録は後ほど！')">✏️</button>
     </div>
 </header>
 
@@ -153,162 +145,26 @@
 </footer>
 
 <script>
-// --- カテゴリとデータ（ここをしっかり合わせるで！） ---
-const categories = {
-    "演出": ["画風", "アングル", "照明"],
-    "身体": ["髪型", "表情", "目元"],
-    "衣装": ["トップス", "ボトムス", "アクセ"],
-    "背景": ["自然", "屋内"]
-};
-
-// 【重要】単語が出ないのを防ぐため、仮データを配置
+// --- 1. 聖典データ定義（ここに自分のデータを好きなだけ追加してや！） ---
 const masterData = [
     { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: ["tone"] },
     { p: "身体", c: "髪型", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
+    { p: "身体", c: "髪型", jp: "ロング", en: "long hair", attrs: ["tone", "color", "length"] },
+    { p: "身体", c: "表情", jp: "笑顔", en: "happy", attrs: [] },
     { p: "衣装", c: "トップス", jp: "オフショル", en: "off-shoulder", attrs: ["color", "material"] },
-    { cat: "演出", jp: "イラスト(旧形式)", en: "illustration", attrs: [] } // 旧形式もサポート
+    { p: "衣装", c: "アクセ", jp: "リボン", en: "ribbon", attrs: ["color"] },
+    // 旧形式(cat)でも自動で親タブになるで
+    { cat: "背景", jp: "青空", en: "blue sky", attrs: [] }
 ];
 
+// 色の和名対応定義
 const attributes = {
-    tone: ["通常", "Light", "Dark", "Vivid", "Pale", "Neon", "Matte", "Metallic", "Clear"],
+    tone: [
+        {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
+        {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}, 
+        {jp:"艶消し", en:"Matte"}, {jp:"金属質", en:"Metallic"}, {jp:"透明感", en:"Clear"}
+    ],
     color: {
-        achromatic: ["White", "Ivory", "Platinum", "Light Gray", "Ash Gray", "Gray", "Dark Gray", "Charcoal", "Black", "Jet Black"],
-        warm: ["Red", "Orange", "Yellow", "Blonde", "Beige", "Brown", "Pink"],
-        cool: ["Lime", "Green", "Cyan", "Blue", "Navy", "Indigo", "Purple", "Magenta"],
-        metal: ["Silver", "Gold", "Bronze", "Copper"]
-    },
-    length: ["Short", "Medium", "Long", "Huge", "Mini"],
-    material: ["Silk", "Cotton", "Leather", "Metal", "Glass", "Lace"]
-};
-
-let curP = "演出", curC = "画風";
-let selAttr = { tone: "", color: "", length: "", material: "" };
-let activeItem = null;
-
-// --- 初期化ロジック ---
-function init() {
-    const pTabs = document.getElementById('p-tabs');
-    pTabs.innerHTML = Object.keys(categories).map(p => 
-        `<button class="tab-btn ${p===curP?'active':''}" onclick="setParent('${p}')">${p}</button>`
-    ).join('');
-    setParent(curP);
-}
-
-function setParent(p) {
-    curP = p;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText === p));
-    
-    const cs = categories[p] || [];
-    const cBar = document.getElementById('c-tabs');
-    cBar.innerHTML = cs.map(c => 
-        `<button class="child-btn ${c===curC?'active':''}" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`
-    ).join('');
-    
-    if (cs.length > 0) {
-        setChild(cs.includes(curC) ? curC : cs[0]);
-    } else {
-        refreshDisplay();
-    }
-}
-
-function setChild(c) {
-    curC = c;
-    document.querySelectorAll('.child-btn').forEach(b => b.classList.remove('active'));
-    if(document.getElementById(`cb-${c}`)) document.getElementById(`cb-${c}`).classList.add('active');
-    refreshDisplay();
-}
-
-function refreshDisplay() {
-    const q = document.getElementById('search-box').value.toLowerCase();
-    const area = document.getElementById('tile-area');
-    area.innerHTML = "";
-
-    // フィルタリング（旧形式 cat も考慮）
-    const filtered = masterData.filter(d => {
-        if (q !== "") return d.jp.includes(q) || d.en.includes(q);
-        const dP = d.p || d.cat; // どっちかあればOK
-        const dC = d.c || "";
-        return (dP === curP && (dC === curC || dC === ""));
-    });
-
-    filtered.forEach(item => {
-        const t = document.createElement('div');
-        t.className = "tile";
-        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-        t.onclick = () => openConsole(item);
-        area.appendChild(t);
-    });
-}
-
-// --- コンソール制御 ---
-function openConsole(item) {
-    activeItem = item;
-    selAttr = { tone: "", color: "", length: "", material: "" };
-    document.getElementById('console-title').innerText = item.jp;
-    
-    const show = item.attrs || ["tone", "color"];
-    ["tone", "color", "length", "material"].forEach(a => {
-        document.getElementById(`sec-${a}`).style.display = show.includes(a) ? 'block' : 'none';
-        updateLabel(a, "");
-    });
-
-    renderChips('tone', attributes.tone);
-    drawColors('achromatic');
-    renderChips('length', attributes.length);
-    renderChips('material', attributes.material);
-
-    document.getElementById('c-weight').value = 1.0;
-    document.getElementById('weight-val').innerText = "1.0";
-    document.getElementById('console-overlay').style.display = "flex";
-}
-
-function renderChips(type, list) {
-    const div = document.getElementById(`lst-${type}`);
-    div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v}')" id="cp-${type}-${v}">${v}</div>`).join('');
-}
-
-function drawColors(grp) {
-    document.querySelectorAll('.drawer-nav button').forEach(b => b.classList.remove('active'));
-    const targetBtn = document.getElementById(`db-${grp}`);
-    if(targetBtn) targetBtn.classList.add('active');
-    renderChips('color', attributes.color[grp]);
-}
-
-function selectAttr(type, v) {
-    const isOff = selAttr[type] === v;
-    selAttr[type] = isOff ? "" : v;
-    document.querySelectorAll(`#lst-${type} .chip`).forEach(c => c.classList.remove('active'));
-    if(!isOff) {
-        document.getElementById(`cp-${type}-${v}`).classList.add('active');
-        updateLabel(type, v);
-    } else { updateLabel(type, ""); }
-}
-
-function updateLabel(type, v) {
-    const lbl = document.getElementById(`lbl-${type}`);
-    const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質"}[type];
-    if(v && v !== "通常") {
-        lbl.innerHTML = `${base}：<strong>${v}</strong>`;
-        lbl.classList.add('active');
-    } else { lbl.innerText = base; lbl.classList.remove('active'); }
-}
-
-function commit() {
-    const { tone, color, length, material } = selAttr;
-    const t = (tone === "通常") ? "" : tone;
-    const p = [t, color, length, material, activeItem.en].filter(x => x).join(" ");
-    const w = document.getElementById('c-weight').value;
-    const final = (w === "1.0") ? p : `(${p}:${w})`;
-    const out = document.getElementById('output-area');
-    out.value += (out.value ? ", " : "") + final + ", ";
-    closeConsole();
-}
-
-function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
-function copyOutput() { navigator.clipboard.writeText(document.getElementById('output-area').value).then(()=>alert("コピー完了！")); }
-function resetOutput() { if(confirm("クリアする？")) document.getElementById('output-area').value = ""; }
-
-init();
-</script>
-</body>
-</html>
+        achromatic: [
+            {jp:"白", en:"White"}, {jp:"アイボリー", en:"Ivory"}, {jp:"プラチナ", en:"Platinum"},
+            {jp:"明灰色", en:"Light Gray"}, {jp:"アッシュ", en:"Ash Gray"}, {jp:"灰色", en:"
