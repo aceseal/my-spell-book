@@ -965,17 +965,26 @@ function copyOutput() {
     let negRaw = document.getElementById('neg-area').value.trim();
     let arMatch = posRaw.match(/--ar\s[\d:]+/);
     let arPart = arMatch ? arMatch[0] : "";
-    if (arPart) posRaw = posRaw.replace(arMatch[0], "").trim();
-
-    const clean = (s) => s.replace(/,[\s]*$/, "").replace(/,\s*,/g, ",").trim();
+    if (arPart) {
+        posRaw = posRaw.replace(arPart, "");
+    }
+    const clean = (s) => s
+        .replace(/,\s*,/g, ",") // 重複カンマを1つに
+        .replace(/[,\s]+$/, "") // 文末のカンマとスペースを完全削除
+        .trim();
     let pos = clean(posRaw);
     let neg = clean(negRaw);
-
-    let result = pos + (pos ? "." : "");
-    if (neg) result += " Avoid: " + neg + ".";
-    if (arPart) result += " Aspect ratio " + arPart.replace("--ar ", "") + ".";
-
-    navigator.clipboard.writeText(result.replace(/\s+/g, " ")).then(() => alert("合体・浄化完了！\n\n" + result));
+    let result = "";
+    if (pos) result += pos + ".";
+    if (neg) result += (result ? " " : "") + "Avoid: " + neg + ".";
+    if (arPart) {
+        let arVal = arPart.replace("--ar ", "");
+        result += (result ? " " : "") + "Aspect ratio " + arVal + ".";
+    }
+    const finalMsg = result.replace(/\s+/g, " ").trim();
+    navigator.clipboard.writeText(finalMsg).then(() => {
+        alert("叡智の写本を合体・浄化したで！\n幽霊カンマも成仏させといたわ。\n\n" + finalMsg);
+    });
 }
 
 function switchOutput(mode) {
