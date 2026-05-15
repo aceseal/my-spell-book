@@ -11,24 +11,24 @@
 
     <title>叡智の魔導書 Ver.19.1</title>
     <style>
-       :root {
-    /* ベース色 */
-    --bg-paper: #f4ecd8; 
-    --ink: #2c1e14; 
-    --gold: #b08d57; 
-    --tab-inactive: #e9dcc0;
-    --user-navy: #2c3e50; /* ユーザー追加タイル背景 */
-    --user-white: #ffffff;/* ユーザー追加タイル文字 */
-    /* フッター：出力操作（Footer Actions） */
-    --action-copy: #4a6fa5;   /* COPY用 */
-    --action-clear: #d66d67;  /* CLEAR用 */
-    --action-undo: #8e9aaf; /* Undo用 */
-    /* コンソール：反映と中断（Console Actions） */
-    --console-commit: #5a7d6a; /* 詠唱台に反映用 */
-    --console-cancel: #bc7670; /* 戻るボタン用 */
-}
+        :root {
+            /* ベース色 */
+            --bg-paper: #f4ecd8; 
+            --ink: #2c1e14; 
+            --gold: #b08d57; 
+            --tab-inactive: #e9dcc0;
+            --user-navy: #2c3e50; /* ユーザー追加タイル背景 */
+            --user-white: #ffffff;/* ユーザー追加タイル文字 */
+            /* フッター：出力操作 */
+            --action-copy: #4a6fa5;   
+            --action-clear: #d66d67;  
+            --action-undo: #8e9aaf; 
+            /* コンソール：反映と中断 */
+            --console-commit: #5a7d6a; 
+            --console-cancel: #bc7670; 
+        }
 
-         { 
+        body { 
             background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; 
             color: var(--ink); display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
         }
@@ -51,12 +51,11 @@
         .child-btn.active { background: var(--gold); color: white; }
 
         main { flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; padding-bottom: 180px; }
-        .tile { background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; }
+        .tile { position: relative; background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
         .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
-        .user-tile {background: var(--user-navy) !important;color: var(--user-white) !important;border: 1px solid rgba(255, 255, 255, 0.2) !important;}
-        .user-tile .en {color: var(--user-white);opacity: 0.7;}
-        
+        .user-tile {background: var(--user-navy) !important; color: var(--user-white) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important;}
+        .user-tile .en {color: var(--user-white); opacity: 0.7;}
         
         #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; align-items: flex-end; }
         #console { width: 100%; background: var(--bg-paper); padding: 20px; border-radius: 20px 20px 0 0; border-top: 4px solid var(--gold); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
@@ -69,16 +68,14 @@
         .chip.active { background: var(--gold); color: white; border-color: var(--gold); }
         .chip small { display: block; font-size: 0.6rem; opacity: 0.7; }
 
-        /* 色切り替えボタン(Ver.18.5) */
         .drawer-nav { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
         .drawer-nav button { padding: 6px 12px; font-size: 0.7rem; border-radius: 5px; border: 1px solid var(--gold); background: #fff; white-space: nowrap; }
         .drawer-nav button.active { background: var(--gold); color: white; }
 
         .console-footer { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-commit { flex: 2; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; }
-        .btn-cancel { flex: 1; padding: 15px; background: var(--cancel-red); color: white; border: none; border-radius: 8px; font-weight: bold; }
+        .btn-commit { flex: 2; padding: 15px; background: var(--console-commit); color: white; border: none; border-radius: 8px; font-weight: bold; }
+        .btn-cancel { flex: 1; padding: 15px; background: var(--console-cancel); color: white; border: none; border-radius: 8px; font-weight: bold; }
 
-        /* フッター：最新の切り替え形式 */
         footer { background: white; border-top: 2px solid var(--gold); padding: 10px; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; z-index: 20; }
         .output-container { display: flex; flex-direction: column; gap: 5px; }
         .output-tab { display: flex; gap: 5px; }
@@ -88,19 +85,18 @@
         textarea { width: 100%; height: 50px; border: 1px solid #ddd; padding: 8px; font-family: monospace; font-size: 0.85rem; background: #fafafa; border-radius: 0 0 4px 4px; resize: none; box-sizing: border-box; }
         .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
         .btn-action { padding: 12px; border: none; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; cursor: pointer; }
-        .delete-overlay {position: fixed;inset: 0;background: rgba(0,0,0,0.6);display: none;align-items: flex-end; /* 下に配置 */z-index: 1000;}
-        .delete-menu {width: 100%;background: var(--bg-paper);padding: 20px;border-radius: 20px 20px 0 0;box-sizing: border-box;text-align: center;animation: slideUp 0.3s ease-out;}
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-                to { transform: translateY(0); }}
+
+        /* 削除メニュー用CSS */
+        .delete-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; z-index: 1000; }
+        .delete-menu { width: 100%; background: var(--bg-paper); padding: 20px; border-radius: 20px 20px 0 0; box-sizing: border-box; text-align: center; animation: slideUp 0.3s ease-out; border-top: 4px solid #e74c3c; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .delete-menu p { font-weight: bold; margin-bottom: 15px; color: var(--ink); }
-        .btn-delete-confirm {width: 100%; padding: 15px; background: #e74c3c; color: white;border: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px;}
-        .btn-delete-cancel {width: 100%; padding: 15px; background: #ddd; color: var(--ink);border: none; border-radius: 10px; font-weight: bold;}
-        
+        .btn-delete-confirm { width: 100%; padding: 15px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
+        .btn-delete-cancel { width: 100%; padding: 15px; background: #ddd; color: var(--ink); border: none; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
-    
 <body>
+
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
@@ -118,9 +114,7 @@
 <div id="console-overlay" onclick="closeConsole()">
     <div id="console" onclick="event.stopPropagation()">
         <h3 id="console-title" style="margin:0 0 15px; text-align:center;"></h3>
-        
         <div id="sec-tone" class="console-section"><span class="console-label" id="lbl-tone">色彩：トーン</span><div id="lst-tone" class="chip-scroll"></div></div>
-        
         <div id="sec-color" class="console-section">
             <span class="console-label" id="lbl-color">色彩：ベース色</span>
             <div class="drawer-nav">
@@ -131,19 +125,24 @@
             </div>
             <div id="lst-color" class="chip-scroll"></div>
         </div>
-
         <div id="sec-length" class="console-section"><span class="console-label" id="lbl-length">形態：サイズ・長さ</span><div id="lst-length" class="chip-scroll"></div></div>
         <div id="sec-material" class="console-section"><span class="console-label" id="lbl-material">質感・材質</span><div id="lst-material" class="chip-scroll"></div></div>
-
         <div class="console-section">
             <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
             <input type="range" id="c-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;">
         </div>
-
         <div class="console-footer">
-            <button class="btn-cancel" style="background: var(--console-cancel);" onclick="closeConsole()">戻る</button>
-            <button class="btn-commit" style="background: var(--console-commit);" onclick="commit()">詠唱台に反映</button>
+            <button class="btn-cancel" onclick="closeConsole()">戻る</button>
+            <button class="btn-commit" onclick="commit()">詠唱台に反映</button>
         </div>
+    </div>
+</div>
+
+<div id="delete-menu-overlay" class="delete-overlay" onclick="closeDeleteMenu()">
+    <div class="delete-menu" onclick="event.stopPropagation()">
+        <p id="delete-target-name"></p>
+        <button class="btn-delete-confirm" onclick="executeDelete()">この外典を抹消する</button>
+        <button class="btn-delete-cancel" onclick="closeDeleteMenu()">キャンセル</button>
     </div>
 </div>
 
@@ -164,7 +163,6 @@
 </footer>
 
 <script>
-
 const masterData = [
 // --- おまじない (attrs: []) ---
 { p: "おまじない", c: "テンプレート", jp: "傑作", en: "masterpiece", attrs: [] },
@@ -237,7 +235,6 @@ const masterData = [
 { p: "演出", c: "ライティング", jp: "霞んだ", en: "misty", attrs: [] },
 { p: "演出", c: "ライティング", jp: "霞", en: "hazy", attrs: [] },
 { p: "演出", c: "ライティング", jp: "霧", en: "foggy", attrs: [] },
-
 // --- 身体 (attrs: 種別による) ---
 { p: "身体", c: "異種族", jp: "エルフ耳", en: "elf ears", attrs: [] },
 { p: "身体", c: "異種族", jp: "悪魔の角", en: "demon horns", attrs: ["color"] },
@@ -246,7 +243,6 @@ const masterData = [
 { p: "身体", c: "タイプ・印象", jp: "幼い", en: "petite", attrs: [] },
 { p: "身体", c: "肉体細部", jp: "鎖骨", en: "clavicle", attrs: [] },
 { p: "身体", c: "肉体細部", jp: "筋肉質", en: "muscular", attrs: [] },
-
 // --- 髪型 (attrs: tone, color, length) ---
 { p: "髪型", c: "前髪", jp: "ぱっつん前髪", en: "blunt bangs", attrs: ["tone", "color"] },
 { p: "髪型", c: "前髪", jp: "姫カット", en: "hime cut", attrs: ["tone", "color"] },
@@ -326,7 +322,6 @@ const masterData = [
 { p: "髪型", c: "アクセサリー", jp: "アンテナヘア", en: "antenna hair", attrs: ["color"] },
 { p: "髪型", c: "アクセサリー", jp: "横髪（もみあげ）", en: "sidelocks", attrs: ["tone", "color", "length"] },
 { p: "髪型", c: "アクセサリー", jp: "ハネ毛", en: "hair flaps", attrs: ["tone", "color"] },
-
 // --- 顔 (attrs: 部位による) ---
 { p: "顔", c: "視線", jp: "こっちを見てる", en: "looking at viewer", attrs: [] },
 { p: "顔", c: "視線", jp: "目をそらす", en: "looking away", attrs: [] },
@@ -428,7 +423,6 @@ const masterData = [
 { p: "顔", c: "メイク", jp: "泣きぼくろ", en: "teary mole", attrs: [] },
 { p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["color"] },
 { p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["color"] },
-
 // --- ポーズ (attrs: []) ---
 { p: "ポーズ", c: "全身", jp: "寝そべり", en: "lying", attrs: [] },
 { p: "ポーズ", c: "全身", jp: "仰向け", en: "on back", attrs: [] },
@@ -606,7 +600,6 @@ const masterData = [
 { p: "ポーズ", c: "特殊", jp: "ヴィランポーズ", en: "villain pose", attrs: [] },
 { p: "ポーズ", c: "その他", jp: "浮遊感", en: "floating", attrs: [] },
 { p: "ポーズ", c: "その他", jp: "躍動感", en: "dynamic pose", attrs: [] },
-
 // --- 背景 (attrs: 種別による) ---
 { p: "背景", c: "屋外", jp: "海", en: "ocean", attrs: ["tone"] },
 { p: "背景", c: "屋外", jp: "ビーチ", en: "beach", attrs: ["tone"] },
@@ -835,53 +828,29 @@ const masterData = [
 ];
 
 const attributes = {
-    tone: [
-        {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
-        {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}, 
-        {jp:"艶消し", en:"Matte"}, {jp:"金属質", en:"Metallic"}, {jp:"透明感", en:"Clear"}
-    ],
+    tone: [{jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}],
     color: {
-        achromatic: [
-            {jp:"白", en:"White"}, {jp:"アイボリー", en:"Ivory"}, {jp:"プラチナ", en:"Platinum"},
-            {jp:"明灰色", en:"Light Gray"}, {jp:"アッシュ", en:"Ash Gray"}, {jp:"灰色", en:"Gray"},
-            {jp:"暗灰色", en:"Dark Gray"}, {jp:"チャコール", en:"Charcoal"}, {jp:"黒", en:"Black"}, {jp:"漆黒", en:"Jet Black"}
-        ],
-        warm: [
-            {jp:"赤", en:"Red"}, {jp:"橙", en:"Orange"}, {jp:"黄", en:"Yellow"}, 
-            {jp:"金髪", en:"Blonde"}, {jp:"ベージュ", en:"Beige"}, {jp:"茶", en:"Brown"}, {jp:"桃", en:"Pink"}
-        ],
-        cool: [
-            {jp:"ライム", en:"Lime"}, {jp:"緑", en:"Green"}, {jp:"シアン", en:"Cyan"}, 
-            {jp:"青", en:"Blue"}, {jp:"紺", en:"Navy"}, {jp:"インディゴ", en:"Indigo"},
-            {jp:"紫", en:"Purple"}, {jp:"マゼンタ", en:"Magenta"}
-        ],
-        metal: [
-            {jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}, {jp:"ブロンズ", en:"Bronze"}, {jp:"銅", en:"Copper"}
-        ]
+        achromatic: [{jp:"白", en:"White"}, {jp:"灰色", en:"Gray"}, {jp:"黒", en:"Black"}],
+        warm: [{jp:"赤", en:"Red"}, {jp:"金髪", en:"Blonde"}, {jp:"桃", en:"Pink"}],
+        cool: [{jp:"青", en:"Blue"}, {jp:"緑", en:"Green"}, {jp:"紫", en:"Purple"}],
+        metal: [{jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}]
     },
-    length: [
-        {jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}, 
-        {jp:"巨大", en:"Huge"}, {jp:"ミニ", en:"Mini"}
-    ],
-    material: [
-        {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
-        {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
-    ]
+    length: [{jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}],
+    material: [{jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}]
 };
 
 let categories = {}; 
 let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
-let posHistory = []; // ポジティブ呪文のスタック
-let negHistory = []; // ネガティブ（Avoid）のスタック
-let userList = [];   // ユーザー追加分だけのリスト
+let posHistory = [];
+let negHistory = [];
+let userList = [];
 let currentMode = 'pos'; 
 let longPressTimer;
 let deleteTargetEn = null;
 let isLongPress = false;
-  
-// 1. カテゴリ構築
+
 function buildCategories() {
     categories = {};
     masterData.forEach(item => {
@@ -890,150 +859,154 @@ function buildCategories() {
     });
 }
 
-// 2. 初期化（UI構築とデータ読込を統合！）
 function init() {
-    loadApocrypha();  // 外典読込
-    buildCategories(); // カテゴリ構築
-    
+    loadApocrypha();
+    buildCategories();
     const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景"];
     const pTabs = document.getElementById('p-tabs');
-    
-    // タブボタンの生成
     pTabs.innerHTML = order.filter(p => categories[p]).map(p => 
         `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`
     ).join('');
-    
     if(order.length > 0) setParent(order[0]);
 }
 
-// --- 表示系 ---
 function setParent(p) {
     curP = p;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById(`pb-${p}`);
-    if(btn) btn.classList.add('active');
-    
+    if(document.getElementById(`pb-${p}`)) document.getElementById(`pb-${p}`).classList.add('active');
     const cs = Array.from(categories[p] || []);
     const cBar = document.getElementById('c-tabs');
     cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
-    
     if (cs.length > 0) setChild(cs[0]); else { curC = ""; refreshDisplay(); }
 }
 
 function setChild(c) {
     curC = c;
     document.querySelectorAll('.child-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById(`cb-${c}`);
-    if(btn) btn.classList.add('active');
+    if(document.getElementById(`cb-${c}`)) document.getElementById(`cb-${c}`).classList.add('active');
     refreshDisplay();
 }
 
-// タイル表示（ネイビー対応版のみを残す）
 function refreshDisplay() {
     const q = document.getElementById('search-box').value.toLowerCase();
     const area = document.getElementById('tile-area');
     area.innerHTML = "";
-    
-    const filtered = masterData.filter(d => 
-        (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC))
-    );
+    const filtered = masterData.filter(d => (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC)));
     
     filtered.forEach(item => {
         const t = document.createElement('div');
-        // 外典ならネイビー、通常なら通常クラス
         t.className = item.isUser ? "tile user-tile" : "tile"; 
         t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-        t.onclick = () => openConsole(item);
+
+        // 長押しイベントの設定
+        const startPress = (e) => {
+            isLongPress = false;
+            longPressTimer = setTimeout(() => {
+                if (item.isUser) {
+                    isLongPress = true;
+                    openDeleteMenu(item);
+                    if (navigator.vibrate) navigator.vibrate(50);
+                }
+            }, 800);
+        };
+        const endPress = () => clearTimeout(longPressTimer);
+
+        t.oncontextmenu = (e) => { if(item.isUser) e.preventDefault(); }; // ブラウザメニュー抑止
+        t.ontouchstart = startPress;
+        t.ontouchend = endPress;
+        t.onmousedown = startPress;
+        t.onmouseup = endPress;
+        t.onmouseleave = endPress;
+
+        t.onclick = () => { if (!isLongPress) openConsole(item); };
         area.appendChild(t);
     });
 }
 
-// --- 呪文操作系 ---
+function openDeleteMenu(item) {
+    deleteTargetEn = item.en;
+    document.getElementById('delete-target-name').innerText = `「${item.jp}」を削除しますか？`;
+    document.getElementById('delete-menu-overlay').style.display = 'flex';
+}
+function closeDeleteMenu() { document.getElementById('delete-menu-overlay').style.display = 'none'; }
+function executeDelete() {
+    if (!deleteTargetEn) return;
+    userList = userList.filter(i => i.en !== deleteTargetEn);
+    const idx = masterData.findIndex(i => i.en === deleteTargetEn && i.isUser);
+    if (idx !== -1) masterData.splice(idx, 1);
+    saveApocrypha();
+    buildCategories();
+    refreshDisplay();
+    closeDeleteMenu();
+}
+
 function updateTextarea() {
     const posText = posHistory.length > 0 ? posHistory.join(", ") + ", " : "";
     const negText = negHistory.length > 0 ? negHistory.join(", ") + ", " : "";
     document.getElementById('pos-area').value = posText;
     document.getElementById('neg-area').value = negText;
 }
-
 function commit() {
     const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
     const tagText = parts.join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? tagText : `(${tagText}:${w})`;
-    
-    if (currentMode === 'pos') posHistory.push(final);
-    else negHistory.push(final);
-    
+    if (currentMode === 'pos') posHistory.push(final); else negHistory.push(final);
     updateTextarea();
     closeConsole();
 }
-
 function undo() {
     if (currentMode === 'pos') { if (posHistory.length > 0) posHistory.pop(); }
     else { if (negHistory.length > 0) negHistory.pop(); }
     updateTextarea();
 }
-
 function resetOutput() {
     if(confirm("呪文を破棄しますか？")) {
-        if (currentMode === 'pos') posHistory = [];
-        else negHistory = [];
+        if (currentMode === 'pos') posHistory = []; else negHistory = [];
         updateTextarea();
     }
 }
-
-// --- コンソール・その他 ---
 function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
     document.getElementById('console-title').innerText = item.jp;
     const show = item.attrs || [];
     ["tone", "color", "length", "material"].forEach(a => {
-        const section = document.getElementById(`sec-${a}`);
-        section.style.display = show.includes(a) ? 'block' : 'none';
+        document.getElementById(`sec-${a}`).style.display = show.includes(a) ? 'block' : 'none';
         updateLabel(a, "");
     });
     if (show.includes('tone')) renderChips('tone', attributes.tone);
     if (show.includes('color')) drawColors('achromatic');
     if (show.includes('length')) renderChips('length', attributes.length);
     if (show.includes('material')) renderChips('material', attributes.material);
-    
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
 }
-
 function renderChips(type, list) {
     const div = document.getElementById(`lst-${type}`);
     div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
 }
-
 function drawColors(grp) {
     document.querySelectorAll('.drawer-nav button').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById(`db-${grp}`);
-    if(btn) btn.classList.add('active');
+    if(document.getElementById(`db-${grp}`)) document.getElementById(`db-${grp}`).classList.add('active');
     renderChips('color', attributes.color[grp]);
 }
-
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
     document.querySelectorAll(`#lst-${type} .chip`).forEach(c => c.classList.remove('active'));
     if(!isOff) {
-        const target = document.getElementById(`cp-${type}-${en}`);
-        if(target) target.classList.add('active');
+        if(document.getElementById(`cp-${type}-${en}`)) document.getElementById(`cp-${type}-${en}`).classList.add('active');
         updateLabel(type, jp);
     } else { updateLabel(type, ""); }
 }
-
 function updateLabel(type, jp) {
     const lbl = document.getElementById(`lbl-${type}`);
     const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質"}[type];
     lbl.innerHTML = (jp && jp !== "通常") ? `${base}：<strong>${jp}</strong>` : base;
     lbl.classList.toggle('active', !!(jp && jp !== "通常"));
 }
-
 function copyOutput() {
     let posRaw = document.getElementById('pos-area').value.trim();
     let negRaw = document.getElementById('neg-area').value.trim();
@@ -1043,19 +1016,11 @@ function copyOutput() {
     const clean = (s) => s.replace(/,\s*,/g, ",").replace(/[,\s]+$/, "").trim();
     let pos = clean(posRaw);
     let neg = clean(negRaw);
-    let result = "";
-    if (pos) result += pos + ".";
-    if (neg) result += (result ? " " : "") + "Avoid: " + neg + ".";
-    if (arPart) {
-        let arVal = arPart.replace("--ar ", "");
-        result += (result ? " " : "") + "Aspect ratio " + arVal + ".";
-    }
+    let result = (pos ? pos + "." : "") + (neg ? " Avoid: " + neg + "." : "");
+    if (arPart) result += " Aspect ratio " + arPart.replace("--ar ", "") + ".";
     const finalMsg = result.replace(/\s+/g, " ").trim();
-    navigator.clipboard.writeText(finalMsg).then(() => {
-        alert("叡智の魔導書から呪文をコピーしました" + finalMsg);
-    });
+    navigator.clipboard.writeText(finalMsg).then(() => alert("呪文をコピーしました！"));
 }
-
 function switchOutput(mode) {
     currentMode = mode;
     document.getElementById('tab-pos').classList.toggle('active', mode === 'pos');
@@ -1063,119 +1028,29 @@ function switchOutput(mode) {
     document.getElementById('pos-area').style.display = mode === 'pos' ? 'block' : 'none';
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
-
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 
-// --- 外典（ユーザー登録）系 ---
 function openApocrypha() {
     let en = prompt("【外典登録】英語名（例: neon glow）:");
     if (!en) return;
     let jp = prompt("【外典登録】日本語名（例: ネオンの輝き）:");
     if (!jp) return;
     const sample = masterData.find(d => d.p === curP && d.c === curC);
-    const inheritedAttrs = sample ? [...sample.attrs] : [];
-    const newItem = { p: curP, c: curC, jp: jp, en: en, attrs: inheritedAttrs, isUser: true };
+    const newItem = { p: curP, c: curC, jp: jp, en: en, attrs: (sample ? [...sample.attrs] : []), isUser: true };
     masterData.push(newItem);
     userList.push(newItem);
     saveApocrypha();
     buildCategories();
     refreshDisplay();
 }
-
 function saveApocrypha() { localStorage.setItem("myGrimoire_UserAdd", JSON.stringify(userList)); }
 function loadApocrypha() {
     const saved = localStorage.getItem("myGrimoire_UserAdd");
     if (saved) {
         userList = JSON.parse(saved);
-        userList.forEach(userItem => {
-            if (!masterData.some(m => m.en === userItem.en)) {
-                masterData.push(userItem);
-            }
-        });
+        userList.forEach(u => { if (!masterData.some(m => m.en === u.en)) masterData.push(u); });
     }
 }
-    
-// 削除メニューを開く
-function openDeleteMenu(item) {
-    deleteTargetEn = item.en;
-    document.getElementById('delete-target-name').innerText = `「${item.jp}」を削除しますか？`;
-    document.getElementById('delete-menu-overlay').style.display = 'flex';
-}
-function closeDeleteMenu() {
-    document.getElementById('delete-menu-overlay').style.display = 'none';
-}
-// 実際の削除処理
-function executeDelete() {
-    if (!deleteTargetEn) return;
-    userList = userList.filter(item => item.en !== deleteTargetEn);
-    const idx = masterData.findIndex(item => item.en === deleteTargetEn && item.isUser);
-    if (idx !== -1) masterData.splice(idx, 1);
-    
-    saveApocrypha();
-    buildCategories();
-    refreshDisplay();
-    closeDeleteMenu();
-}
-// refreshDisplayの中のタイル生成部分を書き換え
-function refreshDisplay() {
-    const q = document.getElementById('search-box').value.toLowerCase();
-    const area = document.getElementById('tile-area');
-    area.innerHTML = "";
-    
-    const filtered = masterData.filter(d => 
-        (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC))
-    );
-    
-    filtered.forEach(item => {
-        const t = document.createElement('div');
-        t.className = item.isUser ? "tile user-tile" : "tile"; 
-        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
-
-        // --- 長押し・クリックの判定ロジック ---
-        
-        const startPress = () => {
-            isLongPress = false;
-            // 800ms 長押ししたらメニュー表示
-            longPressTimer = setTimeout(() => {
-                if (item.isUser) {
-                    isLongPress = true;
-                    openDeleteMenu(item);
-                    if (navigator.vibrate) navigator.vibrate(50); // ぶるっと震わせる（スマホ用）
-                }
-            }, 800);
-        };
-
-        const endPress = () => {
-            clearTimeout(longPressTimer);
-        };
-
-        // タッチイベント（スマホ）
-        t.ontouchstart = startPress;
-        t.ontouchend = endPress;
-        
-        // マウスイベント（PC）
-        t.onmousedown = startPress;
-        t.onmouseup = endPress;
-        t.onmouseleave = endPress;
-
-        // クリック時（長押しじゃなかった場合だけコンソールを開く）
-        t.onclick = () => {
-            if (!isLongPress) {
-                openConsole(item);
-            }
-        };
-
-        area.appendChild(t);
-    });
-}
-
-<div id="delete-menu-overlay" class="delete-overlay" onclick="closeDeleteMenu()">
-    <div class="delete-menu" onclick="event.stopPropagation()">
-        <p id="delete-target-name"></p>
-        <button class="btn-delete-confirm" onclick="executeDelete()">この外典を抹消する</button>
-        <button class="btn-delete-cancel" onclick="closeDeleteMenu()">キャンセル</button>
-    </div>
-</div>
 
 init();
 </script>
