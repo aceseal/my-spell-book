@@ -969,8 +969,8 @@ function copyOutput() {
         posRaw = posRaw.replace(arPart, "");
     }
     const clean = (s) => s
-        .replace(/,\s*,/g, ",") // 重複カンマを1つに
-        .replace(/[,\s]+$/, "") // 文末のカンマとスペースを完全削除
+        .replace(/,\s*,/g, ",")
+        .replace(/[,\s]+$/, "")
         .trim();
     let pos = clean(posRaw);
     let neg = clean(negRaw);
@@ -983,7 +983,7 @@ function copyOutput() {
     }
     const finalMsg = result.replace(/\s+/g, " ").trim();
     navigator.clipboard.writeText(finalMsg).then(() => {
-        alert("叡智の写本を合体・浄化したで！\n幽霊カンマも成仏させといたわ。\n\n" + finalMsg);
+        alert("叡智の魔導書から呪文をコピーしました" + finalMsg);
     });
 }
 
@@ -995,7 +995,7 @@ function switchOutput(mode) {
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
 
-function resetOutput() { if(confirm("浄化する？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
+function resetOutput() { if(confirm("呪文を浄化しますか？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 function openApocrypha() { let en = prompt("真名:"); if(en) masterData.push({p:curP, c:curC, jp:en, en:en, attrs:[]}); buildCategories(); refreshDisplay(); }
 
