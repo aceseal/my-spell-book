@@ -28,7 +28,7 @@
     --console-cancel: #bc7670; /* 戻るボタン用 */
 }
 
-        body { 
+         { 
             background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; 
             color: var(--ink); display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
         }
@@ -88,10 +88,19 @@
         textarea { width: 100%; height: 50px; border: 1px solid #ddd; padding: 8px; font-family: monospace; font-size: 0.85rem; background: #fafafa; border-radius: 0 0 4px 4px; resize: none; box-sizing: border-box; }
         .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
         .btn-action { padding: 12px; border: none; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; cursor: pointer; }
+        .delete-overlay {position: fixed;inset: 0;background: rgba(0,0,0,0.6);display: none;align-items: flex-end; /* 下に配置 */z-index: 1000;}
+        .delete-menu {width: 100%;background: var(--bg-paper);padding: 20px;border-radius: 20px 20px 0 0;box-sizing: border-box;text-align: center;animation: slideUp 0.3s ease-out;}
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+                to { transform: translateY(0); }}
+        .delete-menu p { font-weight: bold; margin-bottom: 15px; color: var(--ink); }
+        .btn-delete-confirm {width: 100%; padding: 15px; background: #e74c3c; color: white;border: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px;}
+        .btn-delete-cancel {width: 100%; padding: 15px; background: #ddd; color: var(--ink);border: none; border-radius: 10px; font-weight: bold;}
+        
     </style>
 </head>
+    
 <body>
-
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
@@ -173,7 +182,6 @@ const masterData = [
 { p: "おまじない", c: "アスペクト比率", jp: "スマホ壁紙 (9:16)", en: "--ar 9:16", attrs: [] },
 { p: "おまじない", c: "アスペクト比率", jp: "横・標準 (3:2)", en: "--ar 3:2", attrs: [] },
 { p: "おまじない", c: "アスペクト比率", jp: "PC壁紙 (16:9)", en: "--ar 16:9", attrs: [] },
-
 // --- 演出 (attrs: []) ---
 { p: "演出", c: "画風", jp: "アニメスタイル", en: "anime style", attrs: [] },
 { p: "演出", c: "画風", jp: "現代イラスト風", en: "digital illustration", attrs: [] },
@@ -869,7 +877,10 @@ let posHistory = []; // ポジティブ呪文のスタック
 let negHistory = []; // ネガティブ（Avoid）のスタック
 let userList = [];   // ユーザー追加分だけのリスト
 let currentMode = 'pos'; 
-
+let longPressTimer;
+let deleteTargetEn = null;
+let isLongPress = false;
+  
 // 1. カテゴリ構築
 function buildCategories() {
     categories = {};
@@ -1083,6 +1094,88 @@ function loadApocrypha() {
         });
     }
 }
+    
+// 削除メニューを開く
+function openDeleteMenu(item) {
+    deleteTargetEn = item.en;
+    document.getElementById('delete-target-name').innerText = `「${item.jp}」を削除しますか？`;
+    document.getElementById('delete-menu-overlay').style.display = 'flex';
+}
+function closeDeleteMenu() {
+    document.getElementById('delete-menu-overlay').style.display = 'none';
+}
+// 実際の削除処理
+function executeDelete() {
+    if (!deleteTargetEn) return;
+    userList = userList.filter(item => item.en !== deleteTargetEn);
+    const idx = masterData.findIndex(item => item.en === deleteTargetEn && item.isUser);
+    if (idx !== -1) masterData.splice(idx, 1);
+    
+    saveApocrypha();
+    buildCategories();
+    refreshDisplay();
+    closeDeleteMenu();
+}
+// refreshDisplayの中のタイル生成部分を書き換え
+function refreshDisplay() {
+    const q = document.getElementById('search-box').value.toLowerCase();
+    const area = document.getElementById('tile-area');
+    area.innerHTML = "";
+    
+    const filtered = masterData.filter(d => 
+        (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC))
+    );
+    
+    filtered.forEach(item => {
+        const t = document.createElement('div');
+        t.className = item.isUser ? "tile user-tile" : "tile"; 
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+
+        // --- 長押し・クリックの判定ロジック ---
+        
+        const startPress = () => {
+            isLongPress = false;
+            // 800ms 長押ししたらメニュー表示
+            longPressTimer = setTimeout(() => {
+                if (item.isUser) {
+                    isLongPress = true;
+                    openDeleteMenu(item);
+                    if (navigator.vibrate) navigator.vibrate(50); // ぶるっと震わせる（スマホ用）
+                }
+            }, 800);
+        };
+
+        const endPress = () => {
+            clearTimeout(longPressTimer);
+        };
+
+        // タッチイベント（スマホ）
+        t.ontouchstart = startPress;
+        t.ontouchend = endPress;
+        
+        // マウスイベント（PC）
+        t.onmousedown = startPress;
+        t.onmouseup = endPress;
+        t.onmouseleave = endPress;
+
+        // クリック時（長押しじゃなかった場合だけコンソールを開く）
+        t.onclick = () => {
+            if (!isLongPress) {
+                openConsole(item);
+            }
+        };
+
+        area.appendChild(t);
+    });
+}
+
+<div id="delete-menu-overlay" class="delete-overlay" onclick="closeDeleteMenu()">
+    <div class="delete-menu" onclick="event.stopPropagation()">
+        <p id="delete-target-name"></p>
+        <button class="btn-delete-confirm" onclick="executeDelete()">この外典を抹消する</button>
+        <button class="btn-delete-cancel" onclick="closeDeleteMenu()">キャンセル</button>
+    </div>
+</div>
 
 init();
 </script>
