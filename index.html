@@ -3,429 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>叡智の魔導書 - Prompt Grimoire</title>
-    <style>
-        :root {
-            --bg-dark: #0f0f0f;
-            --panel-bg: #1e1e1e;
-            --accent-gold: #d4af37;
-            --cancel-red: #cc2222;
-            --reflect-green: #228b22;
-            --text-main: #e0e0e0;
-            --text-dim: #888;
-        }<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <!-- アプリ化の設定（成功していた当時のまま） -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#2c1e14">
-
-    <title>叡智の魔導書《アトモソフィア ・ グリモワール》</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>叡智の魔導書 Ver.17.2</title>
     <style>
         :root {
-            --bg-paper: #f4ecd8;
-            --ink: #2c1e14;
-            --gold: #b08d57;
-            --accent: #5a7d6a;
-            --fav-red: #d66d67;
-            --tab-inactive: #e9dcc0;
-            --chip-bg: #fff;
-            --cancel-red: #b22222;
+            --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; --accent: #5a7d6a; --fav-red: #d66d67; --tab-inactive: #e9dcc0;
         }
-
-        body { 
-            background-color: #2c1e14; font-family: 'Georgia', serif; margin: 0; padding: 0; color: var(--ink);
-            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        /* ヘッダー */
-        header { background: var(--bg-paper); padding: 10px; border-bottom: 2px solid var(--gold); flex-shrink: 0; z-index: 10; }
-        .search-container { display: flex; gap: 8px; }
-        #search-box { flex-grow: 1; padding: 10px; border: 1px solid var(--gold); border-radius: 20px; font-size: 0.9rem; background: rgba(255,255,255,0.5); }
-        .btn-icon { background: var(--gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; }
-
-        /* 親子タブ：横スクロール魔法 */
-        .tab-wrapper { background: var(--tab-inactive); flex-shrink: 0; }
-        .scroll-nav {
-            display: flex; overflow-x: auto; white-space: nowrap; 
-            scrollbar-width: none; -ms-overflow-style: none;
-        }
-        .scroll-nav::-webkit-scrollbar { display: none; }
-        
-        .tab-btn { 
-            padding: 12px 18px; border: none; background: none; font-weight: bold; 
-            font-size: 0.75rem; color: #5a3e2b; opacity: 0.6; transition: 0.3s;
-        }
-        .tab-btn.active { opacity: 1; background: var(--bg-paper); border-bottom: 3px solid var(--gold); }
-        
-        .child-bar { background: #dfd3b8; border-top: 1px solid rgba(0,0,0,0.05); }
-        .child-btn { padding: 8px 15px; font-size: 0.7rem; border-radius: 15px; margin: 5px; border: 1px solid transparent; background: rgba(255,255,255,0.3); }
-        .child-btn.active { background: var(--gold); color: white; }
-
-        /* 中央タイル */
-        main { 
-            flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 10px; 
-            padding-bottom: 140px;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 10px; align-content: flex-start;
-        }
-        .tile { 
-            background: #fff; border: 1px solid var(--gold); border-radius: 8px; 
-            padding: 12px 5px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        }
+        body { background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; color: var(--ink); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { background: var(--bg-paper); padding: 12px; border-bottom: 2px solid var(--gold); }
+        .search-container { display: flex; gap: 10px; }
+        #search-box { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 25px; font-size: 0.9rem; }
+        .btn-icon { background: var(--gold); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+        .tab-bar { display: flex; overflow-x: auto; background: var(--tab-inactive); border-bottom: 1px solid var(--gold); }
+        .tab-btn { padding: 12px 20px; border: none; background: none; font-weight: bold; font-size: 0.85rem; color: #5a3e2b; }
+        .tab-btn.active { background: var(--bg-paper); border-bottom: 3px solid var(--gold); }
+        main { flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+        .tile { background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; }
         .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
-        .tile .en { display: block; font-size: 0.6rem; color: #888; }
-
-        /* 補助コンソール（モーダル） */
-        #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: flex-end; }
-        #console { 
-            width: 100%; background: var(--bg-paper); padding: 20px; 
-            border-radius: 20px 20px 0 0; border-top: 5px solid var(--gold);
-            box-sizing: border-box; max-height: 85vh; overflow-y: auto;
-        }
-        .console-section { margin-bottom: 20px; }
-        .console-label { 
-            font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; display: block; 
-            color: var(--ink); border-left: 4px solid var(--gold); padding-left: 8px;
-        }
-        .console-label.active { color: var(--gold); font-weight: 900; text-shadow: 0 0 1px var(--gold); }
-
-        /* コンソール内のスクロール */
-        .attr-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; scrollbar-width: none; }
-        .attr-scroll::-webkit-scrollbar { display: none; }
-        .chip { 
-            padding: 8px 15px; background: #fff; border: 1px solid #ddd; border-radius: 20px; 
-            font-size: 0.75rem; white-space: nowrap; flex-shrink: 0;
-        }
-        .chip.active { background: var(--gold); color: white; border-color: var(--gold); }
-
-        .drawer-nav { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; }
-        .drawer-nav button { padding: 5px 12px; font-size: 0.65rem; border-radius: 5px; border: 1px solid var(--gold); background: none; }
-        .drawer-nav button.active { background: var(--gold); color: white; }
-
-        /* スライダー */
-        .weight-box { display: flex; align-items: center; gap: 15px; }
-        input[type="range"] { flex: 1; accent-color: var(--gold); }
-
-        /* フッターボタン */
-        .console-footer { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-commit { flex: 2; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: bold; }
-        .btn-cancel { flex: 1; padding: 15px; background: var(--cancel-red); color: white; border: none; border-radius: 10px; font-weight: bold; }
-
-        /* 呪文欄 */
-        footer { 
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; border-top: 2px solid var(--gold); 
-            padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); 
-            box-sizing: border-box; z-index: 20;
-        }
-        #output-area { width: 100%; height: 50px; border: 1px solid #eee; padding: 10px; font-family: monospace; font-size: 0.8rem; background: #fdfdfd; border-radius: 8px; resize: none; }
-        .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
-        .btn-action { padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 0.7rem; color: white; }
+        .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
+        footer { background: white; border-top: 2px solid var(--gold); padding: 10px; }
+        #output-area { width: 100%; height: 50px; border: 1px solid #ddd; padding: 10px; font-family: monospace; font-size: 0.9rem; background: #fafafa; }
+        .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
+        .btn-action { padding: 10px; border: none; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; }
     </style>
 </head>
 <body>
-
 <header>
     <div class="search-container">
-        <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
-        <button class="btn-icon" onclick="openDictModal()">✒️</button>
+        <input type="text" id="search-box" placeholder="検索..." oninput="refreshDisplay()">
+        <button class="btn-icon" onclick="openDictModal()">✏️</button>
     </div>
 </header>
-
-<div class="tab-wrapper">
-    <div class="tab-bar scroll-nav" id="parent-tabs"></div>
-    <div class="child-bar scroll-nav" id="child-tabs"></div>
-</div>
-
+<div class="tab-bar" id="tab-bar"></div>
 <main id="tile-area"></main>
-
-<div id="console-overlay" onclick="closeConsole()">
-    <div id="console" onclick="event.stopPropagation()">
-        <h3 id="console-title" style="margin:0 0 20px; font-size:1.2rem; text-align:center;"></h3>
-        
-        <div id="sec-tone" class="console-section">
-            <span class="console-label" id="label-tone">色彩：トーン</span>
-            <div id="list-tone" class="attr-scroll"></div>
-        </div>
-
-        <div id="sec-color" class="console-section">
-            <span class="console-label" id="label-color">色彩：ベース色</span>
-            <div class="drawer-nav">
-                <button onclick="drawColorGroup('achromatic')" id="db-achromatic">無彩色</button>
-                <button onclick="drawColorGroup('warm')" id="db-warm">暖色</button>
-                <button onclick="drawColorGroup('cool')" id="db-cool">寒色</button>
-                <button onclick="drawColorGroup('metal')" id="db-metal">金属</button>
-            </div>
-            <div id="list-color" class="attr-scroll"></div>
-        </div>
-
-        <div id="sec-length" class="console-section">
-            <span class="console-label" id="label-length">形態：サイズ・長さ</span>
-            <div id="list-length" class="attr-scroll"></div>
-        </div>
-
-        <div id="sec-material" class="console-section">
-            <span class="console-label" id="label-material">質感・材質</span>
-            <div id="list-material" class="attr-scroll"></div>
-        </div>
-
-        <div class="console-section">
-            <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
-            <div class="weight-box">
-                <span>0.5</span>
-                <input type="range" id="console-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value">
-                <span>2.0</span>
-            </div>
-        </div>
-
-        <div class="console-footer">
-            <button class="btn-cancel" onclick="closeConsole()">戻る</button>
-            <button class="btn-commit" onclick="commitTag()">詠唱台に反映</button>
-        </div>
-    </div>
-</div>
-
-<div id="dict-modal" style="display:none; position:fixed; top:20%; left:5%; width:90%; background:white; border:2px solid var(--gold); padding:20px; z-index:200; border-radius:15px; box-sizing:border-box;">
-    <h3 style="margin:0 0 15px;">外典（ユーザー定義）登録</h3>
-    <select id="reg-parent" style="width:100%; padding:10px; margin-bottom:10px;"></select>
-    <input type="text" id="reg-jp" placeholder="名前（日本語）" style="width:100%; padding:10px; margin-bottom:10px;">
-    <input type="text" id="reg-en" placeholder="タグ（英語）" style="width:100%; padding:10px; margin-bottom:10px;">
-    <div style="display:flex; gap:10px;">
-        <button onclick="saveToDict()" style="flex:1; padding:12px; background:var(--gold); color:white; border:none; border-radius:8px;">登録</button>
-        <button onclick="closeDictModal()" style="flex:1; padding:12px; background:#ccc; color:white; border:none; border-radius:8px;">閉じる</button>
-    </div>
-</div>
-
 <footer>
-    <textarea id="output-area" readonly placeholder="呪文を紡ぐ..."></textarea>
+    <textarea id="output-area" readonly placeholder="呪文が紡がれます..."></textarea>
     <div class="footer-btns">
         <button class="btn-action" style="background:#4a6fa5;" onclick="copyOutput()">COPY</button>
         <button class="btn-action" style="background:#8e9aaf;" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background:var(--fav-red);" onclick="saveToFav()">FAV</button>
+        <button class="btn-action" style="background:#d66d67;" onclick="saveToFav()">FAV</button>
     </div>
 </footer>
-
 <script>
-// --- 1. 聖典データ定義 ---
-const baseCategories = {
-    "演出": ["画風", "アングル", "照明", "世界観"],
-    "身体": ["表情", "髪型", "目元", "体格"],
-    "服装": ["学生服", "日常着", "ドレス", "装飾品"],
-    "背景": ["自然", "屋内", "街並み"],
-    "お気に入りリスト": []
-};
-
-// サンプルデータ（ここに自作データを追加していく）
-const masterData = [
-    { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: [] },
-    { p: "身体", c: "髪型", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
-    { p: "身体", c: "髪型", jp: "ツインテ", en: "twintails", attrs: ["tone", "color", "length"] },
-    { p: "服装", c: "学生服", jp: "セーラー服", en: "sailor uniform", attrs: ["tone", "color", "material"] },
-    { p: "服装", c: "装飾品", jp: "リボン", en: "ribbon", attrs: ["color", "length"] }
-];
-
-const attributes = {
-    tone: ["通常", "Light", "Dark", "Vivid", "Pale", "Neon", "Matte", "Metallic", "Clear"],
-    color: {
-        achromatic: ["White", "Ivory", "Platinum", "Light Gray", "Ash Gray", "Gray", "Dark Gray", "Charcoal", "Black", "Jet Black"],
-        warm: ["Red", "Orange", "Yellow", "Blonde", "Beige", "Brown", "Pink"],
-        cool: ["Lime", "Green", "Cyan", "Blue", "Navy", "Indigo", "Purple", "Magenta"],
-        metal: ["Silver", "Gold", "Bronze", "Copper"]
-    },
-    length: ["Short", "Medium", "Long", "Huge", "Mini"],
-    material: ["Silk", "Cotton", "Leather", "Metal", "Glass", "Lace"]
-};
-
-let userDict = JSON.parse(localStorage.getItem('amo_grimoire_dict')) || [];
-let favorites = JSON.parse(localStorage.getItem('amo_grimoire_favs')) || [];
-let currentParent = "演出";
-let currentChild = "画風";
-let activeSelections = { tone: "", color: "", length: "", material: "" };
-
-// --- 2. 初期化・描画 ---
-function init() {
-    renderParentTabs();
-    renderRegParentOptions();
-    switchParent(currentParent);
-}
-
-function renderParentTabs() {
-    const nav = document.getElementById('parent-tabs');
-    nav.innerHTML = Object.keys(baseCategories).map(p => 
-        `<button class="tab-btn ${p === currentParent ? 'active' : ''}" onclick="switchParent('${p}')">${p}</button>`
-    ).join('');
-}
-
-function renderRegParentOptions() {
-    const sel = document.getElementById('reg-parent');
-    Object.keys(baseCategories).forEach(p => {
-        if(p !== "お気に入りリスト") sel.add(new Option(p, p));
+// シンプルなVer.17.2のロジック（一部簡略化）
+const baseCategories = ["演出", "顔・体", "髪", "衣装"];
+const masterData = [{ cat: "衣装", jp: "オフショルダー", en: "off-shoulder" }];
+function refreshDisplay() {
+    const area = document.getElementById('tile-area'); area.innerHTML = "";
+    masterData.forEach(item => {
+        const t = document.createElement('div'); t.className = "tile";
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+        area.appendChild(t);
     });
 }
-
-function switchParent(p) {
-    currentParent = p;
-    renderParentTabs();
-    
-    const children = baseCategories[p] || [];
-    const nav = document.getElementById('child-tabs');
-    nav.innerHTML = children.map(c => 
-        `<button class="child-btn ${c === currentChild ? 'active' : ''}" id="cb-${c}" onclick="switchChild('${c}')">${c}</button>`
-    ).join('');
-    
-    if (children.length > 0) {
-        // お気に入りリストから戻った時などのために最初の子を選ぶ
-        if (!children.includes(currentChild)) currentChild = children[0];
-        switchChild(currentChild);
-    } else {
-        refreshDisplay();
-    }
-}
-
-function switchChild(c) {
-    currentChild = c;
-    document.querySelectorAll('.child-btn').forEach(b => b.classList.remove('active'));
-    const target = document.getElementById(`cb-${c}`);
-    if(target) target.classList.add('active');
-    refreshDisplay();
-}
-
-function refreshDisplay() {
-    const query = document.getElementById('search-box
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Georgia', serif; /* 魔導書っぽさを演出 */
-            margin: 0;
-            padding: 10px;
-            overscroll-behavior: none;
-        }
-
-        h2 { text-align: center; color: var(--accent-gold); border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px; }
-
-        /* --- ナビゲーション（親子タブ） --- */
-        .scroll-nav {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            gap: 10px;
-            padding: 10px 0;
-            scrollbar-width: none; /* Firefox */
-        }
-        .scroll-nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-
-        .nav-btn {
-            background: #333;
-            color: var(--text-main);
-            border: 1px solid #555;
-            padding: 8px 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .nav-btn.active {
-            background: var(--accent-gold);
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 0 10px var(--accent-gold);
-        }
-
-        .parent-tabs { border-bottom: 1px solid #444; }
-        .child-tabs { margin-top: 5px; min-height: 45px; }
-
-        /* --- 単語タイルエリア --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 12px;
-            margin: 15px 0;
-        }
-        .tag-tile {
-            background: var(--panel-bg);
-            border: 1px solid #444;
-            padding: 12px 5px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .tag-tile:active { transform: scale(0.95); background: #333; }
-        .tag-tile span { display: block; font-size: 14px; }
-        .tag-tile small { font-size: 10px; color: var(--text-dim); }
-
-        /* --- 詠唱台（結果表示） --- */
-        .chant-wrap { position: sticky; bottom: 10px; background: rgba(15,15,15,0.9); padding: 10px; border-radius: 10px; border: 1px solid var(--accent-gold); }
-        #chantArea {
-            width: 100%; height: 60px;
-            background: #000; color: #0f0;
-            border: none; padding: 8px;
-            box-sizing: border-box; resize: none; border-radius: 5px;
-        }
-
-        /* --- 補助コンソール（モーダル） --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-            z-index: 1000; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: var(--panel-bg); width: 90%; max-width: 450px;
-            padding: 20px; border-radius: 15px; border: 1px solid var(--accent-gold);
-        }
-
-        .attr-section { margin-bottom: 15px; }
-        .attr-label { font-size: 13px; color: var(--text-dim); margin-bottom: 5px; }
-        .attr-label.bold { color: var(--accent-gold); font-weight: bold; }
-
-        .drawer-nav { display: flex; gap: 5px; margin-bottom: 8px; }
-        .drawer-nav button { font-size: 11px; padding: 4px 8px; border-radius: 3px; }
-
-        .slider-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        input[type="range"] { flex: 1; accent-color: var(--accent-gold); }
-
-        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-reflect { flex: 2; background: var(--reflect-green); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; }
-        .btn-cancel { flex: 1; background: var(--cancel-red); color: white; border: none; border-radius: 5px; }
-
-    </style>
-</head>
-<body>
-
-    <h2>叡智の魔導書</h2>
-    
-    <div class="parent-tabs scroll-nav" id="pNav"></div>
-    <div class="child-tabs scroll-nav" id="cNav"></div>
-    
-    <div class="grid-container" id="tagGrid"></div>
-
-    <div class="chant-wrap">
-        <textarea id="chantArea" readonly placeholder="ここに呪文が刻まれる..."></textarea>
-    </div>
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h3 id="mTagName" style="margin-top:0; color:var(--accent-gold);">単語設定</h3>
-            <hr style="border-color:#444;">
-            
-            <div id="toneSection" class="attr-section">
-                <div class="attr-label" id="toneLabel">質感：未選択</div>
-                <div class="scroll-nav" id="toneList"></div>
-            </div>
-
-            <div id="colorSection" class="attr-section">
-                <div class="attr-label" id="colorLabel">色彩：未選択</div>
-                <div class="drawer-nav">
-                    <button onclick="drawColors('achromatic')">無彩色</button>
-                    <button onclick="drawColors('warm')">暖色</button>
-                    <button onclick="drawColors('cool')">寒色</button>
-                    <button onclick="drawColors('metal')">金属</button>
-                </div>
-                <div class="scroll-nav" id="colorList"></div>
-            </div>
-
-            <div class="attr-section">
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output-area').value); }
+function resetOutput() { document.getElementById('output-area').value = ""; }
+refreshDisplay();
+</script>
+</body>
+</html>
