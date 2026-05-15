@@ -1114,7 +1114,9 @@ function openDeleteMenu(item) {
     document.getElementById('delete-target-name').innerText = `「${item.jp}」を削除しますか？`;
     document.getElementById('delete-menu-overlay').style.display = 'flex';
 }
+    
 function closeDeleteMenu() { document.getElementById('delete-menu-overlay').style.display = 'none'; }
+    
 function executeDelete() {
     if (!deleteTargetEn) return;
     userList = userList.filter(i => i.en !== deleteTargetEn);
@@ -1132,6 +1134,7 @@ function updateTextarea() {
     document.getElementById('pos-area').value = posText;
     document.getElementById('neg-area').value = negText;
 }
+    
 function commit() {
     const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
     const tagText = parts.join(" ");
@@ -1141,11 +1144,13 @@ function commit() {
     updateTextarea();
     closeConsole();
 }
+    
 function undo() {
-    if (currentMode === 'pos') { if (posHistory.length > 0) posHistory.pop(); }
-    else { if (negHistory.length > 0) negHistory.pop(); }
-    updateTextarea();
+    if (currentMode === 'pos' && posHistory.length === 0) return;// 履歴が空の場合は何もしない（ポップアップの煩わしさを防止）
+    if (currentMode === 'neg' && negHistory.length === 0) return;// 確認ポップアップを出して、OKなら1つ消す
+    if (confirm("1つ戻りますか？")) {if (currentMode === 'pos') { posHistory.pop(); } else { negHistory.pop(); }updateTextarea();}
 }
+    
 function resetOutput() {
     if(confirm("呪文を破棄しますか？")) {
         if (currentMode === 'pos') posHistory = []; else negHistory = [];
