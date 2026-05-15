@@ -17,6 +17,8 @@
     --ink: #2c1e14; 
     --gold: #b08d57; 
     --tab-inactive: #e9dcc0;
+    --user-navy: #2c3e50; /* ユーザー追加タイル背景 */
+    --user-white: #ffffff;/* ユーザー追加タイル文字 */
     /* フッター：出力操作（Footer Actions） */
     --action-copy: #4a6fa5;   /* COPY用 */
     --action-clear: #d66d67;  /* CLEAR用 */
@@ -52,7 +54,10 @@
         .tile { background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; }
         .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
         .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
-
+        .user-tile {background: var(--user-navy) !important;color: var(--user-white) !important;border: 1px solid rgba(255, 255, 255, 0.2) !important;}
+        .user-tile .en {color: var(--user-white);opacity: 0.7;}
+        
+        
         #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; align-items: flex-end; }
         #console { width: 100%; background: var(--bg-paper); padding: 20px; border-radius: 20px 20px 0 0; border-top: 4px solid var(--gold); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
         .console-section { margin-bottom: 18px; }
@@ -863,6 +868,7 @@ let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
 let posHistory = []; // ポジティブ呪文のスタック
 let negHistory = []; // ネガティブ（Avoid）のスタック
+let userList = []; // ユーザー追加分だけのリスト
 let currentMode = 'pos'; 
 
     
@@ -921,18 +927,6 @@ function undo() {
         if (negHistory.length > 0) negHistory.pop();
     }
     updateTextarea();
-}
-
-function resetOutput() {
-    const modeName = currentMode === 'pos' ? '呪文' : '対価';
-    if(confirm(modeName + "を浄化（全削除）してもええか？")) {
-        if (currentMode === 'pos') {
-            posHistory = [];
-        } else {
-            negHistory = [];
-        }
-        updateTextarea();
-    }
 }
 
 function setChild(c) {
@@ -1039,9 +1033,31 @@ function switchOutput(mode) {
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
 
+function openApocrypha() {
+    let en = prompt("【外典登録】英語名を入力（例: neon glow）:");
+    if (!en) return;
+    let jp = prompt("【外典登録】日本語名を入力（例: ネオンの輝き）:");
+    if (!jp) return;
+    const sample = masterData.find(d => d.p === curP && d.c === curC);
+    const inheritedAttrs = sample ? [...sample.attrs] : [];
+    const newItem = {
+        p: curP,
+        c: curC,
+        jp: jp,
+        en: en,
+        attrs: inheritedAttrs,
+        isUser: true // 外典フラグ
+    };
+    masterData.push(newItem);
+    userList.push(newItem);
+    saveApocrypha();
+    buildCategories();
+    refreshDisplay();
+}
+
+
 function resetOutput() { if(confirm("呪文を破棄しますか？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
-function openApocrypha() { let en = prompt("真名:"); if(en) masterData.push({p:curP, c:curC, jp:en, en:en, attrs:[]}); buildCategories(); refreshDisplay(); }
 
 init();
 </script>
