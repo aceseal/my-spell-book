@@ -861,9 +861,10 @@ let categories = {};
 let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
-let currentMode = 'pos'; 
 let posHistory = []; // ポジティブ呪文のスタック
 let negHistory = []; // ネガティブ（Avoid）のスタック
+let currentMode = 'pos'; 
+
     
 function buildCategories() {
     categories = {};
@@ -892,13 +893,46 @@ function setParent(p) {
 }
 
 function updateTextarea() {
-    // 配列の要素を ", " で繋いで、最後にもカンマとスペースを添える
-    // もし配列が空なら、textarea も空にする
     const posText = posHistory.length > 0 ? posHistory.join(", ") + ", " : "";
     const negText = negHistory.length > 0 ? negHistory.join(", ") + ", " : "";
     
     document.getElementById('pos-area').value = posText;
     document.getElementById('neg-area').value = negText;
+}
+
+function commit() {
+    const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
+    const tagText = parts.join(" ");
+    const w = parseFloat(document.getElementById('c-weight').value);
+    const final = (w === 1) ? tagText : `(${tagText}:${w})`;
+    if (currentMode === 'pos') {
+        posHistory.push(final);
+    } else {
+        negHistory.push(final);
+    }
+    updateTextarea(); // 表示を更新
+    closeConsole();
+}
+
+function undo() {
+    if (currentMode === 'pos') {
+        if (posHistory.length > 0) posHistory.pop();
+    } else {
+        if (negHistory.length > 0) negHistory.pop();
+    }
+    updateTextarea();
+}
+
+function resetOutput() {
+    const modeName = currentMode === 'pos' ? '呪文' : '対価';
+    if(confirm(modeName + "を浄化（全削除）してもええか？")) {
+        if (currentMode === 'pos') {
+            posHistory = [];
+        } else {
+            negHistory = [];
+        }
+        updateTextarea();
+    }
 }
 
 function setChild(c) {
