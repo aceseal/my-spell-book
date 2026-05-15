@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#3d2b1f">
 
-    <title>叡智の魔導書 Ver.18.6</title>
+    <title>叡智の魔導書 Ver.18.8</title>
     <style>
         :root {
             --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
@@ -24,7 +24,7 @@
 
         header { background: var(--bg-paper); padding: 12px; border-bottom: 2px solid var(--gold); flex-shrink: 0; }
         .search-container { display: flex; gap: 10px; }
-        #search-box { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 25px; font-size: 0.9rem; }
+        #search-box { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 25px; font-size: 0.9rem; border: 1px solid var(--gold); }
         .btn-icon { background: var(--gold); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
 
         .tab-wrapper { flex-shrink: 0; }
@@ -36,52 +36,36 @@
         .tab-btn.active { opacity: 1; background: var(--bg-paper); border-bottom: 3px solid var(--gold); }
         
         .child-bar { background: #dfd3b8; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
-        .child-btn { 
-            padding: 6px 12px; font-size: 0.75rem; border-radius: 15px; margin: 0 5px; 
-            border: 1px solid transparent; background: rgba(255,255,255,0.4); font-weight: bold; color: var(--ink);
-        }
+        .child-btn { padding: 6px 12px; font-size: 0.75rem; border-radius: 15px; margin: 0 5px; border: 1px solid transparent; background: rgba(255,255,255,0.4); font-weight: bold; color: var(--ink); }
         .child-btn.active { background: var(--gold); color: white; }
 
-        main { 
-            flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px;
-            padding-bottom: 140px;
-        }
-        .tile { 
-            background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); 
-            border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; 
-        }
+        main { flex-grow: 1; overflow-y: auto; background: var(--bg-paper); padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; padding-bottom: 180px; }
+        .tile { background: rgba(255,255,255,0.6); border: 1px solid rgba(176,141,87,0.3); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; }
         .tile .jp { display: block; font-weight: bold; font-size: 0.8rem; }
         .tile .en { display: block; font-size: 0.65rem; color: #777; font-style: italic; }
 
+        /* コンソール */
         #console-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; align-items: flex-end; }
-        #console { 
-            width: 100%; background: var(--bg-paper); padding: 20px; 
-            border-radius: 20px 20px 0 0; border-top: 4px solid var(--gold);
-            box-sizing: border-box; max-height: 80vh; overflow-y: auto;
-        }
+        #console { width: 100%; background: var(--bg-paper); padding: 20px; border-radius: 20px 20px 0 0; border-top: 4px solid var(--gold); box-sizing: border-box; max-height: 80vh; overflow-y: auto; }
         .console-section { margin-bottom: 18px; }
         .console-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; display: block; color: var(--ink); border-left: 4px solid var(--gold); padding-left: 8px; }
-        .console-label.active { color: var(--gold); font-weight: bold; }
-
         .chip-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; }
-        .chip { 
-            padding: 8px 16px; background: #fff; border: 1px solid #ddd; border-radius: 20px; 
-            font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; text-align: center;
-        }
-        .chip small { display: block; font-size: 0.6rem; color: #888; }
+        .chip { padding: 8px 16px; background: #fff; border: 1px solid #ddd; border-radius: 20px; font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; text-align: center; }
         .chip.active { background: var(--gold); color: white; border-color: var(--gold); }
-
-        .drawer-nav { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; }
-        .drawer-nav button { padding: 6px 12px; font-size: 0.7rem; border-radius: 5px; border: 1px solid var(--gold); background: #fff; }
-        .drawer-nav button.active { background: var(--gold); color: white; }
+        .chip small { display: block; font-size: 0.6rem; opacity: 0.7; }
 
         .console-footer { display: flex; gap: 10px; margin-top: 15px; }
         .btn-commit { flex: 2; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; }
         .btn-cancel { flex: 1; padding: 15px; background: var(--cancel-red); color: white; border: none; border-radius: 8px; font-weight: bold; }
 
+        /* フッター・詠唱台 */
         footer { background: white; border-top: 2px solid var(--gold); padding: 10px; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; z-index: 20; }
-        #output-area { width: 100%; height: 50px; border: 1px solid #ddd; padding: 10px; font-family: monospace; font-size: 0.9rem; background: #fafafa; border-radius: 4px; resize: none; box-sizing: border-box; }
+        .output-container { display: flex; flex-direction: column; gap: 5px; }
+        .output-tab { display: flex; gap: 5px; }
+        .output-tab button { flex: 1; padding: 5px; font-size: 0.65rem; border: 1px solid #ddd; background: #eee; border-radius: 4px 4px 0 0; }
+        .output-tab button.active { background: var(--bg-paper); border-bottom: none; font-weight: bold; }
+        
+        textarea { width: 100%; height: 50px; border: 1px solid #ddd; padding: 8px; font-family: monospace; font-size: 0.85rem; background: #fafafa; border-radius: 0 0 4px 4px; resize: none; box-sizing: border-box; }
         .footer-btns { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; margin-top: 8px; }
         .btn-action { padding: 12px; border: none; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; cursor: pointer; }
     </style>
@@ -91,7 +75,7 @@
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
-        <button class="btn-icon" onclick="alert('外典登録は masterData に直接書くか後ほど実装や！')">✏️</button>
+        <button class="btn-icon" onclick="openApocrypha()">✏️</button>
     </div>
 </header>
 
@@ -108,13 +92,7 @@
         <div id="sec-tone" class="console-section"><span class="console-label" id="lbl-tone">色彩：トーン</span><div id="lst-tone" class="chip-scroll"></div></div>
         <div id="sec-color" class="console-section">
             <span class="console-label" id="lbl-color">色彩：ベース色</span>
-            <div class="drawer-nav">
-                <button onclick="drawColors('achromatic')" id="db-achromatic">無彩色</button>
-                <button onclick="drawColors('warm')" id="db-warm">暖色</button>
-                <button onclick="drawColors('cool')" id="db-cool">寒色</button>
-                <button onclick="drawColors('metal')" id="db-metal">金属</button>
-            </div>
-            <div id="lst-color" class="chip-scroll"></div>
+            <div id="list-color" class="chip-scroll"></div>
         </div>
         <div id="sec-length" class="console-section"><span class="console-label" id="lbl-length">形態：サイズ・長さ</span><div id="lst-length" class="chip-scroll"></div></div>
         <div id="sec-material" class="console-section"><span class="console-label" id="lbl-material">質感・材質</span><div id="lst-material" class="chip-scroll"></div></div>
@@ -130,711 +108,689 @@
 </div>
 
 <footer>
-    <textarea id="output-area" readonly placeholder="呪文が紡がれます..."></textarea>
+    <div class="output-container">
+        <div class="output-tab">
+            <button id="tab-pos" class="active" onclick="switchOutput('pos')">叡智の呪文 (Positive)</button>
+            <button id="tab-neg" onclick="switchOutput('neg')">叡智の対価 (Negative)</button>
+        </div>
+        <textarea id="pos-area" placeholder="呪文が紡がれます..."></textarea>
+        <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..."></textarea>
+    </div>
     <div class="footer-btns">
         <button class="btn-action" style="background:#4a6fa5;" onclick="copyOutput()">COPY</button>
         <button class="btn-action" style="background:#8e9aaf;" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background:#d66d67;" onclick="alert('お気に入り機能は準備中や！')">FAV</button>
+        <button class="btn-action" style="background:#d66d67;" onclick="alert('お気に入りは外典実装の後に！')">FAV</button>
     </div>
 </footer>
 
 <script>
-// --- 1. イッチ定義の「基本階層」 masterData ---
-// サンプルデータをいくつか入れておくで！
-// --- 叡智の全データ（イッチのスプシ反映版） ---
+
 const masterData = [
-    // --- おまじない (attrs: []) ---
-    { p: "おまじない", c: "テンプレート", jp: "傑作", en: "masterpiece", attrs: [] },
-    { p: "おまじない", c: "テンプレート", jp: "女の子一人", en: "single girl", attrs: [] },
-    { p: "おまじない", c: "基本品質", jp: "最高品質", en: "best quality", attrs: [] },
-    { p: "おまじない", c: "基本品質", jp: "高品質", en: "high quality", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "精細描写", en: "highly detailed", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "プロ級", en: "professional", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "受賞作級", en: "award winning", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "8K出力", en: "8K", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "4K出力", en: "4K", attrs: [] },
-    { p: "おまじない", c: "画質ブースト", jp: "高解像度", en: "high resolution", attrs: [] },
-    { p: "おまじない", c: "アスペクト比率", jp: "正方形 (1:1)", en: "--ar 1:1", attrs: [] },
-    { p: "おまじない", c: "アスペクト比率", jp: "縦・標準 (2:3)", en: "--ar 2:3", attrs: [] },
-    { p: "おまじない", c: "アスペクト比率", jp: "スマホ壁紙 (9:16)", en: "--ar 9:16", attrs: [] },
-    { p: "おまじない", c: "アスペクト比率", jp: "横・標準 (3:2)", en: "--ar 3:2", attrs: [] },
-    { p: "おまじない", c: "アスペクト比率", jp: "PC壁紙 (16:9)", en: "--ar 16:9", attrs: [] },
-    
-    // --- 演出 (attrs: []) ---
-    { p: "演出", c: "画風", jp: "アニメスタイル", en: "anime style", attrs: [] },
-    { p: "演出", c: "画風", jp: "イラスト風", en: "illustration", attrs: [] },
-    { p: "演出", c: "画角", jp: "全身構図", en: "full body", attrs: [] },
-    { p: "演出", c: "画角", jp: "ポートレート", en: "portrait", attrs: [] },
-    { p: "演出", c: "画角", jp: "上半身", en: "upper body", attrs: [] },
-    { p: "演出", c: "画角", jp: "下半身", en: "lower body", attrs: [] },
-    { p: "演出", c: "画角", jp: "ニーショット", en: "cowboy shot", attrs: [] },
-    { p: "演出", c: "画角", jp: "足元切れ", en: "feet out of frame", attrs: [] },
-    { p: "演出", c: "画角", jp: "顔アップ", en: "close-up", attrs: [] },
-    { p: "演出", c: "画角", jp: "横顔", en: "profile", attrs: [] },
-    { p: "演出", c: "画角", jp: "引きの図", en: "wide shot", attrs: [] },
-    { p: "演出", c: "アングル", jp: "三面図（背面・側面）", en: "multiple views from behind and side", attrs: [] },
-    { p: "演出", c: "アングル", jp: "正面アングル", en: "straight-on", attrs: [] },
-    { p: "演出", c: "アングル", jp: "俯瞰", en: "from above", attrs: [] },
-    { p: "演出", c: "アングル", jp: "煽り", en: "from below", attrs: [] },
-    { p: "演出", c: "アングル", jp: "背面", en: "from behind", attrs: [] },
-    { p: "演出", c: "アングル", jp: "側面", en: "from side", attrs: [] },
-    { p: "演出", c: "アングル", jp: "斜め（ダッチアングル）", en: "dutch angle", attrs: [] },
-    { p: "演出", c: "アングル", jp: "横向き", en: "sideways", attrs: [] },
-    { p: "演出", c: "アングル", jp: "逆さま", en: "upside-down", attrs: [] },
-    { p: "演出", c: "パース", jp: "透視図法", en: "perspective", attrs: [] },
-    { p: "演出", c: "パース", jp: "空気遠近法", en: "atmospheric perspective", attrs: [] },
-    { p: "演出", c: "パース", jp: "魚眼レンズ", en: "fisheye", attrs: [] },
-    { p: "演出", c: "パース", jp: "パノラマ", en: "panorama", attrs: [] },
-    { p: "演出", c: "パース", jp: "一点透視（消失点）", en: "vanishing point", attrs: [] },
-    { p: "演出", c: "パース", jp: "二点透視", en: "two vanishing point", attrs: [] },
-    { p: "演出", c: "パース", jp: "三点透視", en: "three vanishing point", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "ぼかし", en: "blur", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "被写界深度", en: "depth of field", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "玉ボケ", en: "bokeh", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "前方光源", en: "front lighting", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "逆光", en: "back lighting", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "拡散光", en: "diffused light", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "霞んだ", en: "misty", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "霞", en: "hazy", attrs: [] },
-    { p: "演出", c: "ライティング", jp: "霧", en: "foggy", attrs: [] },
+// --- おまじない (attrs: []) ---
+{ p: "おまじない", c: "テンプレート", jp: "傑作", en: "masterpiece", attrs: [] },
+{ p: "おまじない", c: "テンプレート", jp: "女の子一人", en: "single girl", attrs: [] },
+{ p: "おまじない", c: "基本品質", jp: "最高品質", en: "best quality", attrs: [] },
+{ p: "おまじない", c: "基本品質", jp: "高品質", en: "high quality", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "精細描写", en: "highly detailed", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "プロ級", en: "professional", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "受賞作級", en: "award winning", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "8K出力", en: "8K", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "4K出力", en: "4K", attrs: [] },
+{ p: "おまじない", c: "画質ブースト", jp: "高解像度", en: "high resolution", attrs: [] },
+{ p: "おまじない", c: "アスペクト比率", jp: "正方形 (1:1)", en: "--ar 1:1", attrs: [] },
+{ p: "おまじない", c: "アスペクト比率", jp: "縦・標準 (2:3)", en: "--ar 2:3", attrs: [] },
+{ p: "おまじない", c: "アスペクト比率", jp: "スマホ壁紙 (9:16)", en: "--ar 9:16", attrs: [] },
+{ p: "おまじない", c: "アスペクト比率", jp: "横・標準 (3:2)", en: "--ar 3:2", attrs: [] },
+{ p: "おまじない", c: "アスペクト比率", jp: "PC壁紙 (16:9)", en: "--ar 16:9", attrs: [] },
 
-    // --- 身体 (attrs: 種別による) ---
-    { p: "身体", c: "異種族", jp: "エルフ耳", en: "elf ears", attrs: [] },
-    { p: "身体", c: "異種族", jp: "悪魔の角", en: "demon horns", attrs: ["color"] },
-    { p: "身体", c: "異種族", jp: "天使の羽", en: "angel wings", attrs: ["color", "material"] },
-    { p: "身体", c: "タイプ・印象", jp: "大人びた", en: "mature", attrs: [] },
-    { p: "身体", c: "タイプ・印象", jp: "幼い", en: "petite", attrs: [] },
-    { p: "身体", c: "肉体細部", jp: "鎖骨", en: "clavicle", attrs: [] },
-    { p: "身体", c: "肉体細部", jp: "筋肉質", en: "muscular", attrs: [] },
+// --- 演出 (attrs: []) ---
+{ p: "演出", c: "画風", jp: "アニメスタイル", en: "anime style", attrs: [] },
+{ p: "演出", c: "画風", jp: "イラスト風", en: "illustration", attrs: [] },
+{ p: "演出", c: "画角", jp: "全身構図", en: "full body", attrs: [] },
+{ p: "演出", c: "画角", jp: "ポートレート", en: "portrait", attrs: [] },
+{ p: "演出", c: "画角", jp: "上半身", en: "upper body", attrs: [] },
+{ p: "演出", c: "画角", jp: "下半身", en: "lower body", attrs: [] },
+{ p: "演出", c: "画角", jp: "ニーショット", en: "cowboy shot", attrs: [] },
+{ p: "演出", c: "画角", jp: "足元切れ", en: "feet out of frame", attrs: [] },
+{ p: "演出", c: "画角", jp: "顔アップ", en: "close-up", attrs: [] },
+{ p: "演出", c: "画角", jp: "横顔", en: "profile", attrs: [] },
+{ p: "演出", c: "画角", jp: "引きの図", en: "wide shot", attrs: [] },
+{ p: "演出", c: "アングル", jp: "三面図（背面・側面）", en: "multiple views from behind and side", attrs: [] },
+{ p: "演出", c: "アングル", jp: "正面アングル", en: "straight-on", attrs: [] },
+{ p: "演出", c: "アングル", jp: "俯瞰", en: "from above", attrs: [] },
+{ p: "演出", c: "アングル", jp: "煽り", en: "from below", attrs: [] },
+{ p: "演出", c: "アングル", jp: "背面", en: "from behind", attrs: [] },
+{ p: "演出", c: "アングル", jp: "側面", en: "from side", attrs: [] },
+{ p: "演出", c: "アングル", jp: "斜め（ダッチアングル）", en: "dutch angle", attrs: [] },
+{ p: "演出", c: "アングル", jp: "横向き", en: "sideways", attrs: [] },
+{ p: "演出", c: "アングル", jp: "逆さま", en: "upside-down", attrs: [] },
+{ p: "演出", c: "パース", jp: "透視図法", en: "perspective", attrs: [] },
+{ p: "演出", c: "パース", jp: "空気遠近法", en: "atmospheric perspective", attrs: [] },
+{ p: "演出", c: "パース", jp: "魚眼レンズ", en: "fisheye", attrs: [] },
+{ p: "演出", c: "パース", jp: "パノラマ", en: "panorama", attrs: [] },
+{ p: "演出", c: "パース", jp: "一点透視（消失点）", en: "vanishing point", attrs: [] },
+{ p: "演出", c: "パース", jp: "二点透視", en: "two vanishing point", attrs: [] },
+{ p: "演出", c: "パース", jp: "三点透視", en: "three vanishing point", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "ぼかし", en: "blur", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "被写界深度", en: "depth of field", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "玉ボケ", en: "bokeh", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "前方光源", en: "front lighting", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "逆光", en: "back lighting", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "拡散光", en: "diffused light", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "霞んだ", en: "misty", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "霞", en: "hazy", attrs: [] },
+{ p: "演出", c: "ライティング", jp: "霧", en: "foggy", attrs: [] },
 
-    // --- 髪型 (attrs: tone, color, length) ---
-    { p: "髪型", c: "前髪", jp: "ぱっつん前髪", en: "blunt bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "姫カット", en: "hime cut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "斜め前髪", en: "diagonal bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "アーチ前髪", en: "arched bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "アシメ前髪", en: "asymmetrical bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "交差前髪", en: "crossed bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "外ハネ前髪", en: "flipped bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "長い前髪", en: "long bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "短い前髪", en: "short bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "不揃い前髪", en: "choppy bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "分け目あり前髪", en: "parted bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "センター分け前髪", en: "double parted bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "目にかかる髪", en: "hair between eyes", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "センターフラップ", en: "center flap bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "横流し前髪", en: "swept bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "前髪ピン留め", en: "bangs pinned back", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "オールバック", en: "hair slicked back", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "髪を後ろに流す", en: "hair pulled back", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "目隠れ", en: "hair over eyes", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "片目隠れ", en: "hair over one eye", attrs: ["tone", "color"] },
-    { p: "髪型", c: "前髪", jp: "両目隠れ", en: "hair over both eyes", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ショートヘア", en: "short hair", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ベリーショート", en: "very short hair", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ピクシーカット", en: "pixie cut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ボブカット", en: "bob cut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ミディアムヘア", en: "medium hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ロングヘア", en: "long hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "超ロング", en: "very long hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "床まで届く髪", en: "absurdly long hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ポニーテール", en: "ponytail", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "高めポニテ", en: "high ponytail", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "低めポニテ", en: "low ponytail", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "サイドポニテ", en: "side ponytail", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "編み込みポニテ", en: "braided ponytail", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ツインテール", en: "twin tails", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "高めツインテ", en: "high twin tails", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "低めツインテ", en: "low twin tails", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "サイドツインテ", en: "side twin tails", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "短めツインテ", en: "short twin tails", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "おさげ", en: "pigtails", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "お団子", en: "bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ヘアお団子", en: "hair bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "高めお団子", en: "high bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "低めお団子", en: "low bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "サイドお団子", en: "side bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ダブルお団子", en: "double bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "三つ編み", en: "braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "フィッシュボーン", en: "french braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "冠編み", en: "crown braid", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "編み込み団子", en: "braided bun", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "前髪編み込み", en: "braided bangs", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ハーフアップ", en: "half updo", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ハーフアップ編み込み", en: "half up braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ハーフ三つ編み", en: "half up half down braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ツーサイドアップ", en: "two side up", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ストレートヘア", en: "straight hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ウェーブヘア", en: "wavy hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "ドリルヘア", en: "drill hair", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "縦ロール", en: "ringlets", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "スタイル", jp: "外ハネ髪", en: "flipped hair", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "段カット（レイヤー）", en: "layered hair", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "ウルフカット", en: "wolf cut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "後ろ刈り上げ", en: "undercut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "スタイル", jp: "横刈り上げ", en: "sidecut", attrs: ["tone", "color"] },
-    { p: "髪型", c: "アクセサリー", jp: "サイド三つ編み(単)", en: "side braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "サイド三つ編み(複)", en: "side braids", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "一本三つ編み", en: "single braid", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "ツイン三つ編み", en: "twin braids", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "三本三つ編み", en: "tri braids", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "四本三つ編み", en: "quad braids", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "多数の三つ編み", en: "multiple braids", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "アホ毛", en: "ahoge", attrs: ["color"] },
-    { p: "髪型", c: "アクセサリー", jp: "メッシュアホ毛", en: "dyed ahoge", attrs: ["color"] },
-    { p: "髪型", c: "アクセサリー", jp: "ハートアホ毛", en: "heart ahoge", attrs: ["color"] },
-    { p: "髪型", c: "アクセサリー", jp: "揺れるアホ毛", en: "ahoge wag", attrs: ["color"] },
-    { p: "髪型", c: "アクセサリー", jp: "アンテナヘア", en: "antenna hair", attrs: ["color"] },
-    { p: "髪型", c: "アクセサリー", jp: "横髪（もみあげ）", en: "sidelocks", attrs: ["tone", "color", "length"] },
-    { p: "髪型", c: "アクセサリー", jp: "ハネ毛", en: "hair flaps", attrs: ["tone", "color"] },
+// --- 身体 (attrs: 種別による) ---
+{ p: "身体", c: "異種族", jp: "エルフ耳", en: "elf ears", attrs: [] },
+{ p: "身体", c: "異種族", jp: "悪魔の角", en: "demon horns", attrs: ["color"] },
+{ p: "身体", c: "異種族", jp: "天使の羽", en: "angel wings", attrs: ["color", "material"] },
+{ p: "身体", c: "タイプ・印象", jp: "大人びた", en: "mature", attrs: [] },
+{ p: "身体", c: "タイプ・印象", jp: "幼い", en: "petite", attrs: [] },
+{ p: "身体", c: "肉体細部", jp: "鎖骨", en: "clavicle", attrs: [] },
+{ p: "身体", c: "肉体細部", jp: "筋肉質", en: "muscular", attrs: [] },
 
-    // --- 顔 (attrs: 部位による) ---
-    { p: "顔", c: "視線", jp: "こっちを見てる", en: "looking at viewer", attrs: [] },
-    { p: "顔", c: "視線", jp: "目をそらす", en: "looking away", attrs: [] },
-    { p: "顔", c: "視線", jp: "上を見る", en: "looking up", attrs: [] },
-    { p: "顔", c: "視線", jp: "下を見る", en: "looking down", attrs: [] },
-    { p: "顔", c: "視線", jp: "横を見る", en: "looking to the side", attrs: [] },
-    { p: "顔", c: "視線", jp: "流し目", en: "sideways glance", attrs: [] },
-    { p: "顔", c: "視線", jp: "視線をそらす", en: "averting eyes", attrs: [] },
-    { p: "顔", c: "視線", jp: "遠くを見る", en: "looking afar", attrs: [] },
-    { p: "顔", c: "視線", jp: "手元を見る", en: "looking at hands", attrs: [] },
-    { p: "顔", c: "視線", jp: "右手を見る", en: "looking at right hand", attrs: [] },
-    { p: "顔", c: "視線", jp: "左手を見る", en: "looking at left hand", attrs: [] },
-    { p: "顔", c: "視線", jp: "上目遣い", en: "upturned eyes", attrs: [] },
-    { p: "顔", c: "目の形", jp: "閉じ目", en: "closed eyes", attrs: [] },
-    { p: "顔", c: "目の形", jp: "片目閉じ", en: "one eye closed", attrs: [] },
-    { p: "顔", c: "目の形", jp: "細めた目", en: "narrowed eyes", attrs: [] },
-    { p: "顔", c: "目の形", jp: "睨み・細め目", en: "squinting", attrs: [] },
-    { p: "顔", c: "目の形", jp: "半目", en: "half-closed eyes", attrs: [] },
-    { p: "顔", c: "目の形", jp: "見開いた目", en: "wide-eyed", attrs: [] },
-    { p: "顔", c: "目の形", jp: "ツリ目", en: "tsurime", attrs: [] },
-    { p: "顔", c: "目の形", jp: "タレ目", en: "tareme", attrs: [] },
-    { p: "顔", c: "目の形", jp: "ジト目", en: "jitome", attrs: [] },
-    { p: "顔", c: "目の形", jp: "寄り目", en: "cross-eyed", attrs: [] },
-    { p: "顔", c: "目の形", jp: "左右非対称な目", en: "uneven eyes", attrs: [] },
-    { p: "顔", c: "瞳の形", jp: "縦長瞳", en: "slit pupils", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "輪っか瞳", en: "ringed eyes", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "ぐるぐる瞳", en: "spiral-only eyes", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "ハート瞳", en: "heart-shaped pupils", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "星型瞳", en: "star-shaped pupils", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "記号瞳", en: "symbol-shaped pupils", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "丸瞳（ベタ）", en: "solid circle eyes", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "虚ろな目", en: "empty eyes", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "瞳の反射", en: "eye reflection", attrs: [] },
-    { p: "顔", c: "瞳の形", jp: "両瞳の反射", en: "eyes reflection", attrs: [] },
-    { p: "顔", c: "瞳の形", jp: "発光瞳", en: "glowing eyes", attrs: ["color"] },
-    { p: "顔", c: "瞳の形", jp: "キラキラ瞳", en: "sparkling eyes", attrs: ["color"] },
-    { p: "顔", c: "表情", jp: "幸せ", en: "happy", attrs: [] },
-    { p: "顔", c: "表情", jp: "ドヤ顔", en: "smug", attrs: [] },
-    { p: "顔", c: "表情", jp: "ニヤリ", en: "smirk", attrs: [] },
-    { p: "顔", c: "表情", jp: "ゲス顔", en: "evil grin", attrs: [] },
-    { p: "顔", c: "表情", jp: "ワクワク", en: "excited", attrs: [] },
-    { p: "顔", c: "表情", jp: "口を開ける", en: "open mouth", attrs: [] },
-    { p: "顔", c: "表情", jp: "口を閉じる", en: "closed mouth", attrs: [] },
-    { p: "顔", c: "表情", jp: "怒り", en: "angry", attrs: [] },
-    { p: "顔", c: "表情", jp: "怒りマーク（血管）", en: "anger vein", attrs: [] },
-    { p: "顔", c: "表情", jp: "イライラ", en: "annoyed", attrs: [] },
-    { p: "顔", c: "表情", jp: "食いしばり", en: "clenched teeth", attrs: [] },
-    { p: "顔", c: "表情", jp: "しかめっ面", en: "scowl", attrs: [] },
-    { p: "顔", c: "表情", jp: "困り顔", en: "frustrated", attrs: [] },
-    { p: "顔", c: "表情", jp: "ぷくー（口を尖らす）", en: "pout", attrs: [] },
-    { p: "顔", c: "表情", jp: "睨みつけ", en: "glaring", attrs: [] },
-    { p: "顔", c: "表情", jp: "青ざめる", en: "turn pale", attrs: [] },
-    { p: "顔", c: "表情", jp: "悲しい", en: "sad", attrs: [] },
-    { p: "顔", c: "表情", jp: "落胆", en: "disappointed", attrs: [] },
-    { p: "顔", c: "表情", jp: "落ち込む", en: "depressed", attrs: [] },
-    { p: "顔", c: "表情", jp: "陰鬱", en: "gloom", attrs: [] },
-    { p: "顔", c: "表情", jp: "涙", en: "tears", attrs: [] },
-    { p: "顔", c: "表情", jp: "むせび泣き", en: "sobbing", attrs: [] },
-    { p: "顔", c: "表情", jp: "絶望", en: "despair", attrs: [] },
-    { p: "顔", c: "表情", jp: "トラウマ", en: "traumatized", attrs: [] },
-    { p: "顔", c: "表情", jp: "叫び", en: "screaming", attrs: [] },
-    { p: "顔", c: "表情", jp: "驚き", en: "surprised", attrs: [] },
-    { p: "顔", c: "表情", jp: "怖い", en: "scared", attrs: [] },
-    { p: "顔", c: "表情", jp: "恐怖", en: "horrified", attrs: [] },
-    { p: "顔", c: "表情", jp: "パニック", en: "panicking", attrs: [] },
-    { p: "顔", c: "表情", jp: "へにょ口", en: "wavy mouth", attrs: [] },
-    { p: "顔", c: "表情", jp: "混乱", en: "confused", attrs: [] },
-    { p: "顔", c: "表情", jp: "思考中", en: "thinking", attrs: [] },
-    { p: "顔", c: "表情", jp: "物思い", en: "pensive", attrs: [] },
-    { p: "顔", c: "表情", jp: "痛がる", en: "wince", attrs: [] },
-    { p: "顔", c: "表情", jp: "眉間にしわ", en: "furrowed brow", attrs: [] },
-    { p: "顔", c: "表情", jp: "片眉をひそめる", en: "cocked eyebrow", attrs: [] },
-    { p: "顔", c: "表情", jp: "眉尻を上げる", en: "raised inner eyebrows", attrs: [] },
-    { p: "顔", c: "表情", jp: "赤面", en: "blush", attrs: [] },
-    { p: "顔", c: "表情", jp: "照れ線", en: "blush stickers", attrs: [] },
-    { p: "顔", c: "表情", jp: "全面赤面", en: "full-face blush", attrs: [] },
-    { p: "顔", c: "表情", jp: "鼻に照れ", en: "nose blush", attrs: [] },
-    { p: "顔", c: "表情", jp: "恥ずかしい", en: "embarrassed", attrs: [] },
-    { p: "顔", c: "表情", jp: "狼狽", en: "flustered", attrs: [] },
-    { p: "顔", c: "表情", jp: "無表情", en: "expressionless", attrs: [] },
-    { p: "顔", c: "表情", jp: "疲労困憊", en: "exhausted", attrs: [] },
-    { p: "顔", c: "表情", jp: "半開きな唇", en: "parted lips", attrs: [] },
-    { p: "顔", c: "表情", jp: "呆れ顔", en: "facepalm", attrs: [] },
-    { p: "顔", c: "表情", jp: "眠い", en: "sleepy", attrs: [] },
-    { p: "顔", c: "表情", jp: "ため息", en: "sigh", attrs: [] },
-    { p: "顔", c: "表情", jp: "拗ねる", en: "sulking", attrs: [] },
-    { p: "顔", c: "表情", jp: "真剣", en: "serious", attrs: [] },
-    { p: "顔", c: "表情", jp: "決意", en: "determined", attrs: [] },
-    { p: "顔", c: "表情", jp: "片眉上げ", en: "raised eyebrow", attrs: [] },
-    { p: "顔", c: "表情", jp: "キューブリック・ステア", en: "kubrick stare", attrs: [] },
-    { p: "顔", c: "表情", jp: "軽蔑", en: "disdain", attrs: [] },
-    { p: "顔", c: "表情", jp: "嫌悪", en: "disgust", attrs: [] },
-    { p: "顔", c: "表情", jp: "ひし形口", en: "diamond mouth", attrs: [] },
-    { p: "顔", c: "表情", jp: "三角口", en: "triangle mouth", attrs: [] },
-    { p: "顔", c: "表情", jp: "舌出し", en: "tongue out", attrs: [] },
-    { p: "顔", c: "表情", jp: "いたずらな顔", en: "naughty face", attrs: [] },
-    { p: "顔", c: "メイク", jp: "アイシャドウ", en: "eye shadow", attrs: ["color"] },
-    { p: "顔", c: "メイク", jp: "口紅", en: "lipstick", attrs: ["color"] },
-    { p: "顔", c: "メイク", jp: "泣きぼくろ", en: "teary mole", attrs: [] },
-    { p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["color"] },
-    { p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["color"] },
+// --- 髪型 (attrs: tone, color, length) ---
+{ p: "髪型", c: "前髪", jp: "ぱっつん前髪", en: "blunt bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "姫カット", en: "hime cut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "斜め前髪", en: "diagonal bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "アーチ前髪", en: "arched bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "アシメ前髪", en: "asymmetrical bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "交差前髪", en: "crossed bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "外ハネ前髪", en: "flipped bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "長い前髪", en: "long bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "短い前髪", en: "short bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "不揃い前髪", en: "choppy bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "分け目あり前髪", en: "parted bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "センター分け前髪", en: "double parted bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "目にかかる髪", en: "hair between eyes", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "センターフラップ", en: "center flap bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "横流し前髪", en: "swept bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "前髪ピン留め", en: "bangs pinned back", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "オールバック", en: "hair slicked back", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "髪を後ろに流す", en: "hair pulled back", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "目隠れ", en: "hair over eyes", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "片目隠れ", en: "hair over one eye", attrs: ["tone", "color"] },
+{ p: "髪型", c: "前髪", jp: "両目隠れ", en: "hair over both eyes", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ショートヘア", en: "short hair", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ベリーショート", en: "very short hair", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ピクシーカット", en: "pixie cut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ボブカット", en: "bob cut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ミディアムヘア", en: "medium hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ロングヘア", en: "long hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "超ロング", en: "very long hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "床まで届く髪", en: "absurdly long hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ポニーテール", en: "ponytail", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "高めポニテ", en: "high ponytail", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "低めポニテ", en: "low ponytail", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "サイドポニテ", en: "side ponytail", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "編み込みポニテ", en: "braided ponytail", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ツインテール", en: "twin tails", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "高めツインテ", en: "high twin tails", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "低めツインテ", en: "low twin tails", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "サイドツインテ", en: "side twin tails", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "短めツインテ", en: "short twin tails", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "おさげ", en: "pigtails", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "お団子", en: "bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ヘアお団子", en: "hair bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "高めお団子", en: "high bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "低めお団子", en: "low bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "サイドお団子", en: "side bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ダブルお団子", en: "double bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "三つ編み", en: "braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "フィッシュボーン", en: "french braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "冠編み", en: "crown braid", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "編み込み団子", en: "braided bun", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "前髪編み込み", en: "braided bangs", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ハーフアップ", en: "half updo", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ハーフアップ編み込み", en: "half up braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ハーフ三つ編み", en: "half up half down braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ツーサイドアップ", en: "two side up", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ストレートヘア", en: "straight hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ウェーブヘア", en: "wavy hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "ドリルヘア", en: "drill hair", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "縦ロール", en: "ringlets", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "スタイル", jp: "外ハネ髪", en: "flipped hair", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "段カット（レイヤー）", en: "layered hair", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "ウルフカット", en: "wolf cut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "後ろ刈り上げ", en: "undercut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "スタイル", jp: "横刈り上げ", en: "sidecut", attrs: ["tone", "color"] },
+{ p: "髪型", c: "アクセサリー", jp: "サイド三つ編み(単)", en: "side braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "サイド三つ編み(複)", en: "side braids", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "一本三つ編み", en: "single braid", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "ツイン三つ編み", en: "twin braids", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "三本三つ編み", en: "tri braids", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "四本三つ編み", en: "quad braids", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "多数の三つ編み", en: "multiple braids", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "アホ毛", en: "ahoge", attrs: ["color"] },
+{ p: "髪型", c: "アクセサリー", jp: "メッシュアホ毛", en: "dyed ahoge", attrs: ["color"] },
+{ p: "髪型", c: "アクセサリー", jp: "ハートアホ毛", en: "heart ahoge", attrs: ["color"] },
+{ p: "髪型", c: "アクセサリー", jp: "揺れるアホ毛", en: "ahoge wag", attrs: ["color"] },
+{ p: "髪型", c: "アクセサリー", jp: "アンテナヘア", en: "antenna hair", attrs: ["color"] },
+{ p: "髪型", c: "アクセサリー", jp: "横髪（もみあげ）", en: "sidelocks", attrs: ["tone", "color", "length"] },
+{ p: "髪型", c: "アクセサリー", jp: "ハネ毛", en: "hair flaps", attrs: ["tone", "color"] },
 
-    // --- ポーズ (attrs: []) ---
-    { p: "ポーズ", c: "全身", jp: "寝そべり", en: "lying", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "仰向け", en: "on back", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "横向き寝", en: "on side", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "うつ伏せ", en: "on stomach", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "うつ伏せで足を挙げて組む", en: "on stomach, feet up, crossed ankles", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "ザ・ポーズ", en: "the pose", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "座り", en: "sitting", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "膝立ち", en: "kneeling", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "片膝立ち", en: "on one knee", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "しゃがみ", en: "squatting", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "足を組む", en: "crossed legs", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "胎児のポーズ", en: "fetal position", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "バタフライ座り", en: "butterfly sitting", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "あぐら", en: "indian style", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "体育座り", en: "hugging own legs", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "正座", en: "seiza", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "割り座", en: "wariza", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "横座り", en: "yokozuwari", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "もたれかかる", en: "reclining", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "逆座り", en: "sitting backwards", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "立ち", en: "standing", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "足を開く", en: "legs apart", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "片足立ち", en: "standing on one leg", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "コントラポスト", en: "contrapposto", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "歩く", en: "walking", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "走る", en: "running", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "ジャンプ", en: "jumping", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "跳ねる", en: "hopping", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "ストレッチ", en: "stretching", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "ヨガ", en: "yoga", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "バランス", en: "balancing", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "お辞儀", en: "bowing", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "会釈（カーテシー）", en: "curtsey", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "あくび", en: "yawning", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "反り腰", en: "arched back", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "前屈み", en: "bent over", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "のけ反り", en: "leaning back", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "腕で支える", en: "arm support", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "前傾姿勢", en: "leaning forward", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "猫背", en: "slouching", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "戦う構え", en: "fighting stance", attrs: [] },
-    { p: "ポーズ", c: "全身", jp: "体をひねる", en: "twisted torso", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "片腕上げ", en: "arm up", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "両腕上げ", en: "arms up", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "頭の上に腕", en: "arm above head", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "自分の頭に手", en: "arm on own head", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "頭の後ろに腕(単)", en: "arm behind head", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "頭の後ろに腕(複)", en: "arms behind head", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "脇に手(単)", en: "arm at side", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "脇に手(複)", en: "arms at sides", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "V字腕", en: "v arms", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "後ろ手(単)", en: "arm behind back", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "後ろ手(複)", en: "arms behind back", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "伸ばした腕(単)", en: "outstretched arm", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "伸ばした腕(複)", en: "outstretched arms", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "腕を広げる", en: "spread arms", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "手を伸ばす", en: "reaching", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "Tポーズ", en: "t-pose", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "Aポーズ", en: "a-pose", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "腕組み", en: "crossed arms", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "腰の前で腕を交差", en: "arm across waist", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "力こぶ", en: "flexing", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "肩をすくめる", en: "shrugging", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "W字腕", en: "w arms", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "手枕", en: "head rest", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "膝に腕(単)", en: "arm on knee", attrs: [] },
-    { p: "ポーズ", c: "腕", jp: "膝に腕(複)", en: "arms on knees", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足首を交差", en: "crossed ankles", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足を折りたたむ", en: "legs folded", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足を揃える", en: "legs together", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "片足上げ", en: "leg up", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "両足上げ", en: "legs up", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "膝を胸に", en: "knees to chest", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "頭の上に足", en: "legs over head", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足上げ", en: "leg lift", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "伸ばした足", en: "outstretched leg", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "座り開脚", en: "sitting split", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "立ち開脚", en: "standing split", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足を開く", en: "spread legs", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "膝を開いて足を揃える", en: "knees apart feet together", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "膝を閉じて足を開く", en: "knees together feet apart", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "片膝上げ", en: "knee up", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "両膝上げ", en: "knees up", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "内股", en: "pigeon-toed", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "足の底屈", en: "plantar flexion", attrs: [] },
-    { p: "ポーズ", c: "足", jp: "つま先立ち", en: "tiptoes", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "拳を握る", en: "clenched hand", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "拳を上げる", en: "raised fist", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指を丸める", en: "curled fingers", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "袖を掴む", en: "pinching sleeves", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "スカートを持つ", en: "hold one's skirt out", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "人差し指を立てる", en: "index finger raised", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指差し", en: "pointing", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "相手を指差す", en: "pointing at another", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "自分を指差す", en: "pointing at self", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頬に指", en: "finger to cheek", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "顎に指", en: "finger to own chin", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指を咥える", en: "finger in own mouth", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "口に指", en: "finger to mouth", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "シーッ（静かに）", en: "shushing", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "上を指差す", en: "pointing up", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "下を指差す", en: "pointing down", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "サムズアップ", en: "thumbs up", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "サムズダウン", en: "thumbs down", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指切り", en: "pinky swear", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指鉄砲", en: "finger gun", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "ピースサイン", en: "peace sign", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "ギャルピース", en: "gyaru peace sign", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "目の横でピース", en: "peace sign over eye", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "口の横でピース", en: "peace sign over mouth", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "Wサイン", en: "w sign", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "開いた手", en: "open hand", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "敬礼", en: "salute", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "手を振る", en: "waving", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "手で顔を覆う(呆れ)", en: "facepalm", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指の隙間から覗く", en: "peeking through fingers", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "手を握りしめる", en: "clenched hands", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "手遊び（もじもじ）", en: "fidgeting", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "ハート手", en: "heart hands", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "恋人繋ぎ", en: "interlocked fingers", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "自分の手を組む", en: "own hands clasped", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "腕でX字", en: "x arms", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "指でX字", en: "x fingers", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "額に手", en: "hand on own forehead", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頭をかく", en: "scratching head", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頭に手(単)", en: "hand on own head", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頭に手(複)", en: "hands on own head", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "自分の髪を持つ", en: "holding own hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪をいじる", en: "playing with own hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪をくるくるする", en: "twirling hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪をかき上げる", en: "hair flip", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪に手を入れる(単)", en: "hand in own hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪に手を入れる(複)", en: "hands in hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "髪を耳にかける", en: "tucking hair", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "顔を隠す", en: "covering face", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "手をかざす", en: "shading eyes", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "片目を隠す", en: "covering own eye", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "両目を隠す", en: "covering own eyes", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頬をかく", en: "scratching cheek", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "顎に手", en: "hand on own chin", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頬に手(単)", en: "hand on own cheek", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "頬に手(複)", en: "hands on own cheek", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "口を隠す", en: "covering own mouth", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "口の上に手", en: "hand over own mouth", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "耳に手", en: "hands on own ears", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "片手上げ", en: "hand up", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "両手上げ", en: "hands up", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "首に手(単)", en: "hand on own neck", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "首に手(複)", en: "hands on own neck", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "肩に手(単)", en: "hand on own shoulder", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "肩に手(複)", en: "hands on own shoulders", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "胸に手(単)", en: "hand on own chest", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "胸に手(複)", en: "hands on own chest", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "腕に手(単)", en: "hand on own arm", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "腕に手(複)", en: "hands on own arms", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "肘に手", en: "hand on own elbow", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "ポケットに手(単)", en: "hand in pocket", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "ポケットに手(複)", en: "hands in pockets", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "お腹に手(単)", en: "hand on own stomach", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "お腹に手(複)", en: "hands on own stomach", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "腰に手(単)", en: "hand on own hip", attrs: [] },
-    { p: "ポーズ", c: "手", jp: "腰に手(複)", en: "hands on own hips", attrs: [] },
-    { p: "ポーズ", c: "頭", jp: "頭を下げる", en: "head down", attrs: [] },
-    { p: "ポーズ", c: "頭", jp: "首をかしげる", en: "head tilt", attrs: [] },
-    { p: "ポーズ", c: "頭", jp: "頭を後ろに倒す", en: "head back", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "ジャック・オー・ポーズ", en: "Jack-O Pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "うさ耳ポーズ", en: "rabbit pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "角ポーズ", en: "horns pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "猫ポーズ", en: "cat pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "犬ポーズ", en: "dog pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "爪ポーズ", en: "claw pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "お化けポーズ", en: "ghost pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "お嬢様ポーズ", en: "ojou-sama pose", attrs: [] },
-    { p: "ポーズ", c: "特殊", jp: "ヴィランポーズ", en: "villain pose", attrs: [] },
-    { p: "ポーズ", c: "その他", jp: "浮遊感", en: "floating", attrs: [] },
-    { p: "ポーズ", c: "その他", jp: "躍動感", en: "dynamic pose", attrs: [] },
+// --- 顔 (attrs: 部位による) ---
+{ p: "顔", c: "視線", jp: "こっちを見てる", en: "looking at viewer", attrs: [] },
+{ p: "顔", c: "視線", jp: "目をそらす", en: "looking away", attrs: [] },
+{ p: "顔", c: "視線", jp: "上を見る", en: "looking up", attrs: [] },
+{ p: "顔", c: "視線", jp: "下を見る", en: "looking down", attrs: [] },
+{ p: "顔", c: "視線", jp: "横を見る", en: "looking to the side", attrs: [] },
+{ p: "顔", c: "視線", jp: "流し目", en: "sideways glance", attrs: [] },
+{ p: "顔", c: "視線", jp: "視線をそらす", en: "averting eyes", attrs: [] },
+{ p: "顔", c: "視線", jp: "遠くを見る", en: "looking afar", attrs: [] },
+{ p: "顔", c: "視線", jp: "手元を見る", en: "looking at hands", attrs: [] },
+{ p: "顔", c: "視線", jp: "右手を見る", en: "looking at right hand", attrs: [] },
+{ p: "顔", c: "視線", jp: "左手を見る", en: "looking at left hand", attrs: [] },
+{ p: "顔", c: "視線", jp: "上目遣い", en: "upturned eyes", attrs: [] },
+{ p: "顔", c: "目の形", jp: "閉じ目", en: "closed eyes", attrs: [] },
+{ p: "顔", c: "目の形", jp: "片目閉じ", en: "one eye closed", attrs: [] },
+{ p: "顔", c: "目の形", jp: "細めた目", en: "narrowed eyes", attrs: [] },
+{ p: "顔", c: "目の形", jp: "睨み・細め目", en: "squinting", attrs: [] },
+{ p: "顔", c: "目の形", jp: "半目", en: "half-closed eyes", attrs: [] },
+{ p: "顔", c: "目の形", jp: "見開いた目", en: "wide-eyed", attrs: [] },
+{ p: "顔", c: "目の形", jp: "ツリ目", en: "tsurime", attrs: [] },
+{ p: "顔", c: "目の形", jp: "タレ目", en: "tareme", attrs: [] },
+{ p: "顔", c: "目の形", jp: "ジト目", en: "jitome", attrs: [] },
+{ p: "顔", c: "目の形", jp: "寄り目", en: "cross-eyed", attrs: [] },
+{ p: "顔", c: "目の形", jp: "左右非対称な目", en: "uneven eyes", attrs: [] },
+{ p: "顔", c: "瞳の形", jp: "縦長瞳", en: "slit pupils", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "輪っか瞳", en: "ringed eyes", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "ぐるぐる瞳", en: "spiral-only eyes", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "ハート瞳", en: "heart-shaped pupils", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "星型瞳", en: "star-shaped pupils", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "記号瞳", en: "symbol-shaped pupils", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "丸瞳（ベタ）", en: "solid circle eyes", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "虚ろな目", en: "empty eyes", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "瞳の反射", en: "eye reflection", attrs: [] },
+{ p: "顔", c: "瞳の形", jp: "両瞳の反射", en: "eyes reflection", attrs: [] },
+{ p: "顔", c: "瞳の形", jp: "発光瞳", en: "glowing eyes", attrs: ["color"] },
+{ p: "顔", c: "瞳の形", jp: "キラキラ瞳", en: "sparkling eyes", attrs: ["color"] },
+{ p: "顔", c: "表情", jp: "幸せ", en: "happy", attrs: [] },
+{ p: "顔", c: "表情", jp: "ドヤ顔", en: "smug", attrs: [] },
+{ p: "顔", c: "表情", jp: "ニヤリ", en: "smirk", attrs: [] },
+{ p: "顔", c: "表情", jp: "ゲス顔", en: "evil grin", attrs: [] },
+{ p: "顔", c: "表情", jp: "ワクワク", en: "excited", attrs: [] },
+{ p: "顔", c: "表情", jp: "口を開ける", en: "open mouth", attrs: [] },
+{ p: "顔", c: "表情", jp: "口を閉じる", en: "closed mouth", attrs: [] },
+{ p: "顔", c: "表情", jp: "怒り", en: "angry", attrs: [] },
+{ p: "顔", c: "表情", jp: "怒りマーク（血管）", en: "anger vein", attrs: [] },
+{ p: "顔", c: "表情", jp: "イライラ", en: "annoyed", attrs: [] },
+{ p: "顔", c: "表情", jp: "食いしばり", en: "clenched teeth", attrs: [] },
+{ p: "顔", c: "表情", jp: "しかめっ面", en: "scowl", attrs: [] },
+{ p: "顔", c: "表情", jp: "困り顔", en: "frustrated", attrs: [] },
+{ p: "顔", c: "表情", jp: "ぷくー（口を尖らす）", en: "pout", attrs: [] },
+{ p: "顔", c: "表情", jp: "睨みつけ", en: "glaring", attrs: [] },
+{ p: "顔", c: "表情", jp: "青ざめる", en: "turn pale", attrs: [] },
+{ p: "顔", c: "表情", jp: "悲しい", en: "sad", attrs: [] },
+{ p: "顔", c: "表情", jp: "落胆", en: "disappointed", attrs: [] },
+{ p: "顔", c: "表情", jp: "落ち込む", en: "depressed", attrs: [] },
+{ p: "顔", c: "表情", jp: "陰鬱", en: "gloom", attrs: [] },
+{ p: "顔", c: "表情", jp: "涙", en: "tears", attrs: [] },
+{ p: "顔", c: "表情", jp: "むせび泣き", en: "sobbing", attrs: [] },
+{ p: "顔", c: "表情", jp: "絶望", en: "despair", attrs: [] },
+{ p: "顔", c: "表情", jp: "トラウマ", en: "traumatized", attrs: [] },
+{ p: "顔", c: "表情", jp: "叫び", en: "screaming", attrs: [] },
+{ p: "顔", c: "表情", jp: "驚き", en: "surprised", attrs: [] },
+{ p: "顔", c: "表情", jp: "怖い", en: "scared", attrs: [] },
+{ p: "顔", c: "表情", jp: "恐怖", en: "horrified", attrs: [] },
+{ p: "顔", c: "表情", jp: "パニック", en: "panicking", attrs: [] },
+{ p: "顔", c: "表情", jp: "へにょ口", en: "wavy mouth", attrs: [] },
+{ p: "顔", c: "表情", jp: "混乱", en: "confused", attrs: [] },
+{ p: "顔", c: "表情", jp: "思考中", en: "thinking", attrs: [] },
+{ p: "顔", c: "表情", jp: "物思い", en: "pensive", attrs: [] },
+{ p: "顔", c: "表情", jp: "痛がる", en: "wince", attrs: [] },
+{ p: "顔", c: "表情", jp: "眉間にしわ", en: "furrowed brow", attrs: [] },
+{ p: "顔", c: "表情", jp: "片眉をひそめる", en: "cocked eyebrow", attrs: [] },
+{ p: "顔", c: "表情", jp: "眉尻を上げる", en: "raised inner eyebrows", attrs: [] },
+{ p: "顔", c: "表情", jp: "赤面", en: "blush", attrs: [] },
+{ p: "顔", c: "表情", jp: "照れ線", en: "blush stickers", attrs: [] },
+{ p: "顔", c: "表情", jp: "全面赤面", en: "full-face blush", attrs: [] },
+{ p: "顔", c: "表情", jp: "鼻に照れ", en: "nose blush", attrs: [] },
+{ p: "顔", c: "表情", jp: "恥ずかしい", en: "embarrassed", attrs: [] },
+{ p: "顔", c: "表情", jp: "狼狽", en: "flustered", attrs: [] },
+{ p: "顔", c: "表情", jp: "無表情", en: "expressionless", attrs: [] },
+{ p: "顔", c: "表情", jp: "疲労困憊", en: "exhausted", attrs: [] },
+{ p: "顔", c: "表情", jp: "半開きな唇", en: "parted lips", attrs: [] },
+{ p: "顔", c: "表情", jp: "呆れ顔", en: "facepalm", attrs: [] },
+{ p: "顔", c: "表情", jp: "眠い", en: "sleepy", attrs: [] },
+{ p: "顔", c: "表情", jp: "ため息", en: "sigh", attrs: [] },
+{ p: "顔", c: "表情", jp: "拗ねる", en: "sulking", attrs: [] },
+{ p: "顔", c: "表情", jp: "真剣", en: "serious", attrs: [] },
+{ p: "顔", c: "表情", jp: "決意", en: "determined", attrs: [] },
+{ p: "顔", c: "表情", jp: "片眉上げ", en: "raised eyebrow", attrs: [] },
+{ p: "顔", c: "表情", jp: "キューブリック・ステア", en: "kubrick stare", attrs: [] },
+{ p: "顔", c: "表情", jp: "軽蔑", en: "disdain", attrs: [] },
+{ p: "顔", c: "表情", jp: "嫌悪", en: "disgust", attrs: [] },
+{ p: "顔", c: "表情", jp: "ひし形口", en: "diamond mouth", attrs: [] },
+{ p: "顔", c: "表情", jp: "三角口", en: "triangle mouth", attrs: [] },
+{ p: "顔", c: "表情", jp: "舌出し", en: "tongue out", attrs: [] },
+{ p: "顔", c: "表情", jp: "いたずらな顔", en: "naughty face", attrs: [] },
+{ p: "顔", c: "メイク", jp: "アイシャドウ", en: "eye shadow", attrs: ["color"] },
+{ p: "顔", c: "メイク", jp: "口紅", en: "lipstick", attrs: ["color"] },
+{ p: "顔", c: "メイク", jp: "泣きぼくろ", en: "teary mole", attrs: [] },
+{ p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["color"] },
+{ p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["color"] },
 
-    // --- 背景 (attrs: 種別による) ---
-    { p: "背景", c: "屋外", jp: "海", en: "ocean", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "ビーチ", en: "beach", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "川", en: "river", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "湖", en: "lake", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "池", en: "pond", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "滝", en: "waterfall", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "小川", en: "stream", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "桟橋", en: "pier", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "島", en: "island", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "プール", en: "pool", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "プールサイド", en: "poolside", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "自然", en: "nature", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "野原", en: "field", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "お花畑", en: "flower field", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "丘", en: "hill", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "森", en: "forest", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "竹林", en: "bamboo forest", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "ジャングル", en: "jungle", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "崖", en: "cliff", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "洞窟", en: "cave", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "山", en: "mountain", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "砂漠", en: "desert", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "都市", en: "city", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "町", en: "town", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "通り", en: "street", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "歩道", en: "sidewalk", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "道路", en: "road", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "屋上", en: "rooftop", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "駅", en: "train station", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "バス停", en: "bus stop", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "都市景観", en: "cityscape", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "公園", en: "park", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "庭園", en: "garden", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "建築物", en: "architecture", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "摩天楼", en: "skyscraper", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "橋", en: "bridge", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "風車", en: "windmill", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "スタジアム", en: "stadium", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "遺跡", en: "ruins", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "城", en: "castle", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "墓地", en: "graveyard", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "寺院", en: "temple", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "教会", en: "church", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "浮遊島", en: "floating island", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "空", en: "sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "青空", en: "blue sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "曇り空", en: "cloudy sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "グラデーション空", en: "gradient sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "オレンジ色の空", en: "orange sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "夕焼け", en: "sun set sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "灰色の空", en: "grey sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "多層の雲の空", en: "multi cloud sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "桃色の空", en: "pink sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "夜空", en: "night sky", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "月", en: "moon", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "星座", en: "constellation", attrs: ["tone"] },
-    { p: "背景", c: "屋外", jp: "流れ星", en: "shooting star", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "星空", en: "starry sky", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "アパート", en: "apartment", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "寝室", en: "bedroom", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "キッチン", en: "kitchen", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "オフィス", en: "office", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "図書館", en: "library", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "病院", en: "hospital", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "教室", en: "classroom", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "店", en: "shop", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "レストラン", en: "restaurant", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "カフェ", en: "cafe", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "バー", en: "bar", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "ステージ", en: "stage", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "電車内", en: "train interior", attrs: ["tone"] },
-    { p: "背景", c: "屋内", jp: "車内", en: "car interior", attrs: ["tone"] },
-    { p: "背景", c: "シンプル", jp: "シンプル背景", en: "simple background", attrs: ["color"] },
-    { p: "背景", c: "シンプル", jp: "虹色の背景", en: "rainbow background", attrs: ["color"] },
-    { p: "背景", c: "シンプル", jp: "グラデーション背景", en: "gradient background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "ハーフトーン", en: "halftone background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "アーガイル", en: "argyle background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "格子柄", en: "checkered background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "グリッド", en: "grid background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "プレイド", en: "plaid background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "水玉", en: "polka dot background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "スプラッター", en: "splatter background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "ストライプ", en: "striped background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "ボーダー", en: "border background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "外枠", en: "outside border", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "斜めストライプ", en: "diagonal-striped background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "ハート背景", en: "heart background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "肉球背景", en: "paw print background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "キラキラ背景", en: "sparkle background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "星記号背景", en: "star symbol background", attrs: ["color"] },
-    { p: "背景", c: "パターン", jp: "水彩背景", en: "watercolor background", attrs: ["color"] },
-    { p: "背景", c: "エフェクト", jp: "舞い散る花びら", en: "falling petals", attrs: ["color"] },
-    { p: "背景", c: "エフェクト", jp: "光の粒子", en: "particles", attrs: ["color"] },
-    { p: "背景", c: "エフェクト", jp: "舞い散る雪", en: "snowflakes", attrs: [] },
+// --- ポーズ (attrs: []) ---
+{ p: "ポーズ", c: "全身", jp: "寝そべり", en: "lying", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "仰向け", en: "on back", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "横向き寝", en: "on side", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "うつ伏せ", en: "on stomach", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "うつ伏せで足を挙げて組む", en: "on stomach, feet up, crossed ankles", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "ザ・ポーズ", en: "the pose", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "座り", en: "sitting", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "膝立ち", en: "kneeling", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "片膝立ち", en: "on one knee", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "しゃがみ", en: "squatting", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "足を組む", en: "crossed legs", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "胎児のポーズ", en: "fetal position", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "バタフライ座り", en: "butterfly sitting", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "あぐら", en: "indian style", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "体育座り", en: "hugging own legs", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "正座", en: "seiza", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "割り座", en: "wariza", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "横座り", en: "yokozuwari", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "もたれかかる", en: "reclining", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "逆座り", en: "sitting backwards", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "立ち", en: "standing", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "足を開く", en: "legs apart", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "片足立ち", en: "standing on one leg", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "コントラポスト", en: "contrapposto", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "歩く", en: "walking", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "走る", en: "running", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "ジャンプ", en: "jumping", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "跳ねる", en: "hopping", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "ストレッチ", en: "stretching", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "ヨガ", en: "yoga", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "バランス", en: "balancing", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "お辞儀", en: "bowing", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "会釈（カーテシー）", en: "curtsey", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "あくび", en: "yawning", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "反り腰", en: "arched back", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "前屈み", en: "bent over", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "のけ反り", en: "leaning back", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "腕で支える", en: "arm support", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "前傾姿勢", en: "leaning forward", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "猫背", en: "slouching", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "戦う構え", en: "fighting stance", attrs: [] },
+{ p: "ポーズ", c: "全身", jp: "体をひねる", en: "twisted torso", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "片腕上げ", en: "arm up", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "両腕上げ", en: "arms up", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "頭の上に腕", en: "arm above head", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "自分の頭に手", en: "arm on own head", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "頭の後ろに腕(単)", en: "arm behind head", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "頭の後ろに腕(複)", en: "arms behind head", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "脇に手(単)", en: "arm at side", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "脇に手(複)", en: "arms at sides", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "V字腕", en: "v arms", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "後ろ手(単)", en: "arm behind back", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "後ろ手(複)", en: "arms behind back", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "伸ばした腕(単)", en: "outstretched arm", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "伸ばした腕(複)", en: "outstretched arms", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "腕を広げる", en: "spread arms", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "手を伸ばす", en: "reaching", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "Tポーズ", en: "t-pose", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "Aポーズ", en: "a-pose", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "腕組み", en: "crossed arms", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "腰の前で腕を交差", en: "arm across waist", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "力こぶ", en: "flexing", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "肩をすくめる", en: "shrugging", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "W字腕", en: "w arms", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "手枕", en: "head rest", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "膝に腕(単)", en: "arm on knee", attrs: [] },
+{ p: "ポーズ", c: "腕", jp: "膝に腕(複)", en: "arms on knees", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足首を交差", en: "crossed ankles", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足を折りたたむ", en: "legs folded", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足を揃える", en: "legs together", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "片足上げ", en: "leg up", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "両足上げ", en: "legs up", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "膝を胸に", en: "knees to chest", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "頭の上に足", en: "legs over head", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足上げ", en: "leg lift", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "伸ばした足", en: "outstretched leg", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "座り開脚", en: "sitting split", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "立ち開脚", en: "standing split", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足を開く", en: "spread legs", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "膝を開いて足を揃える", en: "knees apart feet together", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "膝を閉じて足を開く", en: "knees together feet apart", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "片膝上げ", en: "knee up", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "両膝上げ", en: "knees up", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "内股", en: "pigeon-toed", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "足の底屈", en: "plantar flexion", attrs: [] },
+{ p: "ポーズ", c: "足", jp: "つま先立ち", en: "tiptoes", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "拳を握る", en: "clenched hand", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "拳を上げる", en: "raised fist", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指を丸める", en: "curled fingers", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "袖を掴む", en: "pinching sleeves", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "スカートを持つ", en: "hold one's skirt out", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "人差し指を立てる", en: "index finger raised", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指差し", en: "pointing", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "相手を指差す", en: "pointing at another", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "自分を指差す", en: "pointing at self", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頬に指", en: "finger to cheek", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "顎に指", en: "finger to own chin", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指を咥える", en: "finger in own mouth", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "口に指", en: "finger to mouth", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "シーッ（静かに）", en: "shushing", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "上を指差す", en: "pointing up", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "下を指差す", en: "pointing down", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "サムズアップ", en: "thumbs up", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "サムズダウン", en: "thumbs down", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指切り", en: "pinky swear", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指鉄砲", en: "finger gun", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "ピースサイン", en: "peace sign", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "ギャルピース", en: "gyaru peace sign", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "目の横でピース", en: "peace sign over eye", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "口の横でピース", en: "peace sign over mouth", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "Wサイン", en: "w sign", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "開いた手", en: "open hand", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "敬礼", en: "salute", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "手を振る", en: "waving", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "手で顔を覆う(呆れ)", en: "facepalm", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指の隙間から覗く", en: "peeking through fingers", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "手を握りしめる", en: "clenched hands", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "手遊び（もじもじ）", en: "fidgeting", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "ハート手", en: "heart hands", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "恋人繋ぎ", en: "interlocked fingers", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "自分の手を組む", en: "own hands clasped", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "腕でX字", en: "x arms", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "指でX字", en: "x fingers", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "額に手", en: "hand on own forehead", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頭をかく", en: "scratching head", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頭に手(単)", en: "hand on own head", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頭に手(複)", en: "hands on own head", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "自分の髪を持つ", en: "holding own hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪をいじる", en: "playing with own hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪をくるくるする", en: "twirling hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪をかき上げる", en: "hair flip", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪に手を入れる(単)", en: "hand in own hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪に手を入れる(複)", en: "hands in hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "髪を耳にかける", en: "tucking hair", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "顔を隠す", en: "covering face", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "手をかざす", en: "shading eyes", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "片目を隠す", en: "covering own eye", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "両目を隠す", en: "covering own eyes", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頬をかく", en: "scratching cheek", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "顎に手", en: "hand on own chin", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頬に手(単)", en: "hand on own cheek", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "頬に手(複)", en: "hands on own cheek", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "口を隠す", en: "covering own mouth", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "口の上に手", en: "hand over own mouth", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "耳に手", en: "hands on own ears", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "片手上げ", en: "hand up", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "両手上げ", en: "hands up", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "首に手(単)", en: "hand on own neck", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "首に手(複)", en: "hands on own neck", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "肩に手(単)", en: "hand on own shoulder", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "肩に手(複)", en: "hands on own shoulders", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "胸に手(単)", en: "hand on own chest", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "胸に手(複)", en: "hands on own chest", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "腕に手(単)", en: "hand on own arm", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "腕に手(複)", en: "hands on own arms", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "肘に手", en: "hand on own elbow", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "ポケットに手(単)", en: "hand in pocket", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "ポケットに手(複)", en: "hands in pockets", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "お腹に手(単)", en: "hand on own stomach", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "お腹に手(複)", en: "hands on own stomach", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "腰に手(単)", en: "hand on own hip", attrs: [] },
+{ p: "ポーズ", c: "手", jp: "腰に手(複)", en: "hands on own hips", attrs: [] },
+{ p: "ポーズ", c: "頭", jp: "頭を下げる", en: "head down", attrs: [] },
+{ p: "ポーズ", c: "頭", jp: "首をかしげる", en: "head tilt", attrs: [] },
+{ p: "ポーズ", c: "頭", jp: "頭を後ろに倒す", en: "head back", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "ジャック・オー・ポーズ", en: "Jack-O Pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "うさ耳ポーズ", en: "rabbit pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "角ポーズ", en: "horns pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "猫ポーズ", en: "cat pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "犬ポーズ", en: "dog pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "爪ポーズ", en: "claw pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "お化けポーズ", en: "ghost pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "お嬢様ポーズ", en: "ojou-sama pose", attrs: [] },
+{ p: "ポーズ", c: "特殊", jp: "ヴィランポーズ", en: "villain pose", attrs: [] },
+{ p: "ポーズ", c: "その他", jp: "浮遊感", en: "floating", attrs: [] },
+{ p: "ポーズ", c: "その他", jp: "躍動感", en: "dynamic pose", attrs: [] },
 
-    // --- 衣装 (attrs: color, material) ---
-    { p: "衣装", c: "アクセサリー", jp: "野球帽", en: "baseball cap", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ビーニー", en: "beanie", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "バケットハット", en: "bucket hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ハンチング", en: "flat cap", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "麦わら帽子", en: "straw hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ベレー帽", en: "beret", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ボンネット", en: "bonnet", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "キャスケット", en: "cabbie hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "中折れ帽", en: "fedora", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "シルクハット", en: "top hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "パーティー帽", en: "party hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "サンタ帽", en: "Santa Claus hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "魔女帽", en: "witch hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "猫耳帽", en: "cat hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "後ろ被り帽", en: "backwards hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "横被り帽", en: "sideways hat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "帽子のリボン", en: "hat ribbon", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "帽子のボウ", en: "hat bow", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "帽子の花", en: "hat flower", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "カチューシャ", en: "headband", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "バンダナ", en: "bandana", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "王冠", en: "crown", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "髪のリボン", en: "hair ribbon", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "髪のボウ", en: "hair bow", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ティアラ", en: "tiara", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "メイドカチューシャ", en: "maid headdress", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "髪飾り", en: "hair ornament", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ヘアピン", en: "hairpin", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "シュシュ", en: "hair scrunchie", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "髪ゴム", en: "hair tie", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセサリー", jp: "ヘアポニー（玉付き）", en: "hair bobbles", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "Tシャツ", en: "t-shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ワイシャツ", en: "dress shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ラグラン袖", en: "raglan sleeves", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "タンクトップ", en: "tank top", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "クロップド", en: "crop top", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "フリルシャツ", en: "frilled shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "キャミソール", en: "camisole", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ホルターネック", en: "halterneck", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "クロスホルター", en: "criss-cross halter", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "オフショルダー", en: "off-shoulder shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ピチピチなシャツ", en: "taut shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "チューブトップ", en: "tube top", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "セーター", en: "sweater", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "リブセーター", en: "ribbed sweater", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "アランセーター", en: "aran sweater", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ノースリーブタートル", en: "sleeveless turtleneck", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "タートルネック", en: "turtleneck sweater", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "セーターベスト", en: "sweater vest", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "カーディガン", en: "cardigan", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "カーディガンベスト", en: "cardigan vest", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ウェストコート", en: "waistcoat", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "コルセット", en: "corset", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "アンダーバスト", en: "underbust", attrs: ["color", "material"] },
-    { p: "衣装", c: "トップス", jp: "ノースリーブシャツ", en: "sleeveless shirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ズボン", en: "pants", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "カプリパンツ", en: "capri pants", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "股上の浅いパンツ", en: "lowleg pants", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ジーンズ", en: "jeans", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "レギンス", en: "leggings", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "捲り上げたパンツ", en: "pants rolled up", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "短パン", en: "shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "デニム短パン", en: "denim shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "マイクロ短パン", en: "micro shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "股上の浅い短パン", en: "lowleg shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ショートパンツ", en: "short shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "スカート", en: "skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "オーバースカート", en: "overskirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ミニスカート", en: "miniskirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ロングスカート", en: "long skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ハイウェストスカート", en: "high-waist skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "サスペンダースカート", en: "suspender skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ジャンパースカート", en: "overall skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "プリーツスカート", en: "pleated skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "チェック柄スカート", en: "plaid skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "ギンガムスカート", en: "gingham skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "ボトムス", jp: "スパッツ", en: "bike shorts", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "フィッシュテール", en: "high-low skirt", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "セーラードレス", en: "sailor dress", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "ビジネススーツ", en: "business suit", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "スカートスーツ", en: "skirt suit", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "パンツスーツ", en: "pant suit", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "燕尾服", en: "tailcoat", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "フォーマル", en: "formal clothes", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "アオザイ", en: "ao dao", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "着物", en: "kimono", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "浴衣", en: "yukata", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "袴", en: "hakama", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "ロリィタ", en: "lolita fashion", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "セーラー服", en: "japanese schoolgirl sailor uniform", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "矢絣袴", en: "meiji schoolgirl uniform", attrs: ["color", "material"] },
-    { p: "衣装", c: "全身衣装", jp: "体操着", en: "gym uniform", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ジャケット", en: "jacket", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ブレザー", en: "blazer", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "パーカー", en: "hoodie", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "白衣", en: "lab coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "コート", en: "coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ロングコート", en: "long coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ウィンターコート", en: "winter coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ダッフルコート", en: "duffel coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ファーコート", en: "fur coat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "レインコート", en: "raincoat", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ローブ", en: "robe", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ケープ", en: "cape", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ケープレット", en: "capelet", attrs: ["color", "material"] },
-    { p: "衣装", c: "アウター", jp: "ショール", en: "shawl", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "ブーツ", en: "boots", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "ニーハイブーツ", en: "knee boots", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "サイハイブーツ", en: "thigh boots", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "ハイヒールブーツ", en: "high heel boots", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "サンダル", en: "sandals", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "パンプス", en: "pumps", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "ハイヒール", en: "high heels", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "紳士靴", en: "dress shoes", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "ローファー", en: "loaders", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["color", "material"] },
-    { p: "衣装", c: "シューズ", jp: "スリッパ", en: "slippers", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "オーバーニー", en: "over-kneehighs", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "ニーハイ", en: "kneehighs", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "靴下", en: "socks", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "ルーズソックス", en: "loose socks", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "アンクルソックス", en: "ankle socks", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "パンスト", en: "pantyhose", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "フリル", en: "frills", attrs: ["color", "material"] },
-    { p: "衣装", c: "衣装細部", jp: "ジッパー", en: "zipper", attrs: ["material"] },
-    { p: "衣装", c: "衣装細部", jp: "ベルト", en: "belt", attrs: ["material"] },
-    { p: "衣装", c: "衣装細部", jp: "レース刺繍", en: "lace trim", attrs: ["color", "material"] }
+// --- 背景 (attrs: 種別による) ---
+{ p: "背景", c: "屋外", jp: "海", en: "ocean", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "ビーチ", en: "beach", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "川", en: "river", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "湖", en: "lake", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "池", en: "pond", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "滝", en: "waterfall", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "小川", en: "stream", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "桟橋", en: "pier", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "島", en: "island", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "プール", en: "pool", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "プールサイド", en: "poolside", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "自然", en: "nature", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "野原", en: "field", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "お花畑", en: "flower field", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "丘", en: "hill", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "森", en: "forest", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "竹林", en: "bamboo forest", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "ジャングル", en: "jungle", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "崖", en: "cliff", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "洞窟", en: "cave", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "山", en: "mountain", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "砂漠", en: "desert", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "都市", en: "city", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "町", en: "town", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "通り", en: "street", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "歩道", en: "sidewalk", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "道路", en: "road", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "屋上", en: "rooftop", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "駅", en: "train station", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "バス停", en: "bus stop", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "都市景観", en: "cityscape", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "公園", en: "park", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "庭園", en: "garden", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "建築物", en: "architecture", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "摩天楼", en: "skyscraper", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "橋", en: "bridge", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "風車", en: "windmill", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "スタジアム", en: "stadium", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "遺跡", en: "ruins", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "城", en: "castle", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "墓地", en: "graveyard", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "寺院", en: "temple", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "教会", en: "church", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "浮遊島", en: "floating island", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "空", en: "sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "青空", en: "blue sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "曇り空", en: "cloudy sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "グラデーション空", en: "gradient sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "オレンジ色の空", en: "orange sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "夕焼け", en: "sun set sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "灰色の空", en: "grey sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "多層の雲の空", en: "multi cloud sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "桃色の空", en: "pink sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "夜空", en: "night sky", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "月", en: "moon", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "星座", en: "constellation", attrs: ["tone"] },
+{ p: "背景", c: "屋外", jp: "流れ星", en: "shooting star", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "星空", en: "starry sky", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "アパート", en: "apartment", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "寝室", en: "bedroom", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "キッチン", en: "kitchen", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "オフィス", en: "office", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "図書館", en: "library", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "病院", en: "hospital", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "教室", en: "classroom", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "店", en: "shop", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "レストラン", en: "restaurant", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "カフェ", en: "cafe", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "バー", en: "bar", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "ステージ", en: "stage", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "電車内", en: "train interior", attrs: ["tone"] },
+{ p: "背景", c: "屋内", jp: "車内", en: "car interior", attrs: ["tone"] },
+{ p: "背景", c: "シンプル", jp: "シンプル背景", en: "simple background", attrs: ["color"] },
+{ p: "背景", c: "シンプル", jp: "虹色の背景", en: "rainbow background", attrs: ["color"] },
+{ p: "背景", c: "シンプル", jp: "グラデーション背景", en: "gradient background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "ハーフトーン", en: "halftone background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "アーガイル", en: "argyle background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "格子柄", en: "checkered background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "グリッド", en: "grid background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "プレイド", en: "plaid background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "水玉", en: "polka dot background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "スプラッター", en: "splatter background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "ストライプ", en: "striped background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "ボーダー", en: "border background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "外枠", en: "outside border", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "斜めストライプ", en: "diagonal-striped background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "ハート背景", en: "heart background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "肉球背景", en: "paw print background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "キラキラ背景", en: "sparkle background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "星記号背景", en: "star symbol background", attrs: ["color"] },
+{ p: "背景", c: "パターン", jp: "水彩背景", en: "watercolor background", attrs: ["color"] },
+{ p: "背景", c: "エフェクト", jp: "舞い散る花びら", en: "falling petals", attrs: ["color"] },
+{ p: "背景", c: "エフェクト", jp: "光の粒子", en: "particles", attrs: ["color"] },
+{ p: "背景", c: "エフェクト", jp: "舞い散る雪", en: "snowflakes", attrs: [] },
+
+// --- 衣装 (attrs: color, material) ---
+{ p: "衣装", c: "アクセサリー", jp: "野球帽", en: "baseball cap", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ビーニー", en: "beanie", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "バケットハット", en: "bucket hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ハンチング", en: "flat cap", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "麦わら帽子", en: "straw hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ベレー帽", en: "beret", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ボンネット", en: "bonnet", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "キャスケット", en: "cabbie hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "中折れ帽", en: "fedora", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "シルクハット", en: "top hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "パーティー帽", en: "party hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "サンタ帽", en: "Santa Claus hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "魔女帽", en: "witch hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "猫耳帽", en: "cat hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "後ろ被り帽", en: "backwards hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "横被り帽", en: "sideways hat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "帽子のリボン", en: "hat ribbon", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "帽子のボウ", en: "hat bow", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "帽子の花", en: "hat flower", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "カチューシャ", en: "headband", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "バンダナ", en: "bandana", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "王冠", en: "crown", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "髪のリボン", en: "hair ribbon", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "髪のボウ", en: "hair bow", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ティアラ", en: "tiara", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "メイドカチューシャ", en: "maid headdress", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "髪飾り", en: "hair ornament", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ヘアピン", en: "hairpin", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "シュシュ", en: "hair scrunchie", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "髪ゴム", en: "hair tie", attrs: ["color", "material"] },
+{ p: "衣装", c: "アクセサリー", jp: "ヘアポニー（玉付き）", en: "hair bobbles", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "Tシャツ", en: "t-shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ワイシャツ", en: "dress shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ラグラン袖", en: "raglan sleeves", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "タンクトップ", en: "tank top", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "クロップド", en: "crop top", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "フリルシャツ", en: "frilled shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "キャミソール", en: "camisole", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ホルターネック", en: "halterneck", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "クロスホルター", en: "criss-cross halter", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "オフショルダー", en: "off-shoulder shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ピチピチなシャツ", en: "taut shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "チューブトップ", en: "tube top", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "セーター", en: "sweater", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "リブセーター", en: "ribbed sweater", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "アランセーター", en: "aran sweater", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ノースリーブタートル", en: "sleeveless turtleneck", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "タートルネック", en: "turtleneck sweater", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "セーターベスト", en: "sweater vest", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "カーディガン", en: "cardigan", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "カーディガンベスト", en: "cardigan vest", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ウェストコート", en: "waistcoat", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "コルセット", en: "corset", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "アンダーバスト", en: "underbust", attrs: ["color", "material"] },
+{ p: "衣装", c: "トップス", jp: "ノースリーブシャツ", en: "sleeveless shirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ズボン", en: "pants", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "カプリパンツ", en: "capri pants", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "股上の浅いパンツ", en: "lowleg pants", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ジーンズ", en: "jeans", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "レギンス", en: "leggings", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "捲り上げたパンツ", en: "pants rolled up", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "短パン", en: "shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "デニム短パン", en: "denim shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "マイクロ短パン", en: "micro shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "股上の浅い短パン", en: "lowleg shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ショートパンツ", en: "short shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "スカート", en: "skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "オーバースカート", en: "overskirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ミニスカート", en: "miniskirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ロングスカート", en: "long skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ハイウェストスカート", en: "high-waist skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "サスペンダースカート", en: "suspender skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ジャンパースカート", en: "overall skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "プリーツスカート", en: "pleated skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "チェック柄スカート", en: "plaid skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ギンガムスカート", en: "gingham skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "スパッツ", en: "bike shorts", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "フィッシュテール", en: "high-low skirt", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "セーラードレス", en: "sailor dress", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ビジネススーツ", en: "business suit", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "スカートスーツ", en: "skirt suit", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "パンツスーツ", en: "pant suit", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "燕尾服", en: "tailcoat", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "フォーマル", en: "formal clothes", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "アオザイ", en: "ao dao", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "着物", en: "kimono", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "浴衣", en: "yukata", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "袴", en: "hakama", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "ロリィタ", en: "lolita fashion", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "セーラー服", en: "japanese schoolgirl sailor uniform", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "矢絣袴", en: "meiji schoolgirl uniform", attrs: ["color", "material"] },
+{ p: "衣装", c: "全身衣装", jp: "体操着", en: "gym uniform", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ジャケット", en: "jacket", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ブレザー", en: "blazer", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "パーカー", en: "hoodie", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "白衣", en: "lab coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "コート", en: "coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ロングコート", en: "long coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ウィンターコート", en: "winter coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ダッフルコート", en: "duffel coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ファーコート", en: "fur coat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "レインコート", en: "raincoat", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ローブ", en: "robe", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ケープ", en: "cape", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ケープレット", en: "capelet", attrs: ["color", "material"] },
+{ p: "衣装", c: "アウター", jp: "ショール", en: "shawl", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ブーツ", en: "boots", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ニーハイブーツ", en: "knee boots", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "サイハイブーツ", en: "thigh boots", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ハイヒールブーツ", en: "high heel boots", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "サンダル", en: "sandals", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "パンプス", en: "pumps", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ハイヒール", en: "high heels", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "紳士靴", en: "dress shoes", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ローファー", en: "loaders", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "スリッパ", en: "slippers", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "オーバーニー", en: "over-kneehighs", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "ニーハイ", en: "kneehighs", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "靴下", en: "socks", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "ルーズソックス", en: "loose socks", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "アンクルソックス", en: "ankle socks", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "パンスト", en: "pantyhose", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "フリル", en: "frills", attrs: ["color", "material"] },
+{ p: "衣装", c: "衣装細部", jp: "ジッパー", en: "zipper", attrs: ["material"] },
+{ p: "衣装", c: "衣装細部", jp: "ベルト", en: "belt", attrs: ["material"] },
+{ p: "衣装", c: "衣装細部", jp: "レース刺繍", en: "lace trim", attrs: ["color", "material"] }
 ];
+
 const attributes = {
-    tone: [
-        {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
-        {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}, 
-        {jp:"艶消し", en:"Matte"}, {jp:"金属質", en:"Metallic"}, {jp:"透明感", en:"Clear"}
-    ],
-    color: {
-        achromatic: [
-            {jp:"白", en:"White"}, {jp:"アイボリー", en:"Ivory"}, {jp:"プラチナ", en:"Platinum"},
-            {jp:"明灰色", en:"Light Gray"}, {jp:"アッシュ", en:"Ash Gray"}, {jp:"灰色", en:"Gray"},
-            {jp:"暗灰色", en:"Dark Gray"}, {jp:"チャコール", en:"Charcoal"}, {jp:"黒", en:"Black"}, {jp:"漆黒", en:"Jet Black"}
-        ],
-        warm: [
-            {jp:"赤", en:"Red"}, {jp:"橙", en:"Orange"}, {jp:"黄", en:"Yellow"}, 
-            {jp:"金髪", en:"Blonde"}, {jp:"ベージュ", en:"Beige"}, {jp:"茶", en:"Brown"}, {jp:"桃", en:"Pink"}
-        ],
-        cool: [
-            {jp:"ライム", en:"Lime"}, {jp:"緑", en:"Green"}, {jp:"シアン", en:"Cyan"}, 
-            {jp:"青", en:"Blue"}, {jp:"紺", en:"Navy"}, {jp:"インディゴ", en:"Indigo"},
-            {jp:"紫", en:"Purple"}, {jp:"マゼンタ", en:"Magenta"}
-        ],
-        metal: [
-            {jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}, {jp:"ブロンズ", en:"Bronze"}, {jp:"銅", en:"Copper"}
-        ]
-    },
-    length: [
-        {jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}, 
-        {jp:"巨大", en:"Huge"}, {jp:"ミニ", en:"Mini"}
-    ],
-    material: [
-        {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
-        {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
-    ]
+    tone: [{jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}],
+    color: [{jp:"白", en:"White"}, {jp:"黒", en:"Black"}, {jp:"赤", en:"Red"}, {jp:"青", en:"Blue"}, {jp:"金", en:"Gold"}],
+    length: [{jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}],
+    material: [{jp:"シルク", en:"Silk"}, {jp:"金属", en:"Metal"}, {jp:"レザー", en:"Leather"}]
 };
 
 let categories = {}; 
 let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
+let currentMode = 'pos'; // 'pos' or 'neg'
 
-// --- 2. 自動カテゴリ生成 & 初期化 ---
 function buildCategories() {
     categories = {};
     masterData.forEach(item => {
@@ -843,17 +799,13 @@ function buildCategories() {
         if (!categories[p]) categories[p] = new Set();
         if (c) categories[p].add(c);
     });
-    // お気に入りリストを最後に追加
-    if (!categories["お気に入りリスト"]) categories["お気に入りリスト"] = new Set();
 }
 
 function init() {
     buildCategories();
-    const pTabs = document.getElementById('p-tabs');
-    // イッチが決めた順番通りに並べたい場合はここを調整
-    const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景", "お気に入りリスト"];
+    const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景"];
     const pList = order.filter(p => categories[p]);
-    
+    const pTabs = document.getElementById('p-tabs');
     pTabs.innerHTML = pList.map(p => `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`).join('');
     if (pList.length > 0) setParent(pList[0]);
 }
@@ -862,12 +814,10 @@ function setParent(p) {
     curP = p;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`pb-${p}`).classList.add('active');
-    
     const cs = Array.from(categories[p] || []);
     const cBar = document.getElementById('c-tabs');
     cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
-    
-    if (cs.length > 0) { setChild(cs[0]); } else { curC = ""; refreshDisplay(); }
+    if (cs.length > 0) setChild(cs[0]); else { curC = ""; refreshDisplay(); }
 }
 
 function setChild(c) {
@@ -883,7 +833,7 @@ function refreshDisplay() {
     area.innerHTML = "";
     const filtered = masterData.filter(d => {
         if (q !== "") return d.jp.includes(q) || d.en.includes(q);
-        return (d.p === curP && (d.c === curC || d.c === ""));
+        return (d.p === curP && d.c === curC);
     });
     filtered.forEach(item => {
         const t = document.createElement('div');
@@ -894,55 +844,38 @@ function refreshDisplay() {
     });
 }
 
+function switchOutput(mode) {
+    currentMode = mode;
+    document.getElementById('tab-pos').classList.toggle('active', mode === 'pos');
+    document.getElementById('tab-neg').classList.toggle('active', mode === 'neg');
+    document.getElementById('pos-area').style.display = mode === 'pos' ? 'block' : 'none';
+    document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
+}
+
 function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
     document.getElementById('console-title').innerText = item.jp;
-    const show = item.attrs || []; 
+    const show = item.attrs || [];
     ["tone", "color", "length", "material"].forEach(a => {
-        const section = document.getElementById(`sec-${a}`);
-        section.style.display = show.includes(a) ? 'block' : 'none';
-        updateLabel(a, "");
+        document.getElementById(`sec-${a}`).style.display = show.includes(a) ? 'block' : 'none';
+        renderChips(a, attributes[a]);
     });
-    if (show.includes('tone')) renderChips('tone', attributes.tone);
-    if (show.includes('color')) drawColors('achromatic');
-    if (show.includes('length')) renderChips('length', attributes.length);
-    if (show.includes('material')) renderChips('material', attributes.material);
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
 }
 
 function renderChips(type, list) {
-    const div = document.getElementById(`lst-${type}`);
+    const div = document.getElementById(type === 'color' ? 'list-color' : `lst-${type}`);
     div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
-}
-
-function drawColors(grp) {
-    document.querySelectorAll('.drawer-nav button').forEach(b => b.classList.remove('active'));
-    const targetBtn = document.getElementById(`db-${grp}`);
-    if(targetBtn) targetBtn.classList.add('active');
-    renderChips('color', attributes.color[grp]);
 }
 
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
-    document.querySelectorAll(`#lst-${type} .chip`).forEach(c => c.classList.remove('active'));
-    if(!isOff) {
-        const target = document.getElementById(`cp-${type}-${en}`);
-        if(target) target.classList.add('active');
-        updateLabel(type, jp);
-    } else { updateLabel(type, ""); }
-}
-
-function updateLabel(type, jp) {
-    const lbl = document.getElementById(`lbl-${type}`);
-    const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質"}[type];
-    if(jp && jp !== "通常") {
-        lbl.innerHTML = `${base}：<strong>${jp}</strong>`;
-        lbl.classList.add('active');
-    } else { lbl.innerText = base; lbl.classList.remove('active'); }
+    document.querySelectorAll(`#sec-${type} .chip`).forEach(c => c.classList.remove('active'));
+    if(!isOff) document.getElementById(`cp-${type}-${en}`).classList.add('active');
 }
 
 function commit() {
@@ -950,14 +883,26 @@ function commit() {
     const p = [tone, color, length, material, activeItem.en].filter(x => x).join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? p : `(${p}:${w})`;
-    const out = document.getElementById('output-area');
+    const target = currentMode === 'pos' ? 'pos-area' : 'neg-area';
+    const out = document.getElementById(target);
     out.value += (out.value ? ", " : "") + final + ", ";
     closeConsole();
 }
 
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
-function copyOutput() { navigator.clipboard.writeText(document.getElementById('output-area').value).then(()=>alert("写本完了！")); }
-function resetOutput() { if(confirm("浄化する？")) document.getElementById('output-area').value = ""; }
+function copyOutput() {
+    const target = currentMode === 'pos' ? 'pos-area' : 'neg-area';
+    navigator.clipboard.writeText(document.getElementById(target).value).then(()=>alert("写本完了！"));
+}
+function resetOutput() { if(confirm("浄化する？")) document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area').value = ""; }
+
+function openApocrypha() {
+    const en = prompt("外典の真名（英語タグ）を入力せよ：");
+    if(!en) return;
+    const jp = prompt("外典の和名（日本語）を入力せよ：");
+    masterData.push({ p: curP, c: curC, jp: jp || en, en: en, attrs: [] });
+    buildCategories(); refreshDisplay();
+}
 
 init();
 </script>
