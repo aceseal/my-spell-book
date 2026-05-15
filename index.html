@@ -297,7 +297,7 @@ const masterData = [
 { p: "身体", c: "肌色", jp: "黄色肌", en: "warm undertone skin", attrs: [] },
 { p: "身体", c: "肌色", jp: "小麦色", en: "tanned skin", attrs: [] },
 { p: "身体", c: "肌色", jp: "褐色", en: "brown skin", attrs: [] },
-{ p: "身体", c: "肌色", jp: "ダークトーン", en: "dark skin", attrs: [] }
+{ p: "身体", c: "肌色", jp: "ダークトーン", en: "dark skin", attrs: [] },
 { p: "身体", c: "肉体細部", jp: "小顔", en: "small face", attrs: [] },
 { p: "身体", c: "肉体細部", jp: "丸顔", en: "round face", attrs: [] },
 { p: "身体", c: "肉体細部", jp: "むっちり太もも", en: "thick thighs", attrs: [] },
@@ -336,7 +336,7 @@ const masterData = [
 { p: "身体", c: "異種族", jp: "多腕（4本腕など）", en: "multiple arms", attrs: [] },
 { p: "身体", c: "異種族", jp: "人魚", en: "mermaid tail", attrs: ["color", "material"] },
 { p: "身体", c: "異種族", jp: "ケンタウロス", en: "centaur", attrs: ["color"] },
-    
+
 // --- 髪型 (attrs: tone, color, length) ---
 { p: "髪型", c: "前髪", jp: "ぱっつん前髪", en: "blunt bangs", attrs: ["tone", "color"] },
 { p: "髪型", c: "前髪", jp: "姫カット", en: "hime cut", attrs: ["tone", "color"] },
@@ -789,7 +789,7 @@ const masterData = [
 { p: "背景", c: "天候・時間・季節", jp: "曇り空", en: "cloudy sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "グラデーション空", en: "gradient sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "オレンジ色の空", en: "orange sky", attrs: ["tone"] },
-{ p: "背景", c: "天候・時間・季節", jp: "夕焼け", en: "sun set sky", attrs: ["tone"] },
+{ p: "背景", c: "天候・時間・季節", jp: "夕焼け空", en: "sun set sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "灰色の空", en: "grey sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "多層の雲の空", en: "multi cloud sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "桃色の空", en: "pink sky", attrs: ["tone"] },
@@ -801,7 +801,7 @@ const masterData = [
 { p: "背景", c: "天候・時間・季節", jp: "星空", en: "starry sky", attrs: ["tone"] },
 { p: "背景", c: "天候・時間・季節", jp: "夜明け前", en: "dawn", attrs: [] },
 { p: "背景", c: "天候・時間・季節", jp: "マジックアワー（薄明）", en: "blue hour", attrs: [] },
-{ p: "背景", c: "天候・時間・季節", jp: "夕焼け", en: "golden hour", attrs: [] },
+{ p: "背景", c: "天候・時間・季節", jp: "夕日の光", en: "golden hour", attrs: [] },
 { p: "背景", c: "天候・時間・季節", jp: "真夜中", en: "midnight", attrs: [] },
 { p: "背景", c: "天候・時間・季節", jp: "星降る夜", en: "shooting stars", attrs: [] },
 { p: "背景", c: "シンプル", jp: "シンプル背景", en: "simple background", attrs: ["color"] },
@@ -928,12 +928,12 @@ const masterData = [
 { p: "衣装", c: "シューズ", jp: "サンダル", en: "sandals", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "パンプス", en: "pumps", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "ハイヒール", en: "high heels", attrs: ["tone", "color", "material"] },
-{ p: "衣装", c: "シューズ", jp: "ローファー", en: "loaders", attrs: ["tone", "color", "material"] },
+{ p: "衣装", c: "シューズ", jp: "ローファー", en: "loafers", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "シューズ", jp: "スリッパ", en: "slippers", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "衣装細部", jp: "萌え袖", en: "oversized sleeves", attrs: [] },
 { p: "服装", c: "衣装細部", jp: "濡れた服", en: "wet clothes", attrs: [] },
-{ p: "服装", c: "衣装細部", jp: "肌に張り付いた服", en: "clothes stuck to skin", attrs: [""] },
+{ p: "服装", c: "衣装細部", jp: "肌に張り付いた服", en: "clothes stuck to skin", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "オーバーサイズ", en: "oversized", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["tone", "color", "material"] },
 { p: "衣装", c: "衣装細部", jp: "オーバーニー", en: "over-kneehighs", attrs: ["tone", "color", "material"] },
@@ -992,7 +992,7 @@ const masterData = [
 { p: "小物・持ち物", c: "日常品", jp: "手紙・書類", en: "letter", attrs: ["material"] },
 { p: "小物・持ち物", c: "食べ物・飲み物", jp: "紅茶（ティーカップ）", en: "tea cup", attrs: ["material", "color"] },
 { p: "小物・持ち物", c: "食べ物・飲み物", jp: "クレープ", en: "crepe", attrs: [] },
-{ p: "小物・持ち物", c: "食べ物・飲み物", jp: "水ペットボトル", en: "plastic bottle of water", attrs: ["material"] }
+{ p: "小物・持ち物", c: "食べ物・飲み物", jp: "水ペットボトル", en: "bottled water", attrs: ["material"] }
 ];
 
 const attributes = {
