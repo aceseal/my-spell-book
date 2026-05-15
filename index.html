@@ -1004,16 +1004,6 @@ function updateLabel(type, jp) {
     lbl.classList.toggle('active', !!(jp && jp !== "通常"));
 }
 
-function commit() {
-    const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
-    const tagText = parts.join(" ");
-    const w = parseFloat(document.getElementById('c-weight').value);
-    const final = (w === 1) ? tagText : `(${tagText}:${w})`;
-    const out = document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area');
-    out.value += final + ", ";
-    closeConsole();
-}
-
 function copyOutput() {
     let posRaw = document.getElementById('pos-area').value.trim();
     let negRaw = document.getElementById('neg-area').value.trim();
