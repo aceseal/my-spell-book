@@ -318,7 +318,7 @@ function updateLabel(type, jp) {
 function commit() {
     const { tone, color, length, material } = selAttr;
     const p = [tone, color, length, material, activeItem.en].filter(x => x).join(" ");
-    const w = document.getElementById('c-weight').value;
+    const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? p : `(${p}:${w})`;
     const out = document.getElementById('output-area');
     out.value += (out.value ? ", " : "") + final + ", ";
