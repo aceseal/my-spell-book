@@ -11,11 +11,20 @@
 
     <title>叡智の魔導書 Ver.19.1</title>
     <style>
-        :root {
-            --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
-            --accent: #5a7d6a; --fav-red: #d66d67; --tab-inactive: #e9dcc0;
-            --cancel-red: #bc7670;
-        }
+       :root {
+    /* ベース色 */
+    --bg-paper: #f4ecd8; 
+    --ink: #2c1e14; 
+    --gold: #b08d57; 
+    --tab-inactive: #e9dcc0;
+    /* フッター：出力操作（Footer Actions） */
+    --action-copy: #4a6fa5;   /* COPY用 */
+    --action-clear: #d66d67;  /* CLEAR用 */
+    --action-fav: #8e9aaf;    /* FAV用 */
+    /* コンソール：反映と中断（Console Actions） */
+    --console-commit: #5a7d6a; /* 詠唱台に反映用 */
+    --console-cancel: #bc7670; /* 戻るボタン用 */
+}
 
         body { 
             background-color: #3d2b1f; font-family: sans-serif; margin: 0; padding: 0; 
@@ -118,8 +127,8 @@
         </div>
 
         <div class="console-footer">
-            <button class="btn-cancel" onclick="closeConsole()">戻る</button>
-            <button class="btn-commit" onclick="commit()">詠唱台に反映</button>
+            <button class="btn-cancel" style="background: var(--console-cancel);" onclick="closeConsole()">戻る</button>
+            <button class="btn-commit" style="background: var(--console-commit);" onclick="commit()">詠唱台に反映</button>
         </div>
     </div>
 </div>
@@ -134,9 +143,9 @@
         <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..."></textarea>
     </div>
     <div class="footer-btns">
-        <button class="btn-action" style="background:#4a6fa5;" onclick="copyOutput()">COPY</button>
-        <button class="btn-action" style="background:#8e9aaf;" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background:#d66d67;" onclick="alert('FAVは外典実装の後に！')">FAV</button>
+        <button class="btn-action" style="background: var(--action-copy);" onclick="copyOutput()">COPY</button>
+        <button class="btn-action" style="background: var(--action-clear);" onclick="resetOutput()">CLEAR</button>
+        <button class="btn-action" style="background: var(--action-fav);" onclick="alert('お気に入りは後ほど！')">FAV</button>
     </div>
 </footer>
 
