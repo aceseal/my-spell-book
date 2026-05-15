@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#3d2b1f">
 
-    <title>叡智の魔導書 Ver.18.4</title>
+    <title>叡智の魔導書 Ver.18.5</title>
     <style>
         :root {
             --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
@@ -71,7 +71,6 @@
         }
         .chip small { display: block; font-size: 0.6rem; color: #888; }
         .chip.active { background: var(--gold); color: white; border-color: var(--gold); }
-        .chip.active small { color: #eee; }
 
         .drawer-nav { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; }
         .drawer-nav button { padding: 6px 12px; font-size: 0.7rem; border-radius: 5px; border: 1px solid var(--gold); background: #fff; }
@@ -145,19 +144,20 @@
 </footer>
 
 <script>
-// --- 1. 聖典データ定義（ここに自分のデータを好きなだけ追加してや！） ---
+// --- 1. 聖典データ定義 ---
 const masterData = [
-    { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: ["tone"] },
+    // 演出系（attrsを空にするか、書かないことで強調度のみにする）
+    { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: [] },
+    { p: "演出", c: "角度", jp: "ローアングル", en: "low angle", attrs: [] },
+    
+    // 身体系（必要なものだけ指定）
     { p: "身体", c: "髪型", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
-    { p: "身体", c: "髪型", jp: "ロング", en: "long hair", attrs: ["tone", "color", "length"] },
-    { p: "身体", c: "表情", jp: "笑顔", en: "happy", attrs: [] },
-    { p: "衣装", c: "トップス", jp: "オフショル", en: "off-shoulder", attrs: ["color", "material"] },
-    { p: "衣装", c: "アクセ", jp: "リボン", en: "ribbon", attrs: ["color"] },
-    // 旧形式(cat)でも自動で親タブになるで
-    { cat: "背景", jp: "青空", en: "blue sky", attrs: [] }
+    { p: "身体", c: "目元", jp: "赤い瞳", en: "red eyes", attrs: ["tone"] }, // 色は固定やからトーンだけ
+    
+    // 衣装系
+    { p: "衣装", c: "トップス", jp: "オフショル", en: "off-shoulder", attrs: ["color", "material"] }
 ];
 
-// 色の和名対応定義
 const attributes = {
     tone: [
         {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
@@ -198,30 +198,24 @@ let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
 
-// --- 2. カテゴリ自動生成ロジック ---
 function buildCategories() {
     categories = {};
-    masterData.forEach(item => {
+    const combined = [...masterData];
+    combined.forEach(item => {
         const p = item.p || item.cat || "未分類";
         const c = item.c || "";
         if (!categories[p]) categories[p] = new Set();
         if (c) categories[p].add(c);
     });
-    Object.keys(categories).forEach(p => {
-        categories[p] = Array.from(categories[p]);
-    });
+    Object.keys(categories).forEach(p => { categories[p] = Array.from(categories[p]); });
     if (!categories["お気に入りリスト"]) categories["お気に入りリスト"] = [];
 }
 
-// --- 3. 初期化・表示制御 ---
 function init() {
     buildCategories();
     const pTabs = document.getElementById('p-tabs');
     const pList = Object.keys(categories);
-    pTabs.innerHTML = pList.map(p => 
-        `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`
-    ).join('');
-    
+    pTabs.innerHTML = pList.map(p => `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`).join('');
     if (pList.length > 0) setParent(pList[0]);
 }
 
@@ -229,19 +223,10 @@ function setParent(p) {
     curP = p;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`pb-${p}`).classList.add('active');
-    
     const cs = categories[p] || [];
     const cBar = document.getElementById('c-tabs');
-    cBar.innerHTML = cs.map(c => 
-        `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`
-    ).join('');
-    
-    if (cs.length > 0) {
-        setChild(cs[0]);
-    } else {
-        curC = "";
-        refreshDisplay();
-    }
+    cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
+    if (cs.length > 0) { setChild(cs[0]); } else { curC = ""; refreshDisplay(); }
 }
 
 function setChild(c) {
@@ -255,14 +240,12 @@ function refreshDisplay() {
     const q = document.getElementById('search-box').value.toLowerCase();
     const area = document.getElementById('tile-area');
     area.innerHTML = "";
-
     const filtered = masterData.filter(d => {
         if (q !== "") return d.jp.includes(q) || d.en.includes(q);
         const dP = d.p || d.cat;
         const dC = d.c || "";
         return (dP === curP && (dC === curC || dC === ""));
     });
-
     filtered.forEach(item => {
         const t = document.createElement('div');
         t.className = "tile";
@@ -272,22 +255,23 @@ function refreshDisplay() {
     });
 }
 
-// --- 4. 補助コンソール制御 ---
 function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
     document.getElementById('console-title').innerText = item.jp;
     
-    const show = item.attrs || ["tone", "color"];
+    // 【修正ポイント】attrsがない、あるいは空の場合は何も表示しない
+    const show = item.attrs || []; 
     ["tone", "color", "length", "material"].forEach(a => {
-        document.getElementById(`sec-${a}`).style.display = show.includes(a) ? 'block' : 'none';
+        const section = document.getElementById(`sec-${a}`);
+        section.style.display = show.includes(a) ? 'block' : 'none';
         updateLabel(a, "");
     });
 
-    renderChips('tone', attributes.tone);
-    drawColors('achromatic');
-    renderChips('length', attributes.length);
-    renderChips('material', attributes.material);
+    if (show.includes('tone')) renderChips('tone', attributes.tone);
+    if (show.includes('color')) drawColors('achromatic');
+    if (show.includes('length')) renderChips('length', attributes.length);
+    if (show.includes('material')) renderChips('material', attributes.material);
 
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
@@ -296,11 +280,7 @@ function openConsole(item) {
 
 function renderChips(type, list) {
     const div = document.getElementById(`lst-${type}`);
-    div.innerHTML = list.map(v => `
-        <div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">
-            ${v.jp}<small>${v.en}</small>
-        </div>
-    `).join('');
+    div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
 }
 
 function drawColors(grp) {
@@ -313,15 +293,12 @@ function drawColors(grp) {
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
-    
     document.querySelectorAll(`#lst-${type} .chip`).forEach(c => c.classList.remove('active'));
     if(!isOff) {
         const target = document.getElementById(`cp-${type}-${en}`);
         if(target) target.classList.add('active');
         updateLabel(type, jp);
-    } else {
-        updateLabel(type, "");
-    }
+    } else { updateLabel(type, ""); }
 }
 
 function updateLabel(type, jp) {
