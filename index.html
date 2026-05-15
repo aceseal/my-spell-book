@@ -828,15 +828,33 @@ const masterData = [
 ];
 
 const attributes = {
-    tone: [{jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}],
+    tone: [
+        {jp:"通常", en:""}, {jp:"明るい", en:"Light"}, {jp:"暗い", en:"Dark"}, 
+        {jp:"鮮やか", en:"Vivid"}, {jp:"淡い", en:"Pale"}, {jp:"発光", en:"Neon"}, 
+        {jp:"艶消し", en:"Matte"}, {jp:"金属質", en:"Metallic"}, {jp:"透明感", en:"Clear"}],
     color: {
-        achromatic: [{jp:"白", en:"White"}, {jp:"灰色", en:"Gray"}, {jp:"黒", en:"Black"}],
-        warm: [{jp:"赤", en:"Red"}, {jp:"金髪", en:"Blonde"}, {jp:"桃", en:"Pink"}],
-        cool: [{jp:"青", en:"Blue"}, {jp:"緑", en:"Green"}, {jp:"紫", en:"Purple"}],
-        metal: [{jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}]
+        achromatic: [
+            {jp:"白", en:"White"}, {jp:"アイボリー", en:"Ivory"}, {jp:"プラチナ", en:"Platinum"},
+            {jp:"明灰色", en:"Light Gray"}, {jp:"アッシュ", en:"Ash Gray"}, {jp:"灰色", en:"Gray"},
+            {jp:"暗灰色", en:"Dark Gray"}, {jp:"チャコール", en:"Charcoal"}, {jp:"黒", en:"Black"}, {jp:"漆黒", en:"Jet Black"}],
+        warm: [
+            {jp:"赤", en:"Red"}, {jp:"橙", en:"Orange"}, {jp:"黄", en:"Yellow"}, 
+            {jp:"金髪", en:"Blonde"}, {jp:"ベージュ", en:"Beige"}, {jp:"茶", en:"Brown"}, {jp:"桃", en:"Pink"}],
+        cool: [
+            {jp:"ライム", en:"Lime"}, {jp:"緑", en:"Green"}, {jp:"シアン", en:"Cyan"}, 
+            {jp:"青", en:"Blue"}, {jp:"紺", en:"Navy"}, {jp:"インディゴ", en:"Indigo"},
+            {jp:"紫", en:"Purple"}, {jp:"マゼンタ", en:"Magenta"}],
+        metal: [
+            {jp:"銀", en:"Silver"}, {jp:"金", en:"Gold"}, {jp:"ブロンズ", en:"Bronze"}, {jp:"銅", en:"Copper"}]
     },
-    length: [{jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}],
-    material: [{jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}]
+    length: [
+        {jp:"短い", en:"Short"}, {jp:"普通", en:"Medium"}, {jp:"長い", en:"Long"}, 
+        {jp:"巨大", en:"Huge"}, {jp:"ミニ", en:"Mini"}
+    ],
+    material: [
+        {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
+        {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
+    ]
 };
 
 let categories = {}; 
