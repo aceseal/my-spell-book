@@ -951,9 +951,10 @@ function updateLabel(type, jp) {
 }
 
 function commit() {
-    const p = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x).join(" ");
-    const w = document.getElementById('c-weight').value;
-    const final = (w === "1.0") ? p : `(${p}:${w})`;
+    const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
+    const tagText = parts.join(" ");
+    const w = parseFloat(document.getElementById('c-weight').value);
+    const final = (w === 1) ? tagText : `(${tagText}:${w})`;
     const out = document.getElementById(currentMode === 'pos' ? 'pos-area' : 'neg-area');
     out.value += final + ", ";
     closeConsole();
