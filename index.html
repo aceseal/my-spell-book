@@ -3,296 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI画像生成 詠唱支援コンソール</title>
+    <title>叡智の魔導書 - Prompt Grimoire</title>
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --panel-bg: #2d2d2d;
-            --accent-color: #ffd700;
-            --cancel-red: #ff4444;
-            --text-color: #eee;
+            --bg-dark: #0f0f0f;
+            --panel-bg: #1e1e1e;
+            --accent-gold: #d4af37;
+            --cancel-red: #cc2222;
+            --reflect-green: #228b22;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Georgia', serif; /* 魔導書っぽさを演出 */
             margin: 0;
             padding: 10px;
+            overscroll-behavior: none;
         }
 
-        /* 横スクロールコンテナ */
-        .scroll-container {
+        h2 { text-align: center; color: var(--accent-gold); border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px; }
+
+        /* --- ナビゲーション（親子タブ） --- */
+        .scroll-nav {
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            gap: 8px;
-            padding: 10px 0;
-            scrollbar-width: none;
-        }
-        .scroll-container::-webkit-scrollbar { display: none; }
-
-        /* タブ・ボタンの基本 */
-        button {
-            background: #444;
-            color: white;
-            border: 1px solid #555;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        button.active {
-            background: var(--accent-color);
-            color: #000;
-            font-weight: bold;
-        }
-
-        /* 親子タブ */
-        .parent-tabs { border-bottom: 1px solid #444; }
-        .child-tabs { border-bottom: 1px solid #333; min-height: 50px; }
-
-        /* タイルコンテナ */
-        .tag-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 10px;
             padding: 10px 0;
+            scrollbar-width: none; /* Firefox */
+        }
+        .scroll-nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .nav-btn {
+            background: #333;
+            color: var(--text-main);
+            border: 1px solid #555;
+            padding: 8px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-btn.active {
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .parent-tabs { border-bottom: 1px solid #444; }
+        .child-tabs { margin-top: 5px; min-height: 45px; }
+
+        /* --- 単語タイルエリア --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
         }
         .tag-tile {
             background: var(--panel-bg);
-            padding: 10px;
+            border: 1px solid #444;
+            padding: 12px 5px;
             border-radius: 8px;
             text-align: center;
-            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.1s;
         }
+        .tag-tile:active { transform: scale(0.95); background: #333; }
+        .tag-tile span { display: block; font-size: 14px; }
+        .tag-tile small { font-size: 10px; color: var(--text-dim); }
 
-        /* 詠唱台（テキストエリア） */
+        /* --- 詠唱台（結果表示） --- */
+        .chant-wrap { position: sticky; bottom: 10px; background: rgba(15,15,15,0.9); padding: 10px; border-radius: 10px; border: 1px solid var(--accent-gold); }
         #chantArea {
-            width: 100%;
-            height: 80px;
-            background: #000;
-            color: #0f0;
-            border: 1px solid #444;
-            border-radius: 8px;
-            margin-top: 10px;
-            padding: 10px;
-            box-sizing: border-box;
+            width: 100%; height: 60px;
+            background: #000; color: #0f0;
+            border: none; padding: 8px;
+            box-sizing: border-box; resize: none; border-radius: 5px;
         }
 
-        /* モーダル（設定コンソール） */
+        /* --- 補助コンソール（モーダル） --- */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: var(--panel-bg);
-            width: 90%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 15px;
-            max-height: 80vh;
-            overflow-y: auto;
+            background: var(--panel-bg); width: 90%; max-width: 450px;
+            padding: 20px; border-radius: 15px; border: 1px solid var(--accent-gold);
         }
 
-        .attr-group { margin-bottom: 20px; }
-        .attr-title { font-size: 14px; margin-bottom: 5px; color: #aaa; }
-        .attr-title.selected { color: var(--accent-color); font-weight: bold; }
+        .attr-section { margin-bottom: 15px; }
+        .attr-label { font-size: 13px; color: var(--text-dim); margin-bottom: 5px; }
+        .attr-label.bold { color: var(--accent-gold); font-weight: bold; }
 
-        .category-selector { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto;}
-        .category-selector button { padding: 5px 10px; font-size: 12px; }
+        .drawer-nav { display: flex; gap: 5px; margin-bottom: 8px; }
+        .drawer-nav button { font-size: 11px; padding: 4px 8px; border-radius: 3px; }
 
-        .slider-wrap { margin: 20px 0; }
-        input[type="range"] { width: 100%; }
+        .slider-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        input[type="range"] { flex: 1; accent-color: var(--accent-gold); }
 
-        .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-reflect { flex: 2; background: #28a745; border: none; }
-        .btn-cancel { flex: 1; background: var(--cancel-red); border: none; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-reflect { flex: 2; background: var(--reflect-green); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; }
+        .btn-cancel { flex: 1; background: var(--cancel-red); color: white; border: none; border-radius: 5px; }
+
     </style>
 </head>
 <body>
 
-    <h3>魔導書プロトタイプ</h3>
+    <h2>叡智の魔導書</h2>
     
-    <div class="parent-tabs scroll-container" id="parentTabs"></div>
-    <div class="child-tabs scroll-container" id="childTabs"></div>
-    <div class="tag-container" id="tagContainer"></div>
+    <div class="parent-tabs scroll-nav" id="pNav"></div>
+    <div class="child-tabs scroll-nav" id="cNav"></div>
+    
+    <div class="grid-container" id="tagGrid"></div>
 
-    <textarea id="chantArea" placeholder="ここに呪文が蓄積されるで..."></textarea>
-
-    <div id="setupConsole" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTagName" style="margin-top:0;">単語設定</h3>
-            
-            <div class="attr-group" id="toneArea">
-                <div class="attr-title" id="toneTitle">トーン：通常</div>
-                <div class="scroll-container" id="toneList"></div>
-            </div>
-
-            <div class="attr-group" id="colorArea">
-                <div class="attr-title" id="colorTitle">色彩：未選択</div>
-                <div class="category-selector">
-                    <button onclick="renderColorButtons('achromatic')">無彩色</button>
-                    <button onclick="renderColorButtons('warm')">暖色</button>
-                    <button onclick="renderColorButtons('cool')">寒色</button>
-                    <button onclick="renderColorButtons('metal')">金属</button>
-                </div>
-                <div class="scroll-container" id="colorList"></div>
-            </div>
-
-            <div class="slider-wrap">
-                <div class="attr-title selected">強度：<span id="weightVal">1.0</span></div>
-                <input type="range" id="weightSlider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weightVal').innerText=this.value">
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
-                <button class="btn-reflect" onclick="reflectToChant()">詠唱台に捧げる</button>
-            </div>
-        </div>
+    <div class="chant-wrap">
+        <textarea id="chantArea" readonly placeholder="ここに呪文が刻まれる..."></textarea>
     </div>
 
-<script>
-    // --- 1. データ定義 ---
-    const masterData = [
-        { en: "oil painting", ja: "油絵風", parent: "演出", child: "画風", attrs: [] },
-        { en: "cyberpunk", ja: "サイバーパンク", parent: "演出", child: "世界観", attrs: [] },
-        { en: "ponytail", ja: "ポニテ", parent: "身体", child: "髪型", attrs: ["tone", "color"] },
-        { en: "long hair", ja: "ロング", parent: "身体", child: "髪型", attrs: ["tone", "color"] },
-        { en: "twintails", ja: "ツインテ", parent: "身体", child: "髪型", attrs: ["tone", "color"] },
-        { en: "serafuku", ja: "セーラー服", parent: "服装", child: "学生服", attrs: ["tone", "color"] }
-    ];
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="mTagName" style="margin-top:0; color:var(--accent-gold);">単語設定</h3>
+            <hr style="border-color:#444;">
+            
+            <div id="toneSection" class="attr-section">
+                <div class="attr-label" id="toneLabel">質感：未選択</div>
+                <div class="scroll-nav" id="toneList"></div>
+            </div>
 
-    const toneList = ["通常", "Light", "Dark", "Vivid", "Pale", "Neon", "Matte", "Metallic", "Clear"];
-    
-    const colorMaster = {
-        achromatic: ["White", "Ivory", "Platinum", "Light Gray", "Ash Gray", "Gray", "Dark Gray", "Charcoal", "Black", "Jet Black"],
-        warm: ["Red", "Orange", "Yellow", "Blonde", "Beige", "Brown", "Pink"],
-        cool: ["Lime", "Green", "Cyan", "Blue", "Navy", "Indigo", "Purple", "Magenta"],
-        metal: ["Silver", "Gold", "Bronze", "Copper"]
-    };
+            <div id="colorSection" class="attr-section">
+                <div class="attr-label" id="colorLabel">色彩：未選択</div>
+                <div class="drawer-nav">
+                    <button onclick="drawColors('achromatic')">無彩色</button>
+                    <button onclick="drawColors('warm')">暖色</button>
+                    <button onclick="drawColors('cool')">寒色</button>
+                    <button onclick="drawColors('metal')">金属</button>
+                </div>
+                <div class="scroll-nav" id="colorList"></div>
+            </div>
 
-    let currentParent = "演出";
-    let currentChild = "";
-    let currentTag = null;
-    let selectedTone = "";
-    let selectedColor = "";
-
-    // --- 2. 初期化・描画 ---
-    function init() {
-        renderParents();
-        switchParent("演出");
-    }
-
-    function renderParents() {
-        const parents = [...new Set(masterData.map(d => d.parent))];
-        const container = document.getElementById('parentTabs');
-        container.innerHTML = parents.map(p => `<button onclick="switchParent('${p}')" id="p-${p}">${p}</button>`).join('');
-    }
-
-    function switchParent(p) {
-        currentParent = p;
-        document.querySelectorAll('.parent-tabs button').forEach(b => b.classList.remove('active'));
-        document.getElementById(`p-${p}`).classList.add('active');
-
-        const children = [...new Set(masterData.filter(d => d.parent === p).map(d => d.child))];
-        const container = document.getElementById('childTabs');
-        container.innerHTML = children.map(c => `<button onclick="switchChild('${c}')" id="c-${c}">${c}</button>`).join('');
-        
-        if(children.length > 0) switchChild(children[0]);
-    }
-
-    function switchChild(c) {
-        currentChild = c;
-        document.querySelectorAll('.child-tabs button').forEach(b => b.classList.remove('active'));
-        const target = document.getElementById(`c-${c}`);
-        if(target) target.classList.add('active');
-
-        const tags = masterData.filter(d => d.parent === currentParent && d.child === c);
-        const container = document.getElementById('tagContainer');
-        container.innerHTML = tags.map(t => `<div class="tag-tile" onclick="openModal('${t.en}')">${t.ja}<br><small>${t.en}</small></div>`).join('');
-    }
-
-    // --- 3. モーダル制御 ---
-    function openModal(en) {
-        currentTag = masterData.find(d => d.en === en);
-        document.getElementById('modalTagName').innerText = currentTag.ja;
-        
-        // 属性表示制御
-        document.getElementById('toneArea').style.display = currentTag.attrs.includes('tone') ? 'block' : 'none';
-        document.getElementById('colorArea').style.display = currentTag.attrs.includes('color') ? 'block' : 'none';
-
-        // 初期化
-        selectedTone = "";
-        selectedColor = "";
-        document.getElementById('toneTitle').innerText = "トーン：未選択";
-        document.getElementById('toneTitle').classList.remove('selected');
-        document.getElementById('colorTitle').innerText = "色彩：未選択";
-        document.getElementById('colorTitle').classList.remove('selected');
-        document.getElementById('weightSlider').value = 1.0;
-        document.getElementById('weightVal').innerText = "1.0";
-
-        renderToneButtons();
-        renderColorButtons('achromatic');
-        
-        document.getElementById('setupConsole').style.display = 'flex';
-    }
-
-    function renderToneButtons() {
-        const container = document.getElementById('toneList');
-        container.innerHTML = toneList.map(t => `<button onclick="selectTone('${t}')" id="tone-${t}">${t}</button>`).join('');
-    }
-
-    function selectTone(t) {
-        selectedTone = (t === "通常") ? "" : t;
-        document.querySelectorAll('#toneList button').forEach(b => b.classList.remove('active'));
-        if(t !== "") document.getElementById(`tone-${t}`).classList.add('active');
-        
-        const title = document.getElementById('toneTitle');
-        title.innerText = `トーン：${t}`;
-        title.classList.add('selected');
-    }
-
-    function renderColorButtons(cat) {
-        const container = document.getElementById('colorList');
-        container.innerHTML = colorMaster[cat].map(c => `<button onclick="selectColor('${c}')" id="color-${c}">${c}</button>`).join('');
-    }
-
-    function selectColor(c) {
-        selectedColor = c;
-        document.querySelectorAll('#colorList button').forEach(b => b.classList.remove('active'));
-        document.getElementById(`color-${c}`).classList.add('active');
-        
-        const title = document.getElementById('colorTitle');
-        title.innerText = `色彩：${c}`;
-        title.classList.add('selected');
-    }
-
-    function closeModal() {
-        document.getElementById('setupConsole').style.display = 'none';
-    }
-
-    function reflectToChant() {
-        const weight = document.getElementById('weightSlider').value;
-        const components = [];
-        if(selectedTone) components.push(selectedTone);
-        if(selectedColor) components.push(selectedColor);
-        components.push(currentTag.en);
-        
-        const finalPrompt = `(${components.join(' ')}:${weight})`;
-        const area = document.getElementById('chantArea');
-        area.value += (area.value ? ", " : "") + finalPrompt;
-        
-        closeModal();
-    }
-
-    init();
-</script>
-</body>
-</html>
+            <div class="attr-section">
