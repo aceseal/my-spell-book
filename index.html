@@ -694,7 +694,6 @@ const masterData = [
 { p: "背景", c: "エフェクト", jp: "舞い散る花びら", en: "falling petals", attrs: ["color"] },
 { p: "背景", c: "エフェクト", jp: "光の粒子", en: "particles", attrs: ["color"] },
 { p: "背景", c: "エフェクト", jp: "舞い散る雪", en: "snowflakes", attrs: [] },
-
 // --- 衣装 (attrs: color, material) ---
 { p: "衣装", c: "アクセサリー", jp: "野球帽", en: "baseball cap", attrs: ["color", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "ビーニー", en: "beanie", attrs: ["color", "material"] },
@@ -1053,6 +1052,30 @@ function openApocrypha() {
     saveApocrypha();
     buildCategories();
     refreshDisplay();
+}
+
+function saveApocrypha() {localStorage.setItem("myGrimoire_UserAdd", JSON.stringify(userList));}
+function loadApocrypha() {const saved = localStorage.getItem("myGrimoire_UserAdd");
+    if (saved) {const parsed = JSON.parse(saved);userList = parsed;parsed.forEach(userItem => 
+        {if (!masterData.some(m => m.en === userItem.en)) {masterData.push(userItem);}});}
+}
+    
+function init() {loadApocrypha(); buildCategories();}
+function refreshDisplay() {
+    const q = document.getElementById('search-box').value.toLowerCase();
+    const area = document.getElementById('tile-area');
+    area.innerHTML = "";
+    
+    const filtered = masterData.filter(d => (q ? (d.jp.includes(q) || d.en.includes(q)) : (d.p === curP && d.c === curC)));
+    
+    filtered.forEach(item => {
+        const t = document.createElement('div');
+        // isUserフラグがあれば専用クラスを付与
+        t.className = item.isUser ? "tile user-tile" : "tile"; 
+        t.innerHTML = `<span class="jp">${item.jp}</span><span class="en">${item.en}</span>`;
+        t.onclick = () => openConsole(item);
+        area.appendChild(t);
+    });
 }
 
 
