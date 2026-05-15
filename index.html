@@ -142,26 +142,212 @@
 // --- 1. イッチ定義の「基本階層」 masterData ---
 // サンプルデータをいくつか入れておくで！
 const masterData = [
-    // おまじない
-    { p: "おまじない", c: "テンプレート", jp: "傑作", en: "masterpiece", attrs: [] },
-    { p: "おまじない", c: "基本品質", jp: "高品質", en: "high quality", attrs: [] },
-    // 演出
-    { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: [] },
-    { p: "演出", c: "アングル", jp: "俯瞰", en: "from above", attrs: [] },
-    // 身体
-    { p: "身体", c: "肌", jp: "色白", en: "pale skin", attrs: ["tone"] },
-    { p: "身体", c: "肉体細部", jp: "へそ", en: "navel", attrs: [] },
-    // 髪型
+    // --- 髪型 (attrs: tone, color, length) ---
+    // 前髪 (Child: 前髪)
+    { p: "髪型", c: "前髪", jp: "ぱっつん", en: "blunt bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "姫カット", en: "hime cut", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "斜め前髪", en: "diagonal bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "アーチ前髪", en: "arched bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "アシンメトリー", en: "asymmetrical bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "交差前髪", en: "crossed bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "外ハネ前髪", en: "flipped bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "長い前髪", en: "long bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "短い前髪", en: "short bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "不揃い前髪", en: "choppy bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "分け目", en: "parted bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "センター分け", en: "double parted bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "目にかかる髪", en: "hair between eyes", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "センターフラップ", en: "center flap bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "流し前髪", en: "swept bangs", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "前髪ピン留め", en: "bangs pinned back", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "オールバック", en: "hair slicked back", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "後ろに流す", en: "hair pulled back", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "目隠れ", en: "hair over eyes", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "片目隠れ", en: "hair over one eye", attrs: ["tone", "color"] },
+    { p: "髪型", c: "前髪", jp: "両目隠れ", en: "hair over both eyes", attrs: ["tone", "color"] },
+
+    // スタイル (Child: スタイル)
+    { p: "髪型", c: "スタイル", jp: "ショート", en: "short hair", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ベリーショート", en: "very short hair", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ピクシーカット", en: "pixie cut", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ボブ", en: "bob cut", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ミディアム", en: "medium hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ロング", en: "long hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "超ロング", en: "very long hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "床まで届く髪", en: "absurdly long hair", attrs: ["tone", "color", "length"] },
     { p: "髪型", c: "スタイル", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
-    // 顔
+    { p: "髪型", c: "スタイル", jp: "高めポニテ", en: "high ponytail", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "低めポニテ", en: "low ponytail", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "サイドポニテ", en: "side ponytail", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "編み込みポニテ", en: "braided ponytail", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ツインテ", en: "twin tails", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "高めツインテ", en: "high twin tails", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "低めツインテ", en: "low twin tails", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "サイドツインテ", en: "side twin tails", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "短めツインテ", en: "short twin tails", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "おさげ", en: "pigtails", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "お団子", en: "bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ヘアお団子", en: "hair bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "高めお団子", en: "high bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "低めお団子", en: "low bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "サイドお団子", en: "side bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "ダブルお団子", en: "double bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "三つ編み", en: "braid", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "フィッシュボーン", en: "french braid", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "冠編み", en: "crown braid", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "編み込み団子", en: "braided bun", attrs: ["tone", "color"] },
+    { p: "髪型", c: "スタイル", jp: "サイド三つ編み", en: "side braid", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ツイン三つ編み", en: "twin braids", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ハーフアップ", en: "half updo", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ツーサイドアップ", en: "two side up", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ストレート", en: "straight hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ウェーブ", en: "wavy hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "ドリルヘア", en: "drill hair", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "スタイル", jp: "縦ロール", en: "ringlets", attrs: ["tone", "color", "length"] },
+
+    // パーツ (Child: パーツ)
+    { p: "髪型", c: "パーツ", jp: "アホ毛", en: "ahoge", attrs: ["color"] },
+    { p: "髪型", c: "パーツ", jp: "メッシュアホ毛", en: "dyed ahoge", attrs: ["color"] },
+    { p: "髪型", c: "パーツ", jp: "ハートアホ毛", en: "heart ahoge", attrs: ["color"] },
+    { p: "髪型", c: "パーツ", jp: "アンテナ", en: "antenna hair", attrs: ["color"] },
+    { p: "髪型", c: "パーツ", jp: "横髪", en: "sidelocks", attrs: ["tone", "color", "length"] },
+    { p: "髪型", c: "パーツ", jp: "ハネ毛", en: "hair flaps", attrs: ["tone", "color"] },
+    { p: "髪型", c: "パーツ", jp: "レイヤー", en: "layered hair", attrs: ["tone", "color"] },
+
+    // --- 顔 (attrs: [] または瞳のみ color) ---
+    // 視線 (Child: 視線)
+    { p: "顔", c: "視線", jp: "こっち見てる", en: "looking at viewer", attrs: [] },
+    { p: "顔", c: "視線", jp: "目線を外す", en: "looking away", attrs: [] },
+    { p: "顔", c: "視線", jp: "上を見る", en: "looking up", attrs: [] },
+    { p: "顔", c: "視線", jp: "下を見る", en: "looking down", attrs: [] },
+    { p: "顔", c: "視線", jp: "横を見る", en: "looking to the side", attrs: [] },
+    { p: "顔", c: "視線", jp: "流し目", en: "sideways glance", attrs: [] },
+    { p: "顔", c: "視線", jp: "伏し目", en: "averting eyes", attrs: [] },
+    { p: "顔", c: "視線", jp: "遠くを見る", en: "looking afar", attrs: [] },
+    { p: "顔", c: "視線", jp: "上目遣い", en: "upturned eyes", attrs: [] },
+
+    // 目の形 (Child: 目の形)
+    { p: "顔", c: "目の形", jp: "閉じた目", en: "closed eyes", attrs: [] },
+    { p: "顔", c: "目の形", jp: "片目閉じ", en: "one eye closed", attrs: [] },
+    { p: "顔", c: "目の形", jp: "細め目", en: "narrowed eyes", attrs: [] },
+    { p: "顔", c: "目の形", jp: "ジト目", en: "jitome", attrs: [] },
+    { p: "顔", c: "目の形", jp: "ツリ目", en: "tsurime", attrs: [] },
+    { p: "顔", c: "目の形", jp: "タレ目", en: "tareme", attrs: [] },
+    { p: "顔", c: "目の形", jp: "見開いた目", en: "wide-eyed", attrs: [] },
+
+    // 瞳の形 (Child: 瞳の形)
+    { p: "顔", c: "瞳の形", jp: "縦長瞳", en: "slit pupils", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "輪っか瞳", en: "ringed eyes", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "ぐるぐる瞳", en: "spiral-only eyes", attrs: ["color"] },
     { p: "顔", c: "瞳の形", jp: "ハート瞳", en: "heart-shaped pupils", attrs: ["color"] },
-    // 衣装
-    { p: "衣装", c: "トップス", jp: "パーカー", en: "hoodie", attrs: ["color", "material"] },
-    // ポーズ
-    { p: "ポーズ", c: "全身", jp: "立ち姿", en: "standing", attrs: [] },
-    // 背景
+    { p: "顔", c: "瞳の形", jp: "星型瞳", en: "star-shaped pupils", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "記号瞳", en: "symbol-shaped pupils", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "虚ろな目", en: "empty eyes", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "発光瞳", en: "glowing eyes", attrs: ["color"] },
+    { p: "顔", c: "瞳の形", jp: "キラキラ瞳", en: "sparkling eyes", attrs: ["color"] },
+
+    // 表情 (Child: 表情)
+    { p: "顔", c: "表情", jp: "幸せ", en: "happy", attrs: [] },
+    { p: "顔", c: "表情", jp: "ドヤ顔", en: "smug", attrs: [] },
+    { p: "顔", c: "表情", jp: "ニヤリ", en: "smirk", attrs: [] },
+    { p: "顔", c: "表情", jp: "ゲス顔", en: "evil grin", attrs: [] },
+    { p: "顔", c: "表情", jp: "ワクワク", en: "excited", attrs: [] },
+    { p: "顔", c: "表情", jp: "口を開ける", en: "open mouth", attrs: [] },
+    { p: "顔", c: "表情", jp: "怒り", en: "angry", attrs: [] },
+    { p: "顔", c: "表情", jp: "困り顔", en: "frustrated", attrs: [] },
+    { p: "顔", c: "表情", jp: "ぷくー", en: "pout", attrs: [] },
+    { p: "顔", c: "表情", jp: "悲しい", en: "sad", attrs: [] },
+    { p: "顔", c: "表情", jp: "絶望", en: "despair", attrs: [] },
+    { p: "顔", c: "表情", jp: "驚き", en: "surprised", attrs: [] },
+    { p: "顔", c: "表情", jp: "パニック", en: "panicking", attrs: [] },
+    { p: "顔", c: "表情", jp: "赤面", en: "blush", attrs: [] },
+    { p: "顔", c: "表情", jp: "無表情", en: "expressionless", attrs: [] },
+
+    // --- ポーズ (attrs: []) ---
+    // 全身 (Child: 全身)
+    { p: "ポーズ", c: "全身", jp: "寝そべり", en: "lying", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "座る", en: "sitting", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "膝立ち", en: "kneeling", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "しゃがむ", en: "squatting", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "正座", en: "seiza", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "立ち", en: "standing", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "歩く", en: "walking", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "走る", en: "running", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "ジャンプ", en: "jumping", attrs: [] },
+    { p: "ポーズ", c: "全身", jp: "戦う構え", en: "fighting stance", attrs: [] },
+
+    // 腕 (Child: 腕)
+    { p: "ポーズ", c: "腕", jp: "片手上げ", en: "arm up", attrs: [] },
+    { p: "ポーズ", c: "腕", jp: "両手上げ", en: "arms up", attrs: [] },
+    { p: "ポーズ", c: "腕", jp: "頭の後ろで手", en: "arm behind head", attrs: [] },
+    { p: "ポーズ", c: "腕", jp: "腕組み", en: "crossed arms", attrs: [] },
+
+    // 手 (Child: 手)
+    { p: "ポーズ", c: "手", jp: "指差し", en: "pointing", attrs: [] },
+    { p: "ポーズ", c: "手", jp: "ピース", en: "peace sign", attrs: [] },
+    { p: "ポーズ", c: "手", jp: "サムズアップ", en: "thumbs up", attrs: [] },
+    { p: "ポーズ", c: "手", jp: "ハート手", en: "heart hands", attrs: [] },
+    { p: "ポーズ", c: "手", jp: "敬礼", en: "salute", attrs: [] },
+
+    // 特殊 (Child: 特殊)
+    { p: "ポーズ", c: "特殊", jp: "うさ耳ポーズ", en: "rabbit pose", attrs: [] },
+    { p: "ポーズ", c: "特殊", jp: "猫耳ポーズ", en: "cat pose", attrs: [] },
+    { p: "ポーズ", c: "特殊", jp: "お嬢様ポーズ", en: "ojou-sama pose", attrs: [] },
+
+    // --- 演出 (attrs: []) ---
+    // 画角 (Child: 画角)
+    { p: "演出", c: "画角", jp: "全身", en: "full body", attrs: [] },
+    { p: "演出", c: "画角", jp: "上半身", en: "upper body", attrs: [] },
+    { p: "演出", c: "画角", jp: "顔アップ", en: "close-up", attrs: [] },
+    
+    // アングル (Child: アングル)
+    { p: "演出", c: "アングル", jp: "正面", en: "straight-on", attrs: [] },
+    { p: "演出", c: "アングル", jp: "俯瞰", en: "from above", attrs: [] },
+    { p: "演出", c: "アングル", jp: "煽り", en: "from below", attrs: [] },
+    { p: "演出", c: "アングル", jp: "背面", en: "from behind", attrs: [] },
+
+    // ライティング (Child: ライティング)
+    { p: "演出", c: "ライティング", jp: "逆光", en: "back lighting", attrs: [] },
+    { p: "演出", c: "ライティング", jp: "ソフト光", en: "diffused light", attrs: [] },
+
+    // --- 背景 (attrs: tone) ---
+    // 屋外 (Child: 屋外)
+    { p: "背景", c: "屋外", jp: "海", en: "ocean", attrs: ["tone"] },
+    { p: "背景", c: "屋外", jp: "砂浜", en: "beach", attrs: ["tone"] },
     { p: "背景", c: "屋外", jp: "森", en: "forest", attrs: ["tone"] },
-    { p: "背景", c: "エフェクト", jp: "火花", en: "sparks", attrs: ["color"] }
+    { p: "背景", c: "屋外", jp: "都市", en: "city", attrs: ["tone"] },
+    { p: "背景", c: "屋外", jp: "青空", en: "blue sky", attrs: ["tone"] },
+
+    // 屋内 (Child: 屋内)
+    { p: "背景", c: "屋内", jp: "寝室", en: "bedroom", attrs: ["tone"] },
+    { p: "背景", c: "屋内", jp: "教室", en: "classroom", attrs: ["tone"] },
+    { p: "背景", c: "屋内", jp: "カフェ", en: "cafe", attrs: ["tone"] },
+
+    // パターン (Child: パターン)
+    { p: "背景", c: "パターン", jp: "シンプル", en: "simple background", attrs: ["color"] },
+    { p: "背景", c: "パターン", jp: "格子柄", en: "grid background", attrs: ["color"] },
+
+    // --- 衣装 (attrs: color, material) ---
+    // トップス (Child: トップス)
+    { p: "衣装", c: "トップス", jp: "Tシャツ", en: "t-shirt", attrs: ["color", "material"] },
+    { p: "衣装", c: "トップス", jp: "ワイシャツ", en: "dress shirt", attrs: ["color", "material"] },
+    { p: "衣装", c: "トップス", jp: "タンクトップ", en: "tank top", attrs: ["color", "material"] },
+    { p: "衣装", c: "トップス", jp: "タートルネック", en: "turtleneck sweater", attrs: ["color", "material"] },
+
+    // ボトムス (Child: ボトムス)
+    { p: "衣装", c: "ボトムス", jp: "ズボン", en: "pants", attrs: ["color", "material"] },
+    { p: "衣装", c: "ボトムス", jp: "ショートパンツ", en: "shorts", attrs: ["color", "material"] },
+    { p: "衣装", c: "ボトムス", jp: "ミニスカート", en: "miniskirt", attrs: ["color", "material"] },
+
+    // 全身衣装 (Child: 全身衣装)
+    { p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["color", "material"] },
+    { p: "衣装", c: "全身衣装", jp: "セーラー服", en: "japanese schoolgirl sailor uniform", attrs: ["color", "material"] },
+    { p: "衣装", c: "全身衣装", jp: "着物", en: "kimono", attrs: ["color", "material"] },
+
+    // シューズ (Child: シューズ)
+    { p: "衣装", c: "シューズ", jp: "ブーツ", en: "boots", attrs: ["color", "material"] },
+    { p: "衣装", c: "シューズ", jp: "ハイヒール", en: "high heels", attrs: ["color", "material"] },
+    { p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["color", "material"] }
 ];
 
 const attributes = {
