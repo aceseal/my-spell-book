@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#3d2b1f">
 
-    <title>叡智の魔導書 Ver.18.5</title>
+    <title>叡智の魔導書 Ver.18.6</title>
     <style>
         :root {
             --bg-paper: #f4ecd8; --ink: #2c1e14; --gold: #b08d57; 
@@ -91,7 +91,7 @@
 <header>
     <div class="search-container">
         <input type="text" id="search-box" placeholder="叡智を検索..." oninput="refreshDisplay()">
-        <button class="btn-icon" onclick="alert('外典登録は後ほど！')">✏️</button>
+        <button class="btn-icon" onclick="alert('外典登録は masterData に直接書くか後ほど実装や！')">✏️</button>
     </div>
 </header>
 
@@ -105,9 +105,7 @@
 <div id="console-overlay" onclick="closeConsole()">
     <div id="console" onclick="event.stopPropagation()">
         <h3 id="console-title" style="margin:0 0 15px; text-align:center;"></h3>
-        
         <div id="sec-tone" class="console-section"><span class="console-label" id="lbl-tone">色彩：トーン</span><div id="lst-tone" class="chip-scroll"></div></div>
-        
         <div id="sec-color" class="console-section">
             <span class="console-label" id="lbl-color">色彩：ベース色</span>
             <div class="drawer-nav">
@@ -118,15 +116,12 @@
             </div>
             <div id="lst-color" class="chip-scroll"></div>
         </div>
-
         <div id="sec-length" class="console-section"><span class="console-label" id="lbl-length">形態：サイズ・長さ</span><div id="lst-length" class="chip-scroll"></div></div>
         <div id="sec-material" class="console-section"><span class="console-label" id="lbl-material">質感・材質</span><div id="lst-material" class="chip-scroll"></div></div>
-
         <div class="console-section">
             <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
             <input type="range" id="c-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;">
         </div>
-
         <div class="console-footer">
             <button class="btn-cancel" onclick="closeConsole()">戻る</button>
             <button class="btn-commit" onclick="commit()">詠唱台に反映</button>
@@ -139,23 +134,34 @@
     <div class="footer-btns">
         <button class="btn-action" style="background:#4a6fa5;" onclick="copyOutput()">COPY</button>
         <button class="btn-action" style="background:#8e9aaf;" onclick="resetOutput()">CLEAR</button>
-        <button class="btn-action" style="background:#d66d67;" onclick="alert('FAVは後ほど！')">FAV</button>
+        <button class="btn-action" style="background:#d66d67;" onclick="alert('お気に入り機能は準備中や！')">FAV</button>
     </div>
 </footer>
 
 <script>
-// --- 1. 聖典データ定義 ---
+// --- 1. イッチ定義の「基本階層」 masterData ---
+// サンプルデータをいくつか入れておくで！
 const masterData = [
-    // 演出系（attrsを空にするか、書かないことで強調度のみにする）
+    // おまじない
+    { p: "おまじない", c: "テンプレート", jp: "傑作", en: "masterpiece", attrs: [] },
+    { p: "おまじない", c: "基本品質", jp: "高品質", en: "high quality", attrs: [] },
+    // 演出
     { p: "演出", c: "画風", jp: "アニメ風", en: "anime style", attrs: [] },
-    { p: "演出", c: "角度", jp: "ローアングル", en: "low angle", attrs: [] },
-    
-    // 身体系（必要なものだけ指定）
-    { p: "身体", c: "髪型", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
-    { p: "身体", c: "目元", jp: "赤い瞳", en: "red eyes", attrs: ["tone"] }, // 色は固定やからトーンだけ
-    
-    // 衣装系
-    { p: "衣装", c: "トップス", jp: "オフショル", en: "off-shoulder", attrs: ["color", "material"] }
+    { p: "演出", c: "アングル", jp: "俯瞰", en: "from above", attrs: [] },
+    // 身体
+    { p: "身体", c: "肌", jp: "色白", en: "pale skin", attrs: ["tone"] },
+    { p: "身体", c: "肉体細部", jp: "へそ", en: "navel", attrs: [] },
+    // 髪型
+    { p: "髪型", c: "スタイル", jp: "ポニテ", en: "ponytail", attrs: ["tone", "color", "length"] },
+    // 顔
+    { p: "顔", c: "瞳の形", jp: "ハート瞳", en: "heart-shaped pupils", attrs: ["color"] },
+    // 衣装
+    { p: "衣装", c: "トップス", jp: "パーカー", en: "hoodie", attrs: ["color", "material"] },
+    // ポーズ
+    { p: "ポーズ", c: "全身", jp: "立ち姿", en: "standing", attrs: [] },
+    // 背景
+    { p: "背景", c: "屋外", jp: "森", en: "forest", attrs: ["tone"] },
+    { p: "背景", c: "エフェクト", jp: "火花", en: "sparks", attrs: ["color"] }
 ];
 
 const attributes = {
@@ -198,23 +204,26 @@ let curP = "", curC = "";
 let selAttr = { tone: "", color: "", length: "", material: "" };
 let activeItem = null;
 
+// --- 2. 自動カテゴリ生成 & 初期化 ---
 function buildCategories() {
     categories = {};
-    const combined = [...masterData];
-    combined.forEach(item => {
-        const p = item.p || item.cat || "未分類";
+    masterData.forEach(item => {
+        const p = item.p || "未分類";
         const c = item.c || "";
         if (!categories[p]) categories[p] = new Set();
         if (c) categories[p].add(c);
     });
-    Object.keys(categories).forEach(p => { categories[p] = Array.from(categories[p]); });
-    if (!categories["お気に入りリスト"]) categories["お気に入りリスト"] = [];
+    // お気に入りリストを最後に追加
+    if (!categories["お気に入りリスト"]) categories["お気に入りリスト"] = new Set();
 }
 
 function init() {
     buildCategories();
     const pTabs = document.getElementById('p-tabs');
-    const pList = Object.keys(categories);
+    // イッチが決めた順番通りに並べたい場合はここを調整
+    const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景", "お気に入りリスト"];
+    const pList = order.filter(p => categories[p]);
+    
     pTabs.innerHTML = pList.map(p => `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`).join('');
     if (pList.length > 0) setParent(pList[0]);
 }
@@ -223,9 +232,11 @@ function setParent(p) {
     curP = p;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`pb-${p}`).classList.add('active');
-    const cs = categories[p] || [];
+    
+    const cs = Array.from(categories[p] || []);
     const cBar = document.getElementById('c-tabs');
     cBar.innerHTML = cs.map(c => `<button class="child-btn" onclick="setChild('${c}')" id="cb-${c}">${c}</button>`).join('');
+    
     if (cs.length > 0) { setChild(cs[0]); } else { curC = ""; refreshDisplay(); }
 }
 
@@ -242,9 +253,7 @@ function refreshDisplay() {
     area.innerHTML = "";
     const filtered = masterData.filter(d => {
         if (q !== "") return d.jp.includes(q) || d.en.includes(q);
-        const dP = d.p || d.cat;
-        const dC = d.c || "";
-        return (dP === curP && (dC === curC || dC === ""));
+        return (d.p === curP && (d.c === curC || d.c === ""));
     });
     filtered.forEach(item => {
         const t = document.createElement('div');
@@ -259,20 +268,16 @@ function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
     document.getElementById('console-title').innerText = item.jp;
-    
-    // 【修正ポイント】attrsがない、あるいは空の場合は何も表示しない
     const show = item.attrs || []; 
     ["tone", "color", "length", "material"].forEach(a => {
         const section = document.getElementById(`sec-${a}`);
         section.style.display = show.includes(a) ? 'block' : 'none';
         updateLabel(a, "");
     });
-
     if (show.includes('tone')) renderChips('tone', attributes.tone);
     if (show.includes('color')) drawColors('achromatic');
     if (show.includes('length')) renderChips('length', attributes.length);
     if (show.includes('material')) renderChips('material', attributes.material);
-
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
