@@ -152,8 +152,8 @@
             <button id="tab-pos" class="active" onclick="switchOutput('pos')">叡智の呪文 (Positive)</button>
             <button id="tab-neg" onclick="switchOutput('neg')">叡智の禁忌 (Negative)</button>
         </div>
-        <textarea id="pos-area" placeholder="呪文が紡がれます..."></textarea>
-        <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..."></textarea>
+        <textarea id="pos-area" placeholder="呪文が紡がれます..." onfocus="saveManualBackup('pos')"></textarea>
+        <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..." onfocus="saveManualBackup('neg')"></textarea>
     </div>
     <div class="footer-btns">
         <button class="btn-action" style="background: var(--action-copy);" onclick="copyOutput()">呪文を詠唱</button>
@@ -1036,6 +1036,9 @@ let currentMode = 'pos';
 let longPressTimer;
 let deleteTargetEn = null;
 let isLongPress = false;
+let posLog = [""]; // 最初は空の文字列を入れておく
+let negLog = [""];
+
 
 function buildCategories() {
     categories = {};
@@ -1114,9 +1117,10 @@ function openDeleteMenu(item) {
     document.getElementById('delete-target-name').innerText = `「${item.jp}」を削除しますか？`;
     document.getElementById('delete-menu-overlay').style.display = 'flex';
 }
-    
+
 function closeDeleteMenu() { document.getElementById('delete-menu-overlay').style.display = 'none'; }
-    
+
+
 function executeDelete() {
     if (!deleteTargetEn) return;
     userList = userList.filter(i => i.en !== deleteTargetEn);
@@ -1128,35 +1132,62 @@ function executeDelete() {
     closeDeleteMenu();
 }
 
+function saveManualBackup(mode) {
+    const areaId = mode === 'pos' ? 'pos-area' : 'neg-area';
+    const currentText = document.getElementById(areaId).value;
+    const log = mode === 'pos' ? posLog : negLog;
+    if (log[log.length - 1] !== currentText) {
+        log.push(currentText);}
+}
+
 function updateTextarea() {
-    const posText = posHistory.length > 0 ? posHistory.join(", ") + ", " : "";
-    const negText = negHistory.length > 0 ? negHistory.join(", ") + ", " : "";
-    document.getElementById('pos-area').value = posText;
-    document.getElementById('neg-area').value = negText;
+    document.getElementById('pos-area').value = posLog[posLog.length - 1];// 常にログの「最後（最新）」の文字列をそのまま画面に表示する
+    document.getElementById('neg-area').value = negLog[negLog.length - 1];
 }
     
 function commit() {
+    const areaId = currentMode === 'pos' ? 'pos-area' : 'neg-area';
+    const log = currentMode === 'pos' ? posLog : negLog;
+    let baseText = document.getElementById(areaId).value.trim();
     const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
     const tagText = parts.join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? tagText : `(${tagText}:${w})`;
-    if (currentMode === 'pos') posHistory.push(final); else negHistory.push(final);
+    if (baseText && !baseText.endsWith(',')) {
+        baseText += ', ';}
+    const newText = baseText + final + ', ';
+    log.push(newText);
     updateTextarea();
     closeConsole();
 }
     
 function undo() {
-    if (currentMode === 'pos' && posHistory.length === 0) return;// 履歴が空の場合は何もしない（ポップアップの煩わしさを防止）
-    if (currentMode === 'neg' && negHistory.length === 0) return;// 確認ポップアップを出して、OKなら1つ消す
-    if (confirm("呪文を1節巻き戻しますか？")) {if (currentMode === 'pos') { posHistory.pop(); } else { negHistory.pop(); }updateTextarea();}
+    const areaId = currentMode === 'pos' ? 'pos-area' : 'neg-area';
+    const log = currentMode === 'pos' ? posLog : negLog;
+    if (log.length <= 1) return;
+    if (confirm("呪文を1手巻き戻しますか？")) {
+        const currentText = document.getElementById(areaId).value;
+        if (log[log.length - 1] === currentText) {
+            log.pop(); // フォーカス時のダブりログを1個消去して歴史をなかったことに
+        }
+        if (log.length > 1) {
+            log.pop(); // 現在（または修正中だった）の手順を破棄
+        }
+        updateTextarea();
+    }
 }
     
 function resetOutput() {
     if(confirm("呪文を破棄しますか？")) {
-        if (currentMode === 'pos') posHistory = []; else negHistory = [];
+        if (currentMode === 'pos') {
+            posLog = [""];
+        } else {
+            negLog = [""];
+        }
         updateTextarea();
     }
 }
+
 function openConsole(item) {
     activeItem = item;
     selAttr = { tone: "", color: "", length: "", material: "" };
