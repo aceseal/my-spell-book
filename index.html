@@ -1168,15 +1168,15 @@ function undo() {
     if (confirm("呪文を1手巻き戻しますか？")) {
         const currentText = document.getElementById(areaId).value;
         if (log[log.length - 1] === currentText) {
-            log.pop(); // フォーカス時のダブりログを1個消去して歴史をなかったことに
-        }
-        if (log.length > 1) {
-            log.pop(); // 現在（または修正中だった）の手順を破棄
+            log.pop();
+        } else {
+            log.pop();
+            document.getElementById(areaId).value = log[log.length - 1];
         }
         updateTextarea();
     }
 }
-    
+
 function resetOutput() {
     if(confirm("呪文を破棄しますか？")) {
         if (currentMode === 'pos') {
