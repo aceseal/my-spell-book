@@ -134,7 +134,15 @@
             </div>
             <div id="lst-length" class="chip-scroll"></div>
         </div>
-        <div id="sec-material" class="console-section"><span class="console-label" id="lbl-material">質感・材質</span><div id="lst-material" class="chip-scroll"></div></div>
+       <div id="sec-material" class="console-section">
+            <span class="console-label" id="lbl-material">質感・材質</span>
+            <div class="drawer-nav">
+                <button onclick="drawMaterials('fabric')" id="dm-fabric">生地系</button>
+                <button onclick="drawMaterials('substance')" id="dm-substance">物質系</button>
+                <button onclick="drawMaterials('nature')" id="dm-nature">自然系</button>
+            </div>
+            <div id="lst-material" class="chip-scroll"></div>
+        </div>
         <div class="console-section">
             <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
             <input type="range" id="c-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;">
@@ -1039,10 +1047,17 @@ const attributes = {
             {jp:"普通", en:"Standard"}, 
             {jp:"厚い/太い", en:"Thick"}, {jp:"極厚/極太", en:"Heavy Thick"}]
     },
-    material: [
-        {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
-        {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
-    ]
+    material: {
+        fabric: [
+            {jp:"シルク", en:"Silk"}, {jp:"レース", en:"Lace"}, {jp:"コットン", en:"Cotton"}, {jp:"デニム", en:"Denim"},
+            {jp:"ベルベット", en:"Velvet"}, {jp:"レザー", en:"Leather"}, {jp:"ニット", en:"Knit"}, {jp:"ファー", en:"Fur"},
+            {jp:"羽毛", en:"Feather"}, {jp:"ビニール", en:"Vinyl"}, {jp:"ラテックスゴム", en:"Latex"}, {jp:"エナメル", en:"Enamel"}],
+        substance: [
+            {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"クリスタル", en:"Crystal"},
+            {jp:"磁器", en:"Porcelain"}, {jp:"紙材", en:"Paper"}, {jp:"カーボン", en:"Carbon Fiber"}, {jp:"ホログラム", en:"Hologram"}],
+        nature: [
+            {jp:"木材", en:"Wood"}, {jp:"石材", en:"Stone"}, {jp:"氷材", en:"Ice"}, {jp:"水材", en:"Water"}, {jp:"植物/葉", en:"Leaf"}]
+    }
 };
 
 let categories = {}; 
@@ -1220,7 +1235,7 @@ function openConsole(item) {
     if (show.includes('tone')) renderChips('tone', attributes.tone);
     if (show.includes('color')) drawColors('achromatic');
     if (show.includes('length')) drawLengths('range');
-    if (show.includes('material')) renderChips('material', attributes.material);
+    if (show.includes('material')) drawMaterials('fabric');
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
@@ -1241,6 +1256,12 @@ function drawLengths(grp) {
     document.querySelectorAll('#sec-length .drawer-nav button').forEach(b => b.classList.remove('active'));
     if(document.getElementById(`dl-${grp}`)) document.getElementById(`dl-${grp}`).classList.add('active');
     renderChips('length', attributes.length[grp]);
+}
+
+function drawMaterials(grp) {
+    document.querySelectorAll('#sec-material .drawer-nav button').forEach(b => b.classList.remove('active'));
+    if(document.getElementById(`dm-${grp}`)) document.getElementById(`dm-${grp}`).classList.add('active');
+    renderChips('material', attributes.material[grp]);
 }
 
 function selectAttr(type, en, jp) {
