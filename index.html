@@ -1171,9 +1171,13 @@ function undo() {
     if (confirm("呪文を1手巻き戻しますか？")) {
         const currentText = document.getElementById(areaId).value;
         if (log[log.length - 1] !== currentText) {
+            document.getElementById(areaId).value = log[log.length - 1];
         } else {
-            log.pop();}
-        updateTextarea();}
+            log.pop();
+            document.getElementById(areaId).value = log[log.length - 1];
+        }
+        updateTextarea();
+    }
 }
 
 function resetOutput() {
