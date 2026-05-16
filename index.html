@@ -152,8 +152,8 @@
             <button id="tab-pos" class="active" onclick="switchOutput('pos')">叡智の呪文 (Positive)</button>
             <button id="tab-neg" onclick="switchOutput('neg')">叡智の禁忌 (Negative)</button>
         </div>
-        <textarea id="pos-area" placeholder="呪文が紡がれます..." onfocus="saveManualBackup('pos')"></textarea>
-        <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..." onfocus="saveManualBackup('neg')"></textarea>
+        <textarea id="pos-area" placeholder="呪文が紡がれます..."></textarea>
+        <textarea id="neg-area" style="display:none;" placeholder="避けたい要素を入力..."></textarea>
     </div>
     <div class="footer-btns">
         <button class="btn-action" style="background: var(--action-copy);" onclick="copyOutput()">呪文を詠唱</button>
@@ -1148,11 +1148,14 @@ function updateTextarea() {
 function commit() {
     const areaId = currentMode === 'pos' ? 'pos-area' : 'neg-area';
     const log = currentMode === 'pos' ? posLog : negLog;
-    let baseText = document.getElementById(areaId).value.trim();
+    let currentText = document.getElementById(areaId).value;
+    if (log[log.length - 1] !== currentText) {
+        log.push(currentText);}
     const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
     const tagText = parts.join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? tagText : `(${tagText}:${w})`;
+    let baseText = currentText.trim();
     if (baseText && !baseText.endsWith(',')) {
         baseText += ', ';}
     const newText = baseText + final + ', ';
@@ -1167,14 +1170,10 @@ function undo() {
     if (log.length <= 1) return;
     if (confirm("呪文を1手巻き戻しますか？")) {
         const currentText = document.getElementById(areaId).value;
-        if (log[log.length - 1] === currentText) {
-            log.pop();
+        if (log[log.length - 1] !== currentText) {
         } else {
-            log.pop();
-            document.getElementById(areaId).value = log[log.length - 1];
-        }
-        updateTextarea();
-    }
+            log.pop();}
+        updateTextarea();}
 }
 
 function resetOutput() {
