@@ -1022,6 +1022,7 @@ const attributes = {
     length: [
         {jp:"ミニ", en:"Mini"},{jp:"ショート", en:"Short"},{jp:"ミディアム", en:"Medium"},
         {jp:"ロング", en:"Long"},{jp:"超ロング", en:"Very Long"},
+        {type: "divider"},
         {jp:"スモール", en:"Small"},{jp:"レギュラー", en:"Standard"},
         {jp:"ビッグ", en:"Big"},{jp:"ヒュージ", en:"Huge"}],
     material: [
@@ -1210,15 +1211,37 @@ function openConsole(item) {
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
 }
+    
 function renderChips(type, list) {
     const div = document.getElementById(`lst-${type}`);
-    div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
+    div.innerHTML = "";
+    list.forEach(v => {
+        if (v.type === 'divider') {
+            const d = document.createElement('span');
+            d.innerText = '┃';
+            d.style.color = '#b08d57';
+            d.style.alignSelf = 'center';
+            d.style.padding = '0 5px';
+            d.style.fontWeight = 'bold';
+            d.style.flexShrink = '0';
+            div.appendChild(d);
+        } else {
+            const c = document.createElement('div');
+            c.className = "chip";
+            c.id = `cp-${type}-${v.en}`;
+            c.innerHTML = `${v.jp}<small>${v.en}</small>`;
+            c.onclick = () => selectAttr(type, v.en, v.jp);
+            div.appendChild(c);
+        }
+    });
 }
+    
 function drawColors(grp) {
     document.querySelectorAll('.drawer-nav button').forEach(b => b.classList.remove('active'));
     if(document.getElementById(`db-${grp}`)) document.getElementById(`db-${grp}`).classList.add('active');
     renderChips('color', attributes.color[grp]);
 }
+    
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
@@ -1228,12 +1251,14 @@ function selectAttr(type, en, jp) {
         updateLabel(type, jp);
     } else { updateLabel(type, ""); }
 }
+    
 function updateLabel(type, jp) {
     const lbl = document.getElementById(`lbl-${type}`);
     const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質"}[type];
     lbl.innerHTML = (jp && jp !== "通常") ? `${base}：<strong>${jp}</strong>` : base;
     lbl.classList.toggle('active', !!(jp && jp !== "通常"));
 }
+    
 function copyOutput() {
     let posRaw = document.getElementById('pos-area').value.trim();
     let negRaw = document.getElementById('neg-area').value.trim();
@@ -1248,6 +1273,7 @@ function copyOutput() {
     const finalMsg = result.replace(/\s+/g, " ").trim();
     navigator.clipboard.writeText(finalMsg).then(() => alert("呪文をコピーしました！"));
 }
+    
 function switchOutput(mode) {
     currentMode = mode;
     document.getElementById('tab-pos').classList.toggle('active', mode === 'pos');
@@ -1255,6 +1281,7 @@ function switchOutput(mode) {
     document.getElementById('pos-area').style.display = mode === 'pos' ? 'block' : 'none';
     document.getElementById('neg-area').style.display = mode === 'neg' ? 'block' : 'none';
 }
+    
 function closeConsole() { document.getElementById('console-overlay').style.display = "none"; }
 
 function openApocrypha() {
