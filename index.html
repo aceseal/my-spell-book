@@ -1181,12 +1181,9 @@ function undo() {
 }
 
 function resetOutput() {
-    if(confirm("呪文を破棄しますか？")) {
-        if (currentMode === 'pos') {
-            posLog = [""];
-        } else {
-            negLog = [""];
-        }
+    if(confirm("全ての呪文（ポジティブ・ネガティブ両方）を破棄しますか？")) {
+        posLog = [""];
+        negLog = [""];
         updateTextarea();
     }
 }
