@@ -541,7 +541,7 @@ const masterData = [
 { p: "顔", c: "メイク", jp: "アイシャドウ", en: "eye shadow", attrs: ["tone", "color"] },
 { p: "顔", c: "メイク", jp: "口紅", en: "lipstick", attrs: ["tone", "color"] },
 { p: "顔", c: "メイク", jp: "泣きぼくろ", en: "teary mole", attrs: [] },
-{ p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["tone", "color", "pattern", "material"] }, // ★pattern解放。迷彩柄等に！
+{ p: "顔", c: "メイク", jp: "フェイスペイント", en: "face paint", attrs: ["tone", "color", "pattern", "material"] },
 { p: "顔", c: "メイク", jp: "チーク", en: "blush", attrs: ["tone", "color"] },
 
 // --- ポーズ (attrs: []) ---
@@ -829,9 +829,9 @@ const masterData = [
 { p: "背景", c: "天候・時間・季節", jp: "夕日の光", en: "golden hour", attrs: [] },
 { p: "背景", c: "天候・時間・季節", jp: "真夜中", en: "midnight", attrs: [] },
 { p: "背景", c: "天候・時間・季節", jp: "星降る夜", en: "shooting stars", attrs: [] },
-{ p: "背景", c: "シンプル", jp: "シンプル背景", en: "simple background", attrs: ["tone", "color", "pattern"] }, // ★pattern解放。ドット背景等に！
+{ p: "背景", c: "シンプル", jp: "シンプル背景", en: "simple background", attrs: ["tone", "color", "pattern"] },
 { p: "背景", c: "シンプル", jp: "虹色の背景", en: "rainbow background", attrs: ["color"] },
-{ p: "背景", c: "シンプル", jp: "グラデーション背景", en: "gradient background", attrs: ["color", "pattern"] }, // ★pattern解放
+{ p: "背景", c: "シンプル", jp: "グラデーション背景", en: "gradient background", attrs: ["color", "pattern"] },
 { p: "背景", c: "パターン", jp: "ハーフトーン", en: "halftone background", attrs: ["color"] },
 { p: "背景", c: "パターン", jp: "アーガイル", en: "argyle background", attrs: ["color"] },
 { p: "背景", c: "パターン", jp: "格子柄", en: "checkered background", attrs: ["color"] },
@@ -852,8 +852,8 @@ const masterData = [
 { p: "背景", c: "エフェクト", jp: "光の粒子", en: "particles", attrs: ["tone", "color"] },
 { p: "背景", c: "エフェクト", jp: "舞い散る雪", en: "snowflakes", attrs: ["color"] },
 
-// --- 衣装 (attrs: tone, color, pattern, material。全身はlengthも) ---
-{ p: "衣装", c: "トップス", jp: "Tシャツ", en: "t-shirt", attrs: ["tone", "color", "pattern", "material"] }, // ★以下トップス全解放
+// --- 衣装 ---
+{ p: "衣装", c: "トップス", jp: "Tシャツ", en: "t-shirt", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "トップス", jp: "ワイシャツ", en: "dress shirt", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "トップス", jp: "ラグラン袖", en: "raglan sleeves", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "トップス", jp: "タンクトップ", en: "tank top", attrs: ["tone", "color", "pattern", "material"] },
@@ -883,7 +883,7 @@ const masterData = [
 { p: "衣装", c: "トップス", jp: "パーカー", en: "zip-up hoodie", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "トップス", jp: "開いたパーカー", en: "open zip-up hoodie", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "トップス", jp: "ポロシャツ", en: "polo shirt", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "ズボン", en: "pants", attrs: ["tone", "color", "pattern", "material"] }, // ★以下ボトムス全解放
+{ p: "衣装", c: "ボトムス", jp: "ズボン", en: "pants", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "カプリパンツ", en: "capri pants", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "股上の浅いパンツ", en: "lowleg pants", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ジーンズ", en: "jeans", attrs: ["tone", "color", "pattern", "material"] },
@@ -894,7 +894,7 @@ const masterData = [
 { p: "衣装", c: "ボトムス", jp: "マイクロ短パン", en: "micro shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "股上の浅い短パン", en: "lowleg shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ショートパンツ", en: "short shorts", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "スカート", en: "skirt", attrs: ["tone", "color", "pattern", "length", "material"] }, // ★以下スカート・ドレス全解放
+{ p: "衣装", c: "ボトムス", jp: "スカート", en: "skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "オーバースカート", en: "overskirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ミニスカート", en: "miniskirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ロングスカート", en: "long skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
@@ -932,7 +932,7 @@ const masterData = [
 { p: "衣装", c: "全身衣装", jp: "セーラー服", en: "japanese schoolgirl sailor uniform", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "全身衣装", jp: "矢絣袴", en: "meiji schoolgirl uniform", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "全身衣装", jp: "体操着", en: "gym uniform", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "アウター", jp: "ジャケット", en: "jacket", attrs: ["tone", "color", "pattern", "material"] }, // ★以下アウター全解放
+{ p: "衣装", c: "アウター", jp: "ジャケット", en: "jacket", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "アウター", jp: "ブレザー", en: "blazer", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "アウター", jp: "白衣", en: "lab coat", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "アウター", jp: "コート", en: "coat", attrs: ["tone", "color", "pattern", "length", "material"] },
@@ -945,7 +945,7 @@ const masterData = [
 { p: "衣装", c: "アウター", jp: "ケープ", en: "cape", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アウター", jp: "ケープレット", en: "capelet", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "アウター", jp: "ショール", en: "shawl", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "シューズ", jp: "ブーツ", en: "boots", attrs: ["tone", "color", "pattern", "material"] }, // ★スニーカー等の柄対応
+{ p: "衣装", c: "シューズ", jp: "ブーツ", en: "boots", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "シューズ", jp: "ニーハイブーツ", en: "knee boots", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "シューズ", jp: "サイハイブーツ", en: "thigh boots", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "シューズ", jp: "ハイヒールブーツ", en: "high heel boots", attrs: ["tone", "color", "pattern", "material"] },
@@ -959,7 +959,7 @@ const masterData = [
 { p: "服装", c: "衣装細部", jp: "濡れた服", en: "wet clothes", attrs: [] },
 { p: "服装", c: "衣装細部", jp: "肌に張り付いた服", en: "clothes stuck to skin", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "オーバーサイズ", en: "oversized", attrs: [] },
-{ p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["tone", "color", "pattern", "material"] }, // ★ソックス類の柄を全解放！
+{ p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "オーバーニー", en: "over-kneehighs", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "ニーハイ", en: "kneehighs", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "靴下", en: "socks", attrs: ["tone", "color", "pattern", "material"] },
@@ -970,7 +970,7 @@ const masterData = [
 { p: "衣装", c: "衣装細部", jp: "ジッパー", en: "zipper", attrs: ["material"] },
 { p: "衣装", c: "衣装細部", jp: "ベルト", en: "belt", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "レース刺繍", en: "lace trim", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "アクセサリー", jp: "野球帽", en: "baseball cap", attrs: ["tone", "color", "pattern", "length", "material"] }, // ★以下帽子・リボンの柄解放
+{ p: "衣装", c: "アクセサリー", jp: "野球帽", en: "baseball cap", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "ビーニー", en: "beanie", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "バケットハット", en: "bucket hat", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "ハンチング", en: "flat cap", attrs: ["tone", "color", "pattern", "length", "material"] },
@@ -992,7 +992,7 @@ const masterData = [
 { p: "衣装", c: "アクセサリー", jp: "カチューシャ", en: "headband", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "バンダナ", en: "bandana", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "王冠", en: "crown", attrs: ["tone", "color", "length", "material"] },
-{ p: "衣装", c: "アクセサリー", jp: "髪のリボン", en: "hair ribbon", attrs: ["tone", "color", "pattern", "length", "material"] }, // ★柄リボン
+{ p: "衣装", c: "アクセサリー", jp: "髪のリボン", en: "hair ribbon", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "髪のボウ", en: "hair bow", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "ティアラ", en: "tiara", attrs: ["tone", "color", "length", "material"] },
 { p: "衣装", c: "アクセサリー", jp: "メイドカチューシャ", en: "maid headdress", attrs: ["tone", "color", "pattern", "material"] },
