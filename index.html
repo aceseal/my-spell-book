@@ -143,6 +143,15 @@
             </div>
             <div id="lst-material" class="chip-scroll"></div>
         </div>
+        <div id="sec-pattern" class="console-section">
+            <span class="console-label" id="lbl-pattern">装飾：パターン</span>
+            <div class="drawer-nav">
+                <button onclick="drawPatterns('geometric')" id="dp-geometric">幾何学</button>
+                <button onclick="drawPatterns('pop')" id="dp-pop">ポップ</button>
+                <button onclick="drawPatterns('art')" id="dp-art">アート</button>
+            </div>
+            <div id="lst-pattern" class="chip-scroll"></div>
+        </div>
         <div class="console-section">
             <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
             <input type="range" id="c-weight" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('weight-val').textContent=this.value" style="width:100%;">
@@ -1058,11 +1067,27 @@ const attributes = {
         nature: [
             {jp:"木材", en:"Wood"}, {jp:"石材", en:"Stone"}, {jp:"氷材", en:"Ice"}, {jp:"水材", en:"Water"}, {jp:"植物/葉", en:"Leaf"}]
     }
+    pattern: {
+        geometric: [
+            {jp:"ストライプ", en:"striped"}, {jp:"ボーダー", en:"bordered"}, {jp:"斜めストライプ", en:"diagonal-striped"},
+            {jp:"格子柄/市松", en:"checkered"}, {jp:"グリッド", en:"grid"}, {jp:"アーガイル", en:"argyle"},
+            {jp:"プレイド/千鳥", en:"plaid"}, {jp:"ハーフトーン", en:"halftone"}
+        ],
+        pop: [
+            {jp:"水玉/ドット", en:"polka dot"}, {jp:"ハート柄", en:"heart pattern"}, {jp:"肉球柄", en:"paw print pattern"},
+            {jp:"星柄", en:"star pattern"}, {jp:"キラキラ柄", en:"sparkle pattern"}
+        ],
+        art: [
+            {jp:"水彩柄", en:"watercolor"}, {jp:"スプラッター", en:"splatter"}, {jp:"迷彩/カモフラ", en:"camouflage"},
+            {jp:"タイダイ/絞り", en:"tie-dye"}, {jp:"アラベスク/唐草", en:"arabesque"}, {jp:"外枠", en:"outside border"}
+        ]
+    }
 };
 
 let categories = {}; 
 let curP = "", curC = "";
-let selAttr = { tone: "", color: "", length: "", material: "" };
+let selAttr = { tone: "", color: "", length: "", material: "", pattern: "" };
+    
 let activeItem = null;
 let posHistory = [];
 let negHistory = [];
@@ -1186,7 +1211,7 @@ function commit() {
     let currentText = document.getElementById(areaId).value;
     if (log[log.length - 1] !== currentText) {
         log.push(currentText);}
-    const parts = [selAttr.tone, selAttr.color, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
+    const parts = [selAttr.tone, selAttr.color, selAttr.pattern, selAttr.length, selAttr.material, activeItem.en].filter(x => x);
     const tagText = parts.join(" ");
     const w = parseFloat(document.getElementById('c-weight').value);
     const final = (w === 1) ? tagText : `(${tagText}:${w})`;
@@ -1225,10 +1250,10 @@ function resetOutput() {
 
 function openConsole(item) {
     activeItem = item;
-    selAttr = { tone: "", color: "", length: "", material: "" };
+    selAttr = { tone: "", color: "", length: "", material: "", pattern: "" };
     document.getElementById('console-title').innerText = item.jp;
     const show = item.attrs || [];
-    ["tone", "color", "length", "material"].forEach(a => {
+    ["tone", "color", "length", "material", "pattern"].forEach(a => {
         document.getElementById(`sec-${a}`).style.display = show.includes(a) ? 'block' : 'none';
         updateLabel(a, "");
     });
@@ -1236,6 +1261,7 @@ function openConsole(item) {
     if (show.includes('color')) drawColors('achromatic');
     if (show.includes('length')) drawLengths('range');
     if (show.includes('material')) drawMaterials('fabric');
+    if (show.includes('pattern')) drawPatterns('geometric');
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
     document.getElementById('console-overlay').style.display = "flex";
@@ -1264,6 +1290,12 @@ function drawMaterials(grp) {
     renderChips('material', attributes.material[grp]);
 }
 
+function drawPatterns(grp) {
+    document.querySelectorAll('#sec-pattern .drawer-nav button').forEach(b => b.classList.remove('active'));
+    if(document.getElementById(`dp-${grp}`)) document.getElementById(`dp-${grp}`).classList.add('active');
+    renderChips('pattern', attributes.pattern[grp]);
+}
+
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
@@ -1276,7 +1308,7 @@ function selectAttr(type, en, jp) {
     
 function updateLabel(type, jp) {
     const lbl = document.getElementById(`lbl-${type}`);
-    const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質"}[type];
+    const base = {tone:"色彩：トーン", color:"色彩：ベース色", length:"形態：サイズ・長さ", material:"質感・材質", pattern:"装飾：パターン"}[type];
     lbl.innerHTML = (jp && jp !== "通常") ? `${base}：<strong>${jp}</strong>` : base;
     lbl.classList.toggle('active', !!(jp && jp !== "通常"));
 }
