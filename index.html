@@ -125,7 +125,15 @@
             </div>
             <div id="lst-color" class="chip-scroll"></div>
         </div>
-        <div id="sec-length" class="console-section"><span class="console-label" id="lbl-length">形態：サイズ・長さ</span><div id="lst-length" class="chip-scroll"></div></div>
+        <div id="sec-length" class="console-section">
+            <span class="console-label" id="lbl-length">形態：サイズ・長さ</span>
+            <div class="drawer-nav">
+                <button onclick="drawLengths('range')" id="dl-range">長さ</button>
+                <button onclick="drawLengths('scale')" id="dl-scale">大きさ</button>
+                <button onclick="drawLengths('thickness')" id="dl-thickness">厚さ・太さ</button>
+            </div>
+            <div id="lst-length" class="chip-scroll"></div>
+        </div>
         <div id="sec-material" class="console-section"><span class="console-label" id="lbl-material">質感・材質</span><div id="lst-material" class="chip-scroll"></div></div>
         <div class="console-section">
             <span class="console-label">強調度 (Weight: <span id="weight-val">1.0</span>)</span>
@@ -1019,12 +1027,18 @@ const attributes = {
             {jp:"ブロンズ", en:"Bronze"},{jp:"銅", en:"Copper"},{jp:"コバルト", en:"Cobalt Blue"},{jp:"スチールブルー", en:"Steel Blue"},
             {jp:"ガンメタル", en:"Gunmetal"},{jp:"金髪(髪用)", en:"Blonde"},{jp:"茶髪(髪用)", en:"Brunette"}],
     },
-    length: [
-        {jp:"ミニ", en:"Mini"},{jp:"ショート", en:"Short"},{jp:"ミディアム", en:"Medium"},
-        {jp:"ロング", en:"Long"},{jp:"超ロング", en:"Very Long"},
-        {type: "divider"},
-        {jp:"スモール", en:"Small"},{jp:"レギュラー", en:"Standard"},
-        {jp:"ビッグ", en:"Big"},{jp:"ヒュージ", en:"Huge"}],
+    length: {
+        range: [
+            {jp:"ミニ", en:"Mini"}, {jp:"ショート", en:"Short"}, 
+            {jp:"ミディアム", en:"Medium"}, {jp:"ロング", en:"Long"}, {jp:"超ロング", en:"Very Long"}],
+        scale: [
+            {jp:"スモール", en:"Small"}, {jp:"レギュラー", en:"Standard"}, 
+            {jp:"ビッグ", en:"Big"}, {jp:"ヒュージ", en:"Huge"}],
+        thickness: [
+            {jp:"極薄/極細", en:"Ultra Thin"}, {jp:"薄い/細い", en:"Thin"}, 
+            {jp:"普通", en:"Standard"}, 
+            {jp:"厚い/太い", en:"Thick"}, {jp:"極厚/極太", en:"Heavy Thick"}]
+    },
     material: [
         {jp:"シルク", en:"Silk"}, {jp:"コットン", en:"Cotton"}, {jp:"レザー", en:"Leather"}, 
         {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"レース", en:"Lace"}
@@ -1205,7 +1219,7 @@ function openConsole(item) {
     });
     if (show.includes('tone')) renderChips('tone', attributes.tone);
     if (show.includes('color')) drawColors('achromatic');
-    if (show.includes('length')) renderChips('length', attributes.length);
+    if (show.includes('length')) drawLengths('range');
     if (show.includes('material')) renderChips('material', attributes.material);
     document.getElementById('c-weight').value = 1.0;
     document.getElementById('weight-val').innerText = "1.0";
@@ -1214,26 +1228,7 @@ function openConsole(item) {
     
 function renderChips(type, list) {
     const div = document.getElementById(`lst-${type}`);
-    div.innerHTML = "";
-    list.forEach(v => {
-        if (v.type === 'divider') {
-            const d = document.createElement('span');
-            d.innerText = '┃';
-            d.style.color = '#b08d57';
-            d.style.alignSelf = 'center';
-            d.style.padding = '0 5px';
-            d.style.fontWeight = 'bold';
-            d.style.flexShrink = '0';
-            div.appendChild(d);
-        } else {
-            const c = document.createElement('div');
-            c.className = "chip";
-            c.id = `cp-${type}-${v.en}`;
-            c.innerHTML = `${v.jp}<small>${v.en}</small>`;
-            c.onclick = () => selectAttr(type, v.en, v.jp);
-            div.appendChild(c);
-        }
-    });
+    div.innerHTML = list.map(v => `<div class="chip" onclick="selectAttr('${type}','${v.en}','${v.jp}')" id="cp-${type}-${v.en}">${v.jp}<small>${v.en}</small></div>`).join('');
 }
     
 function drawColors(grp) {
@@ -1241,7 +1236,13 @@ function drawColors(grp) {
     if(document.getElementById(`db-${grp}`)) document.getElementById(`db-${grp}`).classList.add('active');
     renderChips('color', attributes.color[grp]);
 }
-    
+
+function drawLengths(grp) {
+    document.querySelectorAll('#sec-length .drawer-nav button').forEach(b => b.classList.remove('active'));
+    if(document.getElementById(`dl-${grp}`)) document.getElementById(`dl-${grp}`).classList.add('active');
+    renderChips('length', attributes.length[grp]);
+}
+
 function selectAttr(type, en, jp) {
     const isOff = selAttr[type] === en;
     selAttr[type] = isOff ? "" : en;
