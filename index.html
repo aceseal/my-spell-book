@@ -149,6 +149,7 @@
                 <button onclick="drawPatterns('geometric')" id="dp-geometric">幾何学</button>
                 <button onclick="drawPatterns('pop')" id="dp-pop">ポップ</button>
                 <button onclick="drawPatterns('art')" id="dp-art">アート</button>
+                <button onclick="drawPatterns('animal')" id="dp-animal">アニマル</button> </div>
             </div>
             <div id="lst-pattern" class="chip-scroll"></div>
         </div>
@@ -902,8 +903,6 @@ const masterData = [
 { p: "衣装", c: "ボトムス", jp: "サスペンダースカート", en: "suspender skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ジャンパースカート", en: "overall skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "プリーツスカート", en: "pleated skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "チェック柄スカート", en: "plaid skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "ギンガムスカート", en: "gingham skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "スパッツ", en: "bike shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "全身衣装", jp: "ドレス", en: "dress", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "全身衣装", jp: "ワンピース", en: "one-piece dress", attrs: ["tone", "color", "pattern", "length", "material"] },
@@ -1052,14 +1051,13 @@ const attributes = {
             {jp:"スモール", en:"Small"}, {jp:"レギュラー", en:"Standard"}, 
             {jp:"ビッグ", en:"Big"}, {jp:"ヒュージ", en:"Huge"}],
         thickness: [
-            {jp:"極薄/極細", en:"Ultra Thin"}, {jp:"薄い/細い", en:"Thin"}, 
-            {jp:"普通", en:"Standard"}, 
+            {jp:"極薄/極細", en:"Ultra Thin"}, {jp:"薄い/細い", en:"Thin"}, {jp:"普通", en:"Standard"}, 
             {jp:"厚い/太い", en:"Thick"}, {jp:"極厚/極太", en:"Heavy Thick"}]
     },
     material: {
         fabric: [
             {jp:"シルク", en:"Silk"}, {jp:"レース", en:"Lace"}, {jp:"コットン", en:"Cotton"}, {jp:"デニム", en:"Denim"},
-            {jp:"ベルベット", en:"Velvet"}, {jp:"レザー", en:"Leather"}, {jp:"ニット", en:"Knit"}, {jp:"ファー", en:"Fur"},
+            {jp:"ベルベット", en:"Velvet"}, {jp:"レザー", en:"Leather"}, {jp:"ニット", en:"Knit"}, {jp:"毛皮", en:"Fur"},
             {jp:"羽毛", en:"Feather"}, {jp:"ビニール", en:"Vinyl"}, {jp:"ラテックスゴム", en:"Latex"}, {jp:"エナメル", en:"Enamel"}],
         substance: [
             {jp:"金属", en:"Metal"}, {jp:"ガラス", en:"Glass"}, {jp:"クリスタル", en:"Crystal"},
@@ -1070,17 +1068,18 @@ const attributes = {
     pattern: {
         geometric: [
             {jp:"ストライプ", en:"striped"}, {jp:"ボーダー", en:"bordered"}, {jp:"斜めストライプ", en:"diagonal-striped"},
-            {jp:"格子柄/市松", en:"checkered"}, {jp:"グリッド", en:"grid"}, {jp:"アーガイル", en:"argyle"},
-            {jp:"プレイド/千鳥", en:"plaid"}, {jp:"ハーフトーン", en:"halftone"}
-        ],
+            {jp:"市松模様", en:"checkered"},{jp:"格子柄", en:"plaid"},{jp:"ギンガムチェック", en:"gingham"},
+            {jp:"グリッド", en:"grid"}, {jp:"ひし形模様", en:"argyle"},{jp:"網点ドット", en:"halftone"},
+            {jp:"千鳥模様", en:"houndstooth"},{jp:"雨模様", en:"rain streaks pattern"},{jp:"回路基板模様", en:"circuit board pattern"}],
         pop: [
             {jp:"水玉/ドット", en:"polka dot"}, {jp:"ハート柄", en:"heart pattern"}, {jp:"肉球柄", en:"paw print pattern"},
-            {jp:"星柄", en:"star pattern"}, {jp:"キラキラ柄", en:"sparkle pattern"}
-        ],
+            {jp:"星柄", en:"star pattern"}, {jp:"キラキラ柄", en:"sparkle pattern"},{jp:"雫模様", en:"raindrop pattern"},{jp:"花柄", en:"botanical pattern"}],
         art: [
-            {jp:"水彩柄", en:"watercolor"}, {jp:"スプラッター", en:"splatter"}, {jp:"迷彩/カモフラ", en:"camouflage"},
-            {jp:"タイダイ/絞り", en:"tie-dye"}, {jp:"アラベスク/唐草", en:"arabesque"}, {jp:"外枠", en:"outside border"}
-        ]
+            {jp:"水彩柄", en:"watercolor"}, {jp:"スプラッター", en:"splatter"}, {jp:"迷彩柄", en:"camouflage"},
+            {jp:"絞り染め", en:"tie-dye"}, {jp:"アラベスク", en:"arabesque"}, {jp:"外枠", en:"outside border"}],
+        animal: [ // 🆕アニマル枠を完全新設！
+            {jp:"ヒョウ柄", en:"leopard pattern"},{jp:"ゼブラ柄", en:"zebra pattern"},{jp:"トラ柄", en:"tiger pattern"},
+            {jp:"ウシ柄", en:"cow print"},{jp:"ダルメシアン柄", en:"dalmatian print"},{jp:"キリン柄", en:"giraffe print"}]
     }
 };
 
