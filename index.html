@@ -201,13 +201,13 @@ const masterData = [
 { p: "おまじない", c: "キャラ編成", jp: "女の子 (1人ソロ)", en: "1girl, solo", attrs: [] },
 { p: "おまじない", c: "キャラ編成", jp: "女の子二人 (ペア)", en: "2girls, pair, duo", attrs: [] },
 { p: "おまじない", c: "キャラ編成", jp: "女の子三人 (トリオ)", en: "3girls, trio", attrs: [] },
-{ p: "おまじない", c: "キャラ編成", jp: "女の子たち (グループ)", en: "group of girls, 4girls", attrs: [] }, // 👥 Many回避の女子グループ！
+{ p: "おまじない", c: "キャラ編成", jp: "女の子たち (グループ)", en: "group of girls, 4girls", attrs: [] },
 { p: "おまじない", c: "キャラ編成", jp: "男の子 (1人ソロ)", en: "1boy, solo", attrs: [] },
 { p: "おまじない", c: "キャラ編成", jp: "男の子二人 (ペア)", en: "2boys, pair, duo", attrs: [] },
 { p: "おまじない", c: "キャラ編成", jp: "男の子三人 (トリオ)", en: "3boys, trio", attrs: [] },
-{ p: "おまじない", c: "キャラ編成", jp: "男の子たち (グループ)", en: "group of boys, 4boys", attrs: [] }, // 👥 Many回避の男子グループ！
-{ p: "おまじない", c: "キャラ編成", jp: "男女ペア (1男1女)", en: "1boy, 1girl, pair, couple", attrs: [] },     // ⚔️最強のコンビ・カップル枠！
-{ p: "おまじない", c: "キャラ編成", jp: "男女混合グループ", en: "group of friends, boys and girls", attrs: [] }, // 🏫放課後の日常・複数人枠！
+{ p: "おまじない", c: "キャラ編成", jp: "男の子たち (グループ)", en: "group of boys, 4boys", attrs: [] },
+{ p: "おまじない", c: "キャラ編成", jp: "男女ペア (1男1女)", en: "1boy, 1girl, pair, couple", attrs: [] },
+{ p: "おまじない", c: "キャラ編成", jp: "男女混合グループ", en: "group of friends, boys and girls", attrs: [] },
 { p: "おまじない", c: "アスペクト比率", jp: "正方形 (1:1)", en: "--ar 1:1", attrs: [] },
 { p: "おまじない", c: "アスペクト比率", jp: "縦・標準 (2:3)", en: "--ar 2:3", attrs: [] },
 { p: "おまじない", c: "アスペクト比率", jp: "スマホ壁紙 (9:16)", en: "--ar 9:16", attrs: [] },
@@ -246,7 +246,7 @@ const masterData = [
 { p: "演出", c: "アングル", jp: "見上げる (アオリ)", en: "from below, low angle", attrs: [] },
 { p: "演出", c: "アングル", jp: "背面 (うしろ姿)", en: "from behind, back view", attrs: [] },
 { p: "演出", c: "アングル", jp: "側面 (真横)", en: "from side, side view", attrs: [] },
-{ p: "演出", c: "アングル", jp: "斜め顔 / 横顔", en: "profile view, three-quarter view", attrs: [] }, // ⚙️大バグ持ちの単体profileから安全なハイブリッドに統合！
+{ p: "演出", c: "アングル", jp: "斜め顔 / 横顔", en: "profile view, three-quarter view", attrs: [] },
 { p: "演出", c: "アングル", jp: "画面の傾き (ダッチアングル)", en: "dutch angle, tilted frame", attrs: [] },
 { p: "演出", c: "アングル", jp: "逆さま", en: "upside-down", attrs: [] },
 { p: "演出", c: "アングル", jp: "設定画風 三面図", en: "character design sheet, multiple views, front side back view", attrs: [] },
@@ -254,7 +254,7 @@ const masterData = [
 { p: "演出", c: "パース", jp: "一点透視", en: "one-point perspective, vanishing point", attrs: [] },
 { p: "演出", c: "パース", jp: "二点透視", en: "two-point perspective", attrs: [] },
 { p: "演出", c: "パース", jp: "三点透視", en: "three-point perspective", attrs: [] },
-{ p: "演出", c: "パース", jp: "平面構図 (パース無効化)", en: "flat perspective, isometric view", attrs: [] }, // ⚙️意味が矛盾していた英語を「フラット・クォータービュー」の正しい英語に修正！
+{ p: "演出", c: "パース", jp: "平面構図 (パース無効化)", en: "flat perspective, isometric view", attrs: [] },
 { p: "演出", c: "パース", jp: "空気遠近法", en: "atmospheric perspective", attrs: [] },
 { p: "演出", c: "パース", jp: "魚眼レンズ", en: "fisheye lens", attrs: [] },
 { p: "演出", c: "パース", jp: "パノラマ", en: "panorama shot", attrs: [] },
@@ -889,15 +889,15 @@ const masterData = [
 { p: "衣装", c: "ボトムス", jp: "短パン", en: "shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "デニム短パン", en: "denim shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "マイクロ短パン", en: "micro shorts", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "ローライズ短パン", en: "low-rise shorts", attrs: ["tone", "color", "pattern", "material"] }, // ⚙️英語をlow-riseに修正！
+{ p: "衣装", c: "ボトムス", jp: "ローライズ短パン", en: "low-rise shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ショートパンツ", en: "short shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "スパッツ", en: "bike shorts", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "レギンス", en: "leggings", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "タイツ", en: "tights", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "パンスト", en: "pantyhose", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "網タイツ", en: "fishnet tights", attrs: ["tone", "color", "pattern", "material"] },
-{ p: "衣装", c: "ボトムス", jp: "ガーターベルト", en: "garter belt", attrs: ["tone", "color", "pattern", "material"] }, // 🆕腰のベルト単体枠を新設！
-{ p: "衣装", c: "ボトムス", jp: "ガーターストッキング", en: "garter stockings", attrs: ["tone", "color", "pattern", "material"] }, // ⚙️ストッキング固定枠にリネーム！
+{ p: "衣装", c: "ボトムス", jp: "ガーターベルト", en: "garter belt", attrs: ["tone", "color", "pattern", "material"] },
+{ p: "衣装", c: "ボトムス", jp: "ガーターストッキング", en: "garter stockings", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "ボトムス", jp: "スカート", en: "skirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "オーバースカート", en: "overskirt", attrs: ["tone", "color", "pattern", "length", "material"] },
 { p: "衣装", c: "ボトムス", jp: "ミニスカート", en: "miniskirt", attrs: ["tone", "color", "pattern", "length", "material"] },
@@ -959,11 +959,11 @@ const masterData = [
 { p: "衣装", c: "シューズ", jp: "スニーカー", en: "sneakers", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "シューズ", jp: "スリッパ", en: "slippers", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "萌え袖", en: "oversized sleeves", attrs: [] },
-{ p: "衣装", c: "衣装細部", jp: "裾捲り", en: "rolled-up hem" attrs: [] },
+{ p: "衣装", c: "衣装細部", jp: "裾捲り", en: "rolled-up hem", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "濡れた服", en: "wet clothes", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "肌に張り付いた服", en: "clothes stuck to skin", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "オーバーサイズ", en: "oversized", attrs: [] },
-{ p: "衣装", c: "衣装細部", jp: "ローライズ", en: "low-rise" attrs: [] },
+{ p: "衣装", c: "衣装細部", jp: "ローライズ", en: "low-rise", attrs: [] },
 { p: "衣装", c: "衣装細部", jp: "サイハイ", en: "thighhighs", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "オーバーニー", en: "over-kneehighs", attrs: ["tone", "color", "pattern", "material"] },
 { p: "衣装", c: "衣装細部", jp: "ニーハイ", en: "kneehighs", attrs: ["tone", "color", "pattern", "material"] },
