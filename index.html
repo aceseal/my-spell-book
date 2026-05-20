@@ -284,7 +284,29 @@ const masterData = [
 { p: "演出", c: "エフェクト", jp: "色収差", en: "chromatic aberration", attrs: [] },
 { p: "演出", c: "エフェクト", jp: "ノイズ・グレイン", en: "film grain", attrs: [] },
 { p: "演出", c: "エフェクト", jp: "スキャンライン", en: "scanlines", attrs: [] },
-    
+
+// --- ペルソナ ---
+{ p: "ペルソナ", c: "ベース年齢", jp: "幼児期 (0-4歳)", en: "toddler, small child, preschooler", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "学童期 (5-12歳)", en: "child, young girl, elementary school age", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "思春期 (13-17歳)", en: "adolescent, teen, junior high to high school age", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "青年期 (18-29歳)", en: "young adult, college student age, 20s", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "成人期 (30-49歳)", en: "adult woman, mature, 30s to 40s", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "壮年期 (50-64歳)", en: "middle-aged woman, sophisticated, 50s", attrs: [] },
+{ p: "ペルソナ", c: "ベース年齢", jp: "老年期 (65歳以上)", en: "elderly woman, senior, grandmotherly", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "学生", en: "student, school uniform", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "ワーカー", en: "business professional, formal suit", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "アイドル", en: "idol, performer, stage costume", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "警察", en: "police officer, uniform, tactical gear", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "エンジニア", en: "mechanic, engineer, overalls, dirty clothes", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "プログラマー", en: "programmer, casual, hoodie, glasses", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "日常", en: "casual, lifestyle, private clothes", attrs: [] },
+
+// 【アンリアル系】
+{ p: "ペルソナ", c: "ロール", jp: "冒険者", en: "adventurer, leather armor, travel gear", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "魔法使い", en: "mage, wizard, robe, staff", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "戦士", en: "warrior, knight, plate armor, sword", attrs: [] },
+{ p: "ペルソナ", c: "ロール", jp: "修行者", en: "monk, hermit, simple robe", attrs: [] },
+
 // --- 身体 ---
 { p: "身体", c: "タイプ・印象", jp: "大人びた", en: "mature, sophisticated aura", attrs: [] },
 { p: "身体", c: "タイプ・印象", jp: "童顔・あどけない", en: "cute anime face", attrs: [] },
@@ -1136,7 +1158,7 @@ function buildCategories() {
 function init() {
     loadApocrypha();
     buildCategories();
-    const order = ["おまじない", "演出", "身体", "髪型", "顔", "衣装", "ポーズ", "背景","小物・持ち物"];
+    const order = ["おまじない", "演出", "ペルソナ", "身体", "髪型", "顔", "衣装", "ポーズ", "背景","小物・持ち物"];
     const pTabs = document.getElementById('p-tabs');
     pTabs.innerHTML = order.filter(p => categories[p]).map(p => 
         `<button class="tab-btn" onclick="setParent('${p}')" id="pb-${p}">${p}</button>`
