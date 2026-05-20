@@ -1,6 +1,6 @@
 {
-  "name": "叡智の魔導書",
-  "short_name": "魔導書",
+  "name": "叡智の魔導書《アトモソフィア・グリモワール》",
+  "short_name": "叡智の魔導書",
   "id": "/grimoire-app/",
   "start_url": "./index.html",
   "scope": "./",
